@@ -1,4 +1,7 @@
 import styled from 'styled-components'
+import { RelayEnvironmentProvider } from "react-relay/hooks"
+import environment from "../relay-env"
+import TestComponent from '../TestComponent'
 
 const Title = styled.h1`
   color: red;
@@ -6,5 +9,11 @@ const Title = styled.h1`
 `
 
 export default function Home() {
-  return <Title>My page</Title>
+  return (
+  <RelayEnvironmentProvider environment={environment}>
+    <Title>My page</Title>
+    <TestComponent />
+  </RelayEnvironmentProvider>
+  )
+  
 }
