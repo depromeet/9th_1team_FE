@@ -37,3 +37,4 @@ yarn-error.log*
 # environments
 .env
 **/__generated__/**
+**/schema/*.graphql
