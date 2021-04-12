@@ -36,3 +36,4 @@ yarn-error.log*
 
 # environments
 .env
+**/__generated__/**
