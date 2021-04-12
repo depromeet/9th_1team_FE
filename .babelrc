@@ -2,6 +2,6 @@
   "presets": ["next/babel"],
   "plugins": [
     ["styled-components", { "ssr": true }], 
-    ["relay", { "artifactDirectory": "./src/__generated__" }]
+    ["relay"]
   ]
 }

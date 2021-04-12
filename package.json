@@ -5,11 +5,15 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "relay": "relay-compiler --src ./ --exclude '**/.next/**' '**/node_modules/**' '**/test/**'  '**/__generated__/**' --exclude '**/schema/**' --schema ./schema/schema.graphql",
+    "schema": "graphql get-schema -e dev"
   },
   "dependencies": {
+    "graphql": "^15.5.0",
     "next": "^10.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-relay": "^11.0.1",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
@@ -17,10 +21,12 @@
     "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "5.0.1",
+    "babel-plugin-relay": "^11.0.1",
     "babel-plugin-styled-components": "^1.10.0",
-    "graphql": "^15.5.0",
+    "graphql-cli": "^4.1.0",
     "prettier": "^2.2.1",
-    "typescript": "4.0"
+    "relay-compiler": "^11.0.1",
+    "typescript": "^4.2.4"
   },
   "license": "MIT"
 }
