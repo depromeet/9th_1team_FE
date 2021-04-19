@@ -13,6 +13,7 @@
     "next": "^10.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-modal": "^3.13.1",
     "react-relay": "^9.0.0",
     "styled-components": "^5.0.0"
   },
@@ -20,6 +21,7 @@
     "@types/node": "12.0.12",
     "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
+    "@types/react-modal": "^3.12.0",
     "@types/react-relay": "^11.0.1",
     "@types/styled-components": "5.0.1",
     "babel-plugin-relay": "^11.0.1",
