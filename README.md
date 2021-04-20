@@ -4,7 +4,13 @@
 
 ## How to use
 
-Download schema introspection data from configured Relay endpoint
+작업전에 .env 세팅 필수
+
+```bash
+cp .env.sample .env
+```
+
+스키마 다운로드 받아야됨
 
 ```bash
 npm run schema
@@ -12,7 +18,7 @@ npm run schema
 yarn schema
 ```
 
-Run Relay ahead-of-time compilation (should be re-run after any edits to components that query data with Relay)
+다운로드 받은 스키마 기준으로 relay 제너레이트 작업 해야됨
 
 ```bash
 npm run relay
@@ -20,7 +26,7 @@ npm run relay
 yarn relay
 ```
 
-Run the project
+프로젝트 시작
 
 ```bash
 npm run dev
