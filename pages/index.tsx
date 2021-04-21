@@ -29,8 +29,6 @@ export async function getStaticProps() {
   const queryProps = await fetchQuery(environment, indexPageQuery);
   const initialRecords = environment.getStore().getSource().toJSON();
 
-  console.log("????", queryProps);
-
   return {
     props: {
       ...queryProps,
