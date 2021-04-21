@@ -1,5 +1,6 @@
 // article > [id].tsx로 변경해야함
 import styled from "styled-components";
+import Comments from "../components/Comments";
 import RadioBox from "../components/RadioBox";
 
 const InfoWrapper = styled.div`
@@ -49,6 +50,7 @@ const Detail = () => {
         </div>
       </InfoWrapper>
       <RadioBox />
+      <Comments />
     </div>
   );
 };
