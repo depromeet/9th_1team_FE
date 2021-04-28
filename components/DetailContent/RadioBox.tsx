@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
 const RadioWrapper = styled.div`
+  width: 100%;
+
   .radio-box {
     position: relative;
-    width: 80%;
+    margin: 10px;
     height: 200px;
     border-radius: 10px;
     display: flex;
@@ -11,7 +13,7 @@ const RadioWrapper = styled.div`
     align-items: center;
     justify-content: center;
 
-    .radio-button {
+    .radio-btn {
       position: absolute;
       display: inline-block;
       right: 10px;
@@ -25,7 +27,7 @@ const RadioWrapper = styled.div`
       display: none;
     }
 
-    input[type="radio"]:checked + .radio-button:before {
+    input[type="radio"]:checked + .radio-btn:before {
       content: "";
       position: absolute;
       right: 0px;
@@ -33,7 +35,6 @@ const RadioWrapper = styled.div`
       width: 15px;
       height: 15px;
       border-radius: 50%;
-
       background-color: #fff;
     }
   }
@@ -45,20 +46,20 @@ const RadioWrapper = styled.div`
   }
 `;
 
-const RadioBox = () => {
+const RadioBox: React.FC = () => {
   return (
     <RadioWrapper>
       <div className="radio-box first">
         <h2>카레맛 똥</h2>
         <p>미슐랭 5스타급 맛 보장</p>
         <input name="balance" type="radio" id="choice-1" />
-        <label className="radio-button" htmlFor="choice-1"></label>
+        <label className="radio-btn" htmlFor="choice-1"></label>
       </div>
       <div className="radio-box second">
         <h2>똥맛 카레</h2>
         <p>단, 재료는 최상급. 유기농 채소와 소고기 듬뿍</p>
         <input name="balance" type="radio" id="choice-2" />
-        <label className="radio-button" htmlFor="choice-2"></label>
+        <label className="radio-btn" htmlFor="choice-2"></label>
       </div>
     </RadioWrapper>
   );
