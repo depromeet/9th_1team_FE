@@ -1,57 +1,107 @@
 // article > [id].tsx로 변경해야함
 import styled from "styled-components";
-import Comments from "../components/Comments";
-import RadioBox from "../components/RadioBox";
+import Comments from "../components/Comment/Comments";
+import DetailHeader from "../components/DetailContent/DetailHeader";
+import RadioBox from "../components/DetailContent/RadioBox";
 
-const InfoWrapper = styled.div`
-  .writer,
-  .date {
-    font-size: 12px;
-    color: #838383;
+const DetailWrapper = styled.div`
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .writer {
-    position: relative;
-    margin-right: 14px;
+  .left {
+    display: flex;
+    align-items: center;
   }
-  .writer:after {
-    content: "";
-    position: absolute;
-    right: -7px;
-    top: 2px;
-    width: 1px;
-    height: 10px;
-    background-color: #c4c4c4;
+  .fake__image {
+    width: 20px;
+    height: 20px;
+    background-color: tomato;
+    border-radius: 50%;
   }
-  .count__wrapper {
+  .play__wrapper {
+  }
+  .play__ment {
+    margin: 0;
+  }
+  .comment__count {
     display: inline-block;
-    border: 1px solid #838383;
-    border-radius: 20px;
-    width: 110px;
-    height: 33px;
-    line-height: 33px;
-    text-align: center;
+    padding: 8px 12px;
+    border: 1px solid #868e96;
+    border-radius: 15px;
   }
-  .count {
-    color: #222222;
-    font-size: 13px;
+  .share {
+    width: 100%;
+    height: 101px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .share p {
+    margin: 0;
+  }
+  .icon__wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  .fake__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: blue;
   }
 `;
 
 const Detail = () => {
   return (
-    <div>
-      detail
-      <InfoWrapper>
-        <span className="writer">김정현</span>
-        <span className="date">2021.02.01</span>
-        <div className="count__wrapper">
-          <span className="icon">👩🏼‍🦳</span>
-          <span className="count">2403명 참여</span>
+    <>
+      <DetailHeader />
+      <DetailWrapper>
+        <RadioBox />
+        <div className="contents__wrapper">
+          <div className="status">
+            <div className="left">
+              <div className="fake__image"></div>
+              <div className="play__wrapper">
+                <p className="play__ment">따끈따끈한 밸런스 게임</p>
+                <span className="play__count">참여 2333</span>
+              </div>
+            </div>
+            <span className="comment__count">의견 145개</span>
+          </div>
+          <div className="contents">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci
+              asperiores animi nemo, ex officia eos, voluptate, provident sed
+              dolorem nisi magnam assumenda quisquam cumque enim! Vel aspernatur
+              distinctio voluptates laudantium earum perferendis minima
+              obcaecati nesciunt eligendi tempora officia nemo dolor rem aut
+              adipisci, voluptatibus unde odit, a libero quas ea?
+            </p>
+            <span className="author">made by 김정현</span>
+            <span>&middot;</span>
+            <span className="pub-date">1일 전</span>
+          </div>
+          <div className="share">
+            <p>친구들에게 공유해서 의견을 들어볼까요?</p>
+            <div className="icon__wrapper">
+              <div className="fake__icon"></div>
+              <div className="fake__icon"></div>
+              <div className="fake__icon"></div>
+            </div>
+          </div>
+          <div>
+            <div>a 이전 게임</div>
+            <div>b 다음 게임</div>
+          </div>
         </div>
-      </InfoWrapper>
-      <RadioBox />
-      <Comments />
-    </div>
+        <Comments />
+      </DetailWrapper>
+    </>
   );
 };
 
