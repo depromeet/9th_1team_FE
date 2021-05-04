@@ -2,17 +2,43 @@ import styled from "styled-components";
 import Comment from "public/comment.svg";
 import Share from "public/share.svg";
 import More from "public/more.svg";
+import Unchecked from "public/unchecked.svg";
+import Checked from "public/checked.svg";
+import { useState } from "react";
+
+const CheckBox = ({ isChecked }: { isChecked: boolean }) => (
+  <div className="checkbox">{isChecked ? <Checked /> : <Unchecked />}</div>
+);
 
 const FeedPost = () => {
+  enum CHECK_TYPE {
+    FIRST = "FIRST",
+    SECOND = "SECOND",
+    NONE = "NONE",
+  }
+
+  const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
+  const handleCheckType = (type: CHECK_TYPE) => {
+    if (checkType === type) setCheckType(CHECK_TYPE.NONE);
+    else setCheckType(type);
+  };
+
   return (
     <Container>
       <div
         className="option-box"
         style={{ background: "#E66F53", color: "white" }}
+        onClick={() => handleCheckType(CHECK_TYPE.FIRST)}
       >
+        <CheckBox isChecked={checkType === CHECK_TYPE.FIRST} />
         추성훈 선수한테 맞고 이국종 교수한테 수술받기
       </div>
-      <div className="option-box" style={{ background: "#FFD569" }}>
+      <div
+        className="option-box"
+        style={{ background: "#FFD569" }}
+        onClick={() => handleCheckType(CHECK_TYPE.SECOND)}
+      >
+        <CheckBox isChecked={checkType === CHECK_TYPE.SECOND} />
         이국종 교수한테 맞고 추성훈 선수한테 수술받기
       </div>
 
@@ -47,6 +73,7 @@ const Container = styled.div`
   border-radius: 0.5rem;
   margin-bottom: 2.5rem;
   .option-box {
+    position: relative;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
     display: flex;
@@ -57,6 +84,11 @@ const Container = styled.div`
     font-size: 2rem;
     font-weight: 800;
     line-height: 2.6rem;
+    .checkbox {
+      position: absolute;
+      top: 0.9rem;
+      right: 1.2rem;
+    }
   }
   .content {
     padding: 1.5rem;
@@ -72,7 +104,7 @@ const Container = styled.div`
       justify-content: space-between;
     }
     &__buttons {
-      padding: 1.5rem 0;
+      padding: 1.3rem 0;
       margin-top: 1.3rem;
       border: 0 solid #e9ecef;
       border-top-width: 0.1rem;

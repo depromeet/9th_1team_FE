@@ -12,14 +12,12 @@ const Feed = () => {
     <Container>
       <div className="state">
         <StateBtn
-          className="state__button"
           onClick={() => setFeedState(FEED_STATE.LATEST)}
           isClicked={feedState === FEED_STATE.LATEST}
         >
           최신순
         </StateBtn>
         <StateBtn
-          className="state__button"
           onClick={() => setFeedState(FEED_STATE.POPULAR)}
           isClicked={feedState === FEED_STATE.POPULAR}
         >
@@ -28,6 +26,9 @@ const Feed = () => {
       </div>
 
       <div className="posts">
+        <FeedPost />
+        <FeedPost />
+        <FeedPost />
         <FeedPost />
       </div>
     </Container>
@@ -39,7 +40,7 @@ const Container = styled.div`
   margin: 0 1.6rem;
   .state {
     display: flex;
-    margin-top: 1.5rem;
+    margin-top: 2.5rem;
     font-size: 1.2rem;
     position: absolute;
     right: 0;
