@@ -74,8 +74,6 @@ const Container = styled.div`
   margin-bottom: 2.5rem;
   .option-box {
     position: relative;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
     display: flex;
     align-items: center;
     text-align: center;
@@ -84,6 +82,10 @@ const Container = styled.div`
     font-size: 2rem;
     font-weight: 800;
     line-height: 2.6rem;
+    :first-child {
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
     .checkbox {
       position: absolute;
       top: 0.9rem;

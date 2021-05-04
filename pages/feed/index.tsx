@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import FeedPost from "../../components/FeedPost";
+import FeedPost from "components/FeedPost";
+import TopButton from "public/gototop.svg";
 
 const Feed = () => {
   enum FEED_STATE {
@@ -8,6 +9,16 @@ const Feed = () => {
     POPULAR = "POPULAR",
   }
   const [feedState, setFeedState] = useState(FEED_STATE.LATEST);
+  const [YOffset, setYOffset] = useState(0);
+  useEffect(() => {
+    window.addEventListener("scroll", () => setYOffset(window.pageYOffset));
+    return () => {
+      window.removeEventListener("scroll", () =>
+        setYOffset(window.pageYOffset)
+      );
+    };
+  }, []);
+
   return (
     <Container>
       <div className="state">
@@ -31,6 +42,15 @@ const Feed = () => {
         <FeedPost />
         <FeedPost />
       </div>
+
+      {YOffset > 0 && (
+        <div
+          className="topbutton"
+          onClick={() => window.scroll({ top: 0, behavior: "smooth" })}
+        >
+          <TopButton />
+        </div>
+      )}
     </Container>
   );
 };
@@ -51,6 +71,11 @@ const Container = styled.div`
     top: 5.5rem;
     display: flex;
     flex-direction: column;
+  }
+  .topbutton {
+    position: fixed;
+    right: 2.7rem;
+    bottom: 3.2rem;
   }
 `;
 
