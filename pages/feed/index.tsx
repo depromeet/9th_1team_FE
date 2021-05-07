@@ -1,90 +1,47 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeedPost from "components/FeedPost";
-import TopButton from "public/gototop.svg";
+import Header from "components/Header";
 
-const Feed = () => {
-  enum FEED_STATE {
-    LATEST = "LATEST",
-    POPULAR = "POPULAR",
-  }
-  const [feedState, setFeedState] = useState(FEED_STATE.LATEST);
-  const [YOffset, setYOffset] = useState(0);
-  useEffect(() => {
-    window.addEventListener("scroll", () => setYOffset(window.pageYOffset));
-    return () => {
-      window.removeEventListener("scroll", () =>
-        setYOffset(window.pageYOffset)
-      );
-    };
-  }, []);
-
+const Today = () => {
   return (
-    <Container>
-      <div className="state">
-        <StateBtn
-          onClick={() => setFeedState(FEED_STATE.LATEST)}
-          isClicked={feedState === FEED_STATE.LATEST}
-        >
-          최신순
-        </StateBtn>
-        <StateBtn
-          onClick={() => setFeedState(FEED_STATE.POPULAR)}
-          isClicked={feedState === FEED_STATE.POPULAR}
-        >
-          인기순
-        </StateBtn>
-      </div>
-
-      <div className="posts">
-        <FeedPost />
-        <FeedPost />
-        <FeedPost />
-        <FeedPost />
-      </div>
-
-      {YOffset > 0 && (
-        <div
-          className="topbutton"
-          onClick={() => window.scroll({ top: 0, behavior: "smooth" })}
-        >
-          <TopButton />
-        </div>
-      )}
-    </Container>
+    <TodayContainer>
+      <div className="title">오늘의 밸런스게임</div>
+      <FeedPost />
+    </TodayContainer>
   );
 };
 
-const Container = styled.div`
-  position: relative;
-  margin: 0 1.6rem;
-  .state {
-    display: flex;
-    margin-top: 2.5rem;
-    font-size: 1.2rem;
-    position: absolute;
-    right: 0;
-  }
-  .posts {
-    width: 100%;
-    position: absolute;
-    top: 5.5rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .topbutton {
-    position: fixed;
-    right: 2.7rem;
-    bottom: 3.2rem;
+const Feed = () => {
+  return (
+    <div style={{ width: "100%" }}>
+      <Header />
+      <Today />
+      <Container>
+        <FeedPost />
+        <FeedPost />
+        <FeedPost />
+        <FeedPost />
+      </Container>
+    </div>
+  );
+};
+
+const TodayContainer = styled.div`
+  padding: 1.6rem;
+  margin-top: 5.2rem;
+  margin-bottom: -2.5rem;
+  background: #f8f9fa;
+  .title {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
   }
 `;
 
-const StateBtn = styled.div<{ isClicked: boolean }>`
-  :first-child {
-    margin-right: 1.2rem;
-  }
-  font-weight: bold;
-  color: ${({ isClicked }) => (isClicked ? "#272727" : "#C4C4C4")};
+const Container = styled.div`
+  background: white;
+  padding: 1.55rem 1.6rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 export default Feed;
