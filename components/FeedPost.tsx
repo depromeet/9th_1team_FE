@@ -4,6 +4,8 @@ import Share from "public/share.svg";
 import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
+import VS from "public/VS.svg";
+import Fire from "public/fire.svg";
 import { Dispatch, SetStateAction, useState } from "react";
 
 enum CHECK_TYPE {
@@ -35,14 +37,36 @@ const OptionBox = ({
   return (
     <OptionBoxContainer
       style={{ background, color: "white" }}
-      onClick={() => handleCheckType(type)}
       isSelected={isSelected}
     >
-      <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>{" "}
-      <div style={{ opacity: isSelected ? 0.4 : 1 }}>{title}</div>
+      <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
+      <div className="title" onClick={() => handleCheckType(type)}>
+        {title}
+      </div>
     </OptionBoxContainer>
   );
 };
+
+const GameFire = () => (
+  <>
+    <div className="fire">
+      <div className="fire__rectangle">50</div>
+      <div
+        style={{
+          position: "absolute",
+          top: "-2.5rem",
+          left: "-2.1rem",
+          zIndex: 3,
+        }}
+      >
+        <Fire />
+      </div>
+      <div className="fire__rectangle">50</div>
+    </div>
+    <div className="line" />
+    <div className="line" />
+  </>
+);
 
 const FeedPost = () => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
@@ -65,10 +89,11 @@ const FeedPost = () => {
         setCheckType={setCheckType}
         background="#FFD569"
       />
+      <Versus>{checkType === CHECK_TYPE.NONE ? <VS /> : <GameFire />}</Versus>
 
       <div className="content">
         <div className="content__title">
-          굳세게 무엇을 인생을 같이 청춘을 내려온 위여, 우리 위하여...{" "}
+          굳세게 무엇을 인생을 같이 청춘을 내려온 위여, 우리 위하여...
         </div>
         <div className="content__state">
           <div>참여 1034 • 의견 145 • 1일전</div>
@@ -96,6 +121,7 @@ const Container = styled.div`
   border-radius: 0.8rem;
   margin-bottom: 2.5rem;
   background: white;
+  position: relative;
   .content {
     padding: 1rem 0;
     color: #606060;
@@ -145,12 +171,7 @@ const Container = styled.div`
 
 const OptionBoxContainer = styled.div<{ isSelected: boolean }>`
   position: relative;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  padding: 0 2rem;
-  height: 12.7rem;
-  font-size: 2rem;
+  height: 12.8rem;
   font-weight: 800;
   line-height: 2.6rem;
   :first-child {
@@ -161,6 +182,67 @@ const OptionBoxContainer = styled.div<{ isSelected: boolean }>`
     position: absolute;
     top: 0.9rem;
     right: 1.2rem;
+  }
+  .title {
+    font-size: 2rem;
+    position: absolute;
+    height: 100%;
+    z-index: 2;
+    opacity: ${({ isSelected }) => (isSelected ? 0.4 : 1)};
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 0 2rem;
+  }
+`;
+
+const Versus = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 25.6rem;
+  .fire {
+    position: absolute;
+    &__rectangle {
+      :first-child {
+        top: auto;
+        bottom: -0.4rem;
+        left: auto;
+        right: 0.3rem;
+        border-radius: 12px 12px 0px 12px;
+        color: #e56f53;
+      }
+      color: #f8d272;
+
+      top: -0.4rem;
+      left: 0.3rem;
+      position: absolute;
+      z-index: 1;
+      font-size: 1.4rem;
+      font-weight: 800;
+      padding: 0.3rem 0.9rem;
+      padding-top: 0.5rem;
+      background: #f8f9fa;
+      box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 0px 12px 12px 12px;
+    }
+  }
+  .line {
+    width: 50%;
+    height: 0.8rem;
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    background: #e56f53;
+    :last-child {
+      left: auto;
+      right: 0;
+      background: #f8d272;
+    }
   }
 `;
 
