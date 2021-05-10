@@ -1,6 +1,14 @@
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
 import { SketchPicker } from "react-color";
+import {
+  Header,
+  Title,
+  CloseBtn,
+  HelpBtn,
+  InputTitle,
+  BalanceSelectBtn,
+} from "./index.style";
 
 Modal.setAppElement("#__next");
 
@@ -12,8 +20,8 @@ const Write = () => {
   const [color, setColor] = useState({});
   const [text, setText] = useState("");
   const [subText, setSubText] = useState("");
-  const [BallanceDataA, setBallanceDataA] = useState(null);
-  const [BallanceDataB, setBallanceDataB] = useState(null);
+  const [ballanceDataA, setBallanceDataA] = useState(null);
+  const [ballanceDataB, setBallanceDataB] = useState(null);
 
   const onClose = () => {
     setIsOpenModal(false);
@@ -92,12 +100,20 @@ const Write = () => {
         />
       </Modal>
       <div>
-        <div>밸런스 게임 만들기</div>
+        <Header>
+          <CloseBtn>x</CloseBtn>
+          <Title>밸런스 게임 만들기</Title>
+          <HelpBtn>x</HelpBtn>
+        </Header>
         <div>
-          <div>선택지</div>
-          <button onClick={onOpenBalance("A")}>선택지 등록</button>
+          <InputTitle>선택지</InputTitle>
+          <BalanceSelectBtn onClick={onOpenBalance("A")}>
+            선택지 등록
+          </BalanceSelectBtn>
           <div>vs</div>
-          <button onClick={onOpenBalance("B")}>선택지 등록</button>
+          <BalanceSelectBtn onClick={onOpenBalance("B")}>
+            선택지 등록
+          </BalanceSelectBtn>
         </div>
         <div>
           <div>내용</div>
