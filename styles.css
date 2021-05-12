@@ -1,4 +1,25 @@
 html,
 body {
   margin: 0;
+  font-size: 10px;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+li {
+  list-style: none;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: normal;
 }

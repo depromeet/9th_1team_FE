@@ -38,3 +38,9 @@ yarn-error.log*
 .env
 **/__generated__/**
 **/schema/*.graphql
+
+
+# yujin
+test.tsx
+lib/
+relay.ts
