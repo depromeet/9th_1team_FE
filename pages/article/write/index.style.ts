@@ -31,22 +31,65 @@ export const InputTitle = styled.h2`
   font-family: Roboto;
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 14px;
+  padding: 19px 0 5px;
 `;
 
-export const BalanceSelectBtn = styled.button`
-  height: 56px;
+export const BalanceCard = styled.div`
+  position: relative;
+  height: 143px;
   display: flex;
-  width: 100%;
   justify-content: center;
   align-items: center;
-  border: 0.7px solid #cacad8;
-  box-sizing: border-box;
-  border-radius: 8px;
+  background-color: gray;
+  font-size: 20px;
+  font-weight: 800;
+`;
 
-  font-family: Roboto;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
+export const BalanceCardBtn = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 22px;
+  height: 20px;
+  img {
+    display: block;
+    width: 22px;
+    height: 20px;
+  }
+`;
+
+export const BalanceTitle = styled.div`
+  padding: 3px 11px 0;
+  .img {
+    width: 38px;
+    height: 34px;
+  }
+  .title {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+`;
+
+export const BalanceContainer = styled.div`
+  padding: 18px 16px;
+`;
+
+export const BalanceCardContainer = styled.div`
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  .vs {
+    position: absolute;
+    width: 25px;
+    height: 15px;
+    left: calc(50%);
+    top: calc(50%);
+    img {
+      display: block;
+      width: 25px;
+      height: 15px;
+    }
+  }
 `;

@@ -7,7 +7,11 @@ import {
   CloseBtn,
   HelpBtn,
   InputTitle,
-  BalanceSelectBtn,
+  BalanceCard,
+  BalanceTitle,
+  BalanceCardBtn,
+  BalanceCardContainer,
+  BalanceContainer,
 } from "./index.style";
 
 Modal.setAppElement("#__next");
@@ -105,16 +109,47 @@ const Write = () => {
           <Title>밸런스 게임 만들기</Title>
           <HelpBtn>x</HelpBtn>
         </Header>
-        <div>
+        <BalanceTitle>
+          <div className={"img"}>
+            <img src="/img.png" width={38} height={34} alt="" />
+          </div>
+          <div className={"title"}>
+            밸런스 선택지를 만들고 내용 작성을 통해 추가 설명이 가능합니다.
+          </div>
+        </BalanceTitle>
+        <BalanceContainer>
           <InputTitle>선택지</InputTitle>
-          <BalanceSelectBtn onClick={onOpenBalance("A")}>
-            선택지 등록
-          </BalanceSelectBtn>
-          <div>vs</div>
-          <BalanceSelectBtn onClick={onOpenBalance("B")}>
-            선택지 등록
-          </BalanceSelectBtn>
-        </div>
+          <BalanceCardContainer>
+            <BalanceCard onClick={onOpenBalance("A")}>
+              선택지 등록
+              <BalanceCardBtn>
+                <img src="img.png" alt="img" />
+              </BalanceCardBtn>
+            </BalanceCard>
+            <div className={"vs"}>
+              <img src="img.png" alt="vs" />
+            </div>
+            <BalanceCard
+              style={{ backgroundColor: "red" }}
+              onClick={onOpenBalance("B")}
+            >
+              선택지 등록
+              <BalanceCardBtn>
+                <img src="img.png" alt="img" />
+              </BalanceCardBtn>
+            </BalanceCard>
+          </BalanceCardContainer>
+          <div>
+            <button>a</button>
+            <button>a</button>
+            <button>a</button>
+            <button>a</button>
+            <button>a</button>
+            <button>a</button>
+            <button>a</button>
+          </div>
+          <div>*한번 더 선택하면 위아래 색상이 전환됩니다.</div>
+        </BalanceContainer>
         <div>
           <div>내용</div>
           <div>
