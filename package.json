@@ -9,7 +9,6 @@
     "schema": "graphql get-schema -e dev"
   },
   "dependencies": {
-    "axios": "^0.21.1",
     "graphql": "^14.6.0",
     "next": "^10.0.9",
     "next-svgr": "0.0.2",
@@ -19,13 +18,11 @@
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
-    "@svgr/webpack": "^5.5.0",
     "@types/node": "12.0.12",
     "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
     "@types/react-relay": "^11.0.1",
     "@types/styled-components": "5.0.1",
-    "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-relay": "^11.0.1",
     "babel-plugin-styled-components": "^1.10.0",
     "graphql-cli": "^3.0.14",
