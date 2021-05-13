@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import Modal from "react-modal";
 import {
   Header,
@@ -17,8 +17,8 @@ import {
   InputContainer,
   SubmitBtn,
   SubmitBtnContainer,
-  InputTextareaContainer,
   InputTextInfoContainer,
+  BalanceCardBgImgRemoveBtn,
 } from "./index.style";
 
 Modal.setAppElement("#__next");
@@ -26,7 +26,11 @@ Modal.setAppElement("#__next");
 const Write = () => {
   const [textInfo, setTextInfo] = useState("");
   const [balanceBgA, setBalanceBgA] = useState("#E56F53");
+  const [balanceBgImgFileA, setBalanceBgImgFileA] = useState(null);
+  const [balanceBgImgSrcA, setBalanceBgImgSrcA] = useState("");
   const [balanceBgB, setBalanceBgB] = useState("#FFD569");
+  const [balanceBgImgFileB, setBalanceBgImgFileB] = useState(null);
+  const [balanceBgImgSrcB, setBalanceBgImgSrcB] = useState("");
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
 
@@ -47,7 +51,7 @@ const Write = () => {
     setTextInfo(e.target.value);
   };
 
-  const setColorGroup = (colorA = "", colorB = "") => () => {
+  const onChangeColorGroup = (colorA = "", colorB = "") => () => {
     if (balanceBgA === colorA && balanceBgB === colorB) {
       setBalanceBgA(colorB);
       setBalanceBgB(colorA);
@@ -56,6 +60,40 @@ const Write = () => {
       setBalanceBgB(colorB);
     }
   };
+
+  const onChangeBgImg = (type: string) => (e) => {
+    const [file] = e.target.files;
+    if (file) {
+      const src = URL.createObjectURL(file);
+      if (type === "A") {
+        setBalanceBgImgFileA(file);
+        setBalanceBgImgSrcA(src);
+      } else if (type === "B") {
+        setBalanceBgImgFileB(file);
+        setBalanceBgImgSrcB(src);
+      }
+    }
+  };
+
+  const onClickBgImgRemove = (type: string) => () => {
+    if (type === "A") {
+      setBalanceBgImgFileA(null);
+      setBalanceBgImgSrcA("");
+    } else if (type === "B") {
+      setBalanceBgImgFileB(null);
+      setBalanceBgImgSrcB("");
+    }
+  };
+
+  const isExistBgImg = (type: string) => {
+    if (type === "A") {
+      return balanceBgImgSrcA && balanceBgImgFileA;
+    } else if (type === "B") {
+      return balanceBgImgSrcB && balanceBgImgFileB;
+    }
+  };
+
+  console.log(isExistBgImg("A"));
 
   return (
     <>
@@ -76,7 +114,12 @@ const Write = () => {
         <BalanceContainer>
           <BalanceCardTitle>선택지</BalanceCardTitle>
           <BalanceCardContainer>
-            <BalanceCard style={{ backgroundColor: balanceBgA }}>
+            <BalanceCard
+              style={{
+                backgroundColor: balanceBgA,
+                backgroundImage: `url(${balanceBgImgSrcA})`,
+              }}
+            >
               <input
                 type="text"
                 placeholder={"밸런스 선택지를 입력하세요"}
@@ -84,15 +127,31 @@ const Write = () => {
                 value={balanceTextA}
               />
               {balanceTextA ? balanceTextA : "밸런스 선택지를 입력하세요"}
-              <BalanceCardBtn htmlFor={"balanceBgA"}>
-                <input type="file" id={"balanceBgA"} />
-                <img src="img.png" alt="img" />
-              </BalanceCardBtn>
+              {isExistBgImg("A") ? (
+                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
+                  사진삭제 <img src="img.png" alt="" />
+                </BalanceCardBgImgRemoveBtn>
+              ) : (
+                <BalanceCardBtn htmlFor={"balanceBgA"}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={"balanceBgA"}
+                    onChange={onChangeBgImg("A")}
+                  />
+                  <img src="img.png" alt="img" />
+                </BalanceCardBtn>
+              )}
             </BalanceCard>
             <div className={"vs"}>
               <img src="img.png" alt="vs" />
             </div>
-            <BalanceCard style={{ backgroundColor: balanceBgB }}>
+            <BalanceCard
+              style={{
+                backgroundColor: balanceBgB,
+                backgroundImage: `url(${balanceBgImgSrcB})`,
+              }}
+            >
               <input
                 type="text"
                 placeholder={"밸런스 선택지를 입력하세요"}
@@ -100,29 +159,41 @@ const Write = () => {
                 value={balanceTextA}
               />
               {balanceTextB ? balanceTextB : "밸런스 선택지를 입력하세요"}
-              <BalanceCardBtn htmlFor={"balanceBgB"}>
-                <input type="file" id={"balanceBgB"} />
-                <img src="img.png" alt="img" />
-              </BalanceCardBtn>
+
+              {isExistBgImg("B") ? (
+                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
+                  사진삭제 <img src="img.png" alt="" />
+                </BalanceCardBgImgRemoveBtn>
+              ) : (
+                <BalanceCardBtn htmlFor={"balanceBgB"}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={"balanceBgB"}
+                    onChange={onChangeBgImg("B")}
+                  />
+                  <img src="img.png" alt="img" />
+                </BalanceCardBtn>
+              )}
             </BalanceCard>
           </BalanceCardContainer>
           <ColorSamples>
-            <ColorSample onClick={setColorGroup("#E56F53", "#FFD569")}>
+            <ColorSample onClick={onChangeColorGroup("#E56F53", "#FFD569")}>
               a
             </ColorSample>
-            <ColorSample onClick={setColorGroup("#F99E4B", "#BAE476")}>
+            <ColorSample onClick={onChangeColorGroup("#F99E4B", "#BAE476")}>
               a
             </ColorSample>
-            <ColorSample onClick={setColorGroup("#54BE92", "#FFAFB2")}>
+            <ColorSample onClick={onChangeColorGroup("#54BE92", "#FFAFB2")}>
               a
             </ColorSample>
-            <ColorSample onClick={setColorGroup("#74AADD", "#B0DD66")}>
+            <ColorSample onClick={onChangeColorGroup("#74AADD", "#B0DD66")}>
               a
             </ColorSample>
-            <ColorSample onClick={setColorGroup("#6980D1", "#FFAFB2")}>
+            <ColorSample onClick={onChangeColorGroup("#6980D1", "#FFAFB2")}>
               a
             </ColorSample>
-            <ColorSample onClick={setColorGroup("#72ABE1", "#FFD569")}>
+            <ColorSample onClick={onChangeColorGroup("#72ABE1", "#FFD569")}>
               a
             </ColorSample>
           </ColorSamples>

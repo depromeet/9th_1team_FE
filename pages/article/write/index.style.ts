@@ -210,3 +210,20 @@ export const SubmitBtn = styled.button`
     color: #ffffff;
   }
 `;
+
+export const BalanceCardBgImgRemoveBtn = styled.button`
+  position: absolute;
+  right: 11px;
+  top: 7px;
+  color: #ffffff;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+  line-height: 16px;
+  font-size: 11px;
+  > img {
+    width: 8px;
+    height: 8px;
+  }
+`;
