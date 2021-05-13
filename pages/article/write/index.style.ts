@@ -33,7 +33,7 @@ export const BalanceCardTitle = styled.h2`
   font-weight: 500;
   font-size: 13px;
   line-height: 14px;
-  padding: 19px 0 5px;
+  padding: 5px 0;
 `;
 
 export const BalanceCard = styled.div`
@@ -45,18 +45,32 @@ export const BalanceCard = styled.div`
   background-color: gray;
   font-size: 20px;
   font-weight: 800;
+  color: rgba(52, 58, 64, 0.5);
+  > input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
 `;
 
-export const BalanceCardBtn = styled.div`
+export const BalanceCardBtn = styled.label`
   position: absolute;
   top: 8px;
   right: 12px;
   width: 22px;
   height: 20px;
-  img {
+  color: initial;
+  > img {
     display: block;
     width: 22px;
     height: 20px;
+  }
+  > input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
   }
 `;
 
@@ -86,6 +100,7 @@ export const BalanceCardContainer = styled.div`
     height: 15px;
     left: calc(50%);
     top: calc(50%);
+    z-index: 1;
     img {
       display: block;
       width: 25px;
@@ -113,25 +128,59 @@ export const ColorSampleInfo = styled.div`
   line-height: 16px;
 `;
 
-export const InputContainer = styled.div`
+export const InputTextInfoContainer = styled.div`
   position: relative;
   margin: 28px 16px 0;
-  .title {
+  > .title {
     font-size: 13px;
     line-height: 140%;
     margin-bottom: 2px;
   }
-  .input {
+  > .textarea {
     border-bottom: 1px solid #e9ecef;
     padding: 4px 0;
-    input {
+    white-space: pre-wrap;
+    font-size: 14px;
+    > textarea {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+  }
+  > .length {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    font-size: 13px;
+    line-height: 140%;
+    color: #868e96;
+  }
+`;
+
+export const InputContainer = styled.div`
+  position: relative;
+  margin: 28px 16px 0;
+  > .title {
+    font-size: 13px;
+    line-height: 140%;
+    margin-bottom: 2px;
+  }
+  > .textarea {
+    border-bottom: 1px solid #e9ecef;
+    padding: 4px 0;
+    > input {
       width: 100%;
       margin: 0;
       padding: 0;
       border: 0;
     }
   }
-  .length {
+  > .length {
     position: absolute;
     right: 16px;
     top: 0;

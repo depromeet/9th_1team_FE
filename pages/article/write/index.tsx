@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
-import { SketchPicker } from "react-color";
 import {
   Header,
   Title,
@@ -18,97 +17,43 @@ import {
   InputContainer,
   SubmitBtn,
   SubmitBtnContainer,
+  InputTextareaContainer,
+  InputTextInfoContainer,
 } from "./index.style";
 
 Modal.setAppElement("#__next");
 
 const Write = () => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [isOpenColor, setIsOpenColorModal] = useState(false);
-  const [isOpenSubText, setIsOpenSubText] = useState(false);
-  const [balanceId, setBalanceId] = useState("");
-  const [color, setColor] = useState({});
-  const [text, setText] = useState("");
-  const [subText, setSubText] = useState("");
-  const [ballanceDataA, setBallanceDataA] = useState(null);
-  const [ballanceDataB, setBallanceDataB] = useState(null);
+  const [textInfo, setTextInfo] = useState("");
+  const [balanceBgA, setBalanceBgA] = useState("#E56F53");
+  const [balanceBgB, setBalanceBgB] = useState("#FFD569");
+  const [balanceTextA, setBalanceTextA] = useState("");
+  const [balanceTextB, setBalanceTextB] = useState("");
 
-  const onClose = () => {
-    setIsOpenModal(false);
-    setBalanceId("");
+  const onChangeText = (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
+    if ((type = "A")) {
+      setBalanceTextA(e.target.value);
+    } else if (type === "B") {
+      setBalanceTextB(e.target.value);
+    }
   };
 
-  const onColorClose = () => {
-    setIsOpenColorModal(false);
-    setColor("");
+  const onChangeTextInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextInfo(e.target.value);
   };
 
-  const onOpenBalance = (balanceId: string) => () => {
-    setIsOpenModal(true);
-    setBalanceId(balanceId);
+  const setColorGroup = (colorA = "", colorB = "") => () => {
+    if (balanceBgA === colorA && balanceBgB === colorB) {
+      setBalanceBgA(colorB);
+      setBalanceBgB(colorA);
+    } else {
+      setBalanceBgA(colorA);
+      setBalanceBgB(colorB);
+    }
   };
-
-  const handleChangeComplete = (color: string) => {
-    setColor(color);
-  };
-
-  const onAddSubText = () => {
-    setIsOpenSubText(true);
-  };
-
-  const onRemoveSubText = () => {
-    setIsOpenSubText(false);
-  };
-
-  const onText = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
-
-  const onSubText = (e: ChangeEvent<HTMLInputElement>) => {
-    setSubText(e.target.value);
-  };
-
-  const onSuccess = () => {};
 
   return (
     <>
-      <Modal isOpen={isOpenModal} onRequestClose={onClose}>
-        <div>선택지 {balanceId}</div>
-        <div>
-          <input
-            placeholder="내용을 입력해주세요"
-            value={text}
-            onChange={onText}
-          />
-          {isOpenSubText && (
-            <input
-              placeholder="서브 텍스트 내용을 입력해주세요"
-              value={subText}
-              onChange={onSubText}
-            />
-          )}
-        </div>
-        <div>
-          {!isOpenSubText ? (
-            <button onClick={onAddSubText}>서브 텍스트 추가하기</button>
-          ) : (
-            <button onClick={onRemoveSubText}>서브 텍스트 삭제</button>
-          )}
-          <button onClick={() => setIsOpenColorModal(true)}>
-            텍스트 색상 변경
-          </button>
-          <input type="file" />
-        </div>
-        <div>
-          <button onClick={onSuccess}>완료</button>
-        </div>
-      </Modal>
-      <Modal isOpen={isOpenColor} onRequestClose={onColorClose}>
-        <SketchPicker
-          color={color.hex}
-          onChangeComplete={handleChangeComplete}
-        />
-      </Modal>
       <div>
         <Header>
           <CloseBtn>x</CloseBtn>
@@ -126,44 +71,68 @@ const Write = () => {
         <BalanceContainer>
           <BalanceCardTitle>선택지</BalanceCardTitle>
           <BalanceCardContainer>
-            <BalanceCard onClick={onOpenBalance("A")}>
-              선택지 등록
-              <BalanceCardBtn>
+            <BalanceCard style={{ backgroundColor: balanceBgA }}>
+              <input
+                type="text"
+                placeholder={"밸런스 선택지를 입력하세요"}
+                onChange={onChangeText("A")}
+                value={balanceTextA}
+              />
+              {balanceTextA ? balanceTextA : "밸런스 선택지를 입력하세요"}
+              <BalanceCardBtn htmlFor={"balanceBgA"}>
+                <input type="file" id={"balanceBgA"} />
                 <img src="img.png" alt="img" />
               </BalanceCardBtn>
             </BalanceCard>
             <div className={"vs"}>
               <img src="img.png" alt="vs" />
             </div>
-            <BalanceCard
-              style={{ backgroundColor: "red" }}
-              onClick={onOpenBalance("B")}
-            >
-              선택지 등록
-              <BalanceCardBtn>
+            <BalanceCard style={{ backgroundColor: balanceBgB }}>
+              <input
+                type="text"
+                placeholder={"밸런스 선택지를 입력하세요"}
+                onChange={onChangeText("B")}
+                value={balanceTextA}
+              />
+              {balanceTextB ? balanceTextB : "밸런스 선택지를 입력하세요"}
+              <BalanceCardBtn htmlFor={"balanceBgB"}>
+                <input type="file" id={"balanceBgB"} />
                 <img src="img.png" alt="img" />
               </BalanceCardBtn>
             </BalanceCard>
           </BalanceCardContainer>
           <ColorSamples>
-            <ColorSample>a</ColorSample>
-            <ColorSample>a</ColorSample>
-            <ColorSample>a</ColorSample>
-            <ColorSample>a</ColorSample>
-            <ColorSample>a</ColorSample>
-            <ColorSample>a</ColorSample>
+            <ColorSample onClick={setColorGroup("#E56F53", "#FFD569")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={setColorGroup("#F99E4B", "#BAE476")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={setColorGroup("#54BE92", "#FFAFB2")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={setColorGroup("#74AADD", "#B0DD66")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={setColorGroup("#6980D1", "#FFAFB2")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={setColorGroup("#72ABE1", "#FFD569")}>
+              a
+            </ColorSample>
           </ColorSamples>
           <ColorSampleInfo>
             *한번 더 선택하면 위아래 색상이 전환됩니다.
           </ColorSampleInfo>
         </BalanceContainer>
-        <InputContainer>
+        <InputTextInfoContainer>
           <div className={"title"}>내용</div>
-          <div className={"input"}>
-            <input type="text" placeholder="제목을 입력해주세요!" />
+          <div className={"textarea"}>
+            <textarea onChange={onChangeTextInfo} value={textInfo} />
+            {textInfo ? textInfo : "제목을 입력해주세요!"}
           </div>
-          <div className={"length"}>0/250</div>
-        </InputContainer>
+          <div className={"length"}>{textInfo.length}/250</div>
+        </InputTextInfoContainer>
         <InputContainer>
           <div className={"title"}>키워드</div>
           <div className={"input"}>
