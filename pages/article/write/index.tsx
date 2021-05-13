@@ -6,12 +6,18 @@ import {
   Title,
   CloseBtn,
   HelpBtn,
-  InputTitle,
+  BalanceCardTitle,
   BalanceCard,
   BalanceTitle,
   BalanceCardBtn,
   BalanceCardContainer,
   BalanceContainer,
+  ColorSamples,
+  ColorSample,
+  ColorSampleInfo,
+  InputContainer,
+  SubmitBtn,
+  SubmitBtnContainer,
 } from "./index.style";
 
 Modal.setAppElement("#__next");
@@ -118,7 +124,7 @@ const Write = () => {
           </div>
         </BalanceTitle>
         <BalanceContainer>
-          <InputTitle>선택지</InputTitle>
+          <BalanceCardTitle>선택지</BalanceCardTitle>
           <BalanceCardContainer>
             <BalanceCard onClick={onOpenBalance("A")}>
               선택지 등록
@@ -139,32 +145,34 @@ const Write = () => {
               </BalanceCardBtn>
             </BalanceCard>
           </BalanceCardContainer>
-          <div>
-            <button>a</button>
-            <button>a</button>
-            <button>a</button>
-            <button>a</button>
-            <button>a</button>
-            <button>a</button>
-            <button>a</button>
-          </div>
-          <div>*한번 더 선택하면 위아래 색상이 전환됩니다.</div>
+          <ColorSamples>
+            <ColorSample>a</ColorSample>
+            <ColorSample>a</ColorSample>
+            <ColorSample>a</ColorSample>
+            <ColorSample>a</ColorSample>
+            <ColorSample>a</ColorSample>
+            <ColorSample>a</ColorSample>
+          </ColorSamples>
+          <ColorSampleInfo>
+            *한번 더 선택하면 위아래 색상이 전환됩니다.
+          </ColorSampleInfo>
         </BalanceContainer>
-        <div>
-          <div>내용</div>
-          <div>
+        <InputContainer>
+          <div className={"title"}>내용</div>
+          <div className={"input"}>
             <input type="text" placeholder="제목을 입력해주세요!" />
           </div>
-        </div>
-        <div>
-          <div>키워드</div>
-          <div>
+          <div className={"length"}>0/250</div>
+        </InputContainer>
+        <InputContainer>
+          <div className={"title"}>키워드</div>
+          <div className={"input"}>
             <input type="text" placeholder="#음식 #희망 #로또" />
           </div>
-        </div>
-        <div>
-          <button>등록하기</button>
-        </div>
+        </InputContainer>
+        <SubmitBtnContainer>
+          <SubmitBtn>등록하기</SubmitBtn>
+        </SubmitBtnContainer>
       </div>
     </>
   );
