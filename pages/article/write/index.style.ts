@@ -141,6 +141,7 @@ export const InputTextInfoContainer = styled.div`
     padding: 4px 0;
     white-space: pre-wrap;
     font-size: 14px;
+    word-break: break-word;
     > textarea {
       width: 100%;
       margin: 0;
@@ -170,7 +171,7 @@ export const InputContainer = styled.div`
     line-height: 140%;
     margin-bottom: 2px;
   }
-  > .textarea {
+  > .input {
     border-bottom: 1px solid #e9ecef;
     padding: 4px 0;
     > input {
@@ -179,14 +180,6 @@ export const InputContainer = styled.div`
       padding: 0;
       border: 0;
     }
-  }
-  > .length {
-    position: absolute;
-    right: 16px;
-    top: 0;
-    font-size: 13px;
-    line-height: 140%;
-    color: #868e96;
   }
 `;
 

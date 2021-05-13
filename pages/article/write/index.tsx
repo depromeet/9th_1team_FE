@@ -39,6 +39,11 @@ const Write = () => {
   };
 
   const onChangeTextInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length > 250) {
+      const newStr = e.target.value.substr(0, 250);
+      setTextInfo(newStr);
+      return;
+    }
     setTextInfo(e.target.value);
   };
 
