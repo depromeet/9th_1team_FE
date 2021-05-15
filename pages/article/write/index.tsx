@@ -15,7 +15,7 @@ import {
   ColorSamples,
   ColorSample,
   ColorSampleInfo,
-  InputContainer,
+  KeywordContainer,
   SubmitBtn,
   SubmitBtnContainer,
   TextInfoContainer,
@@ -102,7 +102,9 @@ const Write = () => {
     }
   };
 
-  console.log(balanceTextA.replace(/\n/g, ""));
+  const isDisabledBtn = () => {
+    return !balanceTextA || !balanceTextB;
+  };
 
   return (
     <>
@@ -216,14 +218,8 @@ const Write = () => {
           </div>
           <div className={"length"}>{textInfo.length}/250</div>
         </TextInfoContainer>
-        <InputContainer>
-          <div className={"title"}>키워드</div>
-          <div className={"input"}>
-            <input type="text" placeholder="#음식 #희망 #로또" />
-          </div>
-        </InputContainer>
         <SubmitBtnContainer>
-          <SubmitBtn>등록하기</SubmitBtn>
+          <SubmitBtn disabled={isDisabledBtn()}>등록하기</SubmitBtn>
         </SubmitBtnContainer>
       </div>
     </>
