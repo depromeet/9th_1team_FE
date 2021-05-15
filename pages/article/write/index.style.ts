@@ -174,32 +174,6 @@ export const TextInfoContainer = styled.div`
   }
 `;
 
-export const KeywordContainer = styled.div`
-  position: relative;
-  margin: 28px 16px 0;
-  > .title {
-    font-size: 13px;
-    line-height: 140%;
-    margin-bottom: 2px;
-  }
-  > .textarea {
-    border-bottom: 1px solid #e9ecef;
-    padding: 4px 0;
-    > textarea {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      font-weight: normal;
-      font-size: 14px;
-      line-height: 175%;
-      letter-spacing: -0.05em;
-      color: #343a40;
-      resize: none;
-    }
-  }
-`;
-
 export const SubmitBtnContainer = styled.div`
   margin: 28px 16px;
 `;
