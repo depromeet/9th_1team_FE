@@ -46,11 +46,20 @@ export const BalanceCard = styled.div`
   font-size: 20px;
   font-weight: 800;
   color: rgba(52, 58, 64, 0.5);
-  > input {
+  > textarea {
     position: absolute;
-    width: 100%;
+    width: 80%;
     height: 100%;
-    opacity: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    text-align: center;
+    resize: none;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 140%;
   }
 `;
 
@@ -128,7 +137,7 @@ export const ColorSampleInfo = styled.div`
   line-height: 16px;
 `;
 
-export const InputTextInfoContainer = styled.div`
+export const TextInfoContainer = styled.div`
   position: relative;
   margin: 28px 16px 0;
   > .title {
@@ -147,10 +156,12 @@ export const InputTextInfoContainer = styled.div`
       margin: 0;
       padding: 0;
       border: 0;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 175%;
+      letter-spacing: -0.05em;
+      color: #343a40;
+      resize: none;
     }
   }
   > .length {
@@ -160,26 +171,6 @@ export const InputTextInfoContainer = styled.div`
     font-size: 13px;
     line-height: 140%;
     color: #868e96;
-  }
-`;
-
-export const InputContainer = styled.div`
-  position: relative;
-  margin: 28px 16px 0;
-  > .title {
-    font-size: 13px;
-    line-height: 140%;
-    margin-bottom: 2px;
-  }
-  > .input {
-    border-bottom: 1px solid #e9ecef;
-    padding: 4px 0;
-    > input {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
   }
 `;
 

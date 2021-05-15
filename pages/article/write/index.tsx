@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import Modal from "react-modal";
 import {
   Header,
@@ -14,10 +15,9 @@ import {
   ColorSamples,
   ColorSample,
   ColorSampleInfo,
-  InputContainer,
   SubmitBtn,
   SubmitBtnContainer,
-  InputTextInfoContainer,
+  TextInfoContainer,
   BalanceCardBgImgRemoveBtn,
 } from "./index.style";
 
@@ -34,11 +34,15 @@ const Write = () => {
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
 
-  const onChangeText = (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
-    if ((type = "A")) {
-      setBalanceTextA(e.target.value);
+  const onChangeText = (type: string) => (
+    e: ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const str = e.target.value.replace(/\n/g, "");
+
+    if (type === "A") {
+      setBalanceTextA(str);
     } else if (type === "B") {
-      setBalanceTextB(e.target.value);
+      setBalanceTextB(str);
     }
   };
 
@@ -97,6 +101,10 @@ const Write = () => {
     }
   };
 
+  const isDisabledBtn = () => {
+    return !balanceTextA || !balanceTextB;
+  };
+
   return (
     <>
       <div>
@@ -122,13 +130,11 @@ const Write = () => {
                 backgroundImage: `url(${balanceBgImgSrcA})`,
               }}
             >
-              <input
-                type="text"
+              <TextareaAutosize
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("A")}
                 value={balanceTextA}
               />
-              {balanceTextA ? balanceTextA : "밸런스 선택지를 입력하세요"}
               {isExistBgImg("A") ? (
                 <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
                   사진삭제 <img src="img.png" alt="" />
@@ -154,14 +160,11 @@ const Write = () => {
                 backgroundImage: `url(${balanceBgImgSrcB})`,
               }}
             >
-              <input
-                type="text"
+              <TextareaAutosize
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("B")}
-                value={balanceTextA}
+                value={balanceTextB}
               />
-              {balanceTextB ? balanceTextB : "밸런스 선택지를 입력하세요"}
-
               {isExistBgImg("B") ? (
                 <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
                   사진삭제 <img src="img.png" alt="" />
@@ -203,22 +206,19 @@ const Write = () => {
             *한번 더 선택하면 위아래 색상이 전환됩니다.
           </ColorSampleInfo>
         </BalanceContainer>
-        <InputTextInfoContainer>
+        <TextInfoContainer>
           <div className={"title"}>내용</div>
           <div className={"textarea"}>
-            <textarea onChange={onChangeTextInfo} value={textInfo} />
-            {textInfo ? textInfo : "제목을 입력해주세요!"}
+            <TextareaAutosize
+              placeholder={"제목을 입력해주세요!"}
+              onChange={onChangeTextInfo}
+              value={textInfo}
+            />
           </div>
           <div className={"length"}>{textInfo.length}/250</div>
-        </InputTextInfoContainer>
-        <InputContainer>
-          <div className={"title"}>키워드</div>
-          <div className={"input"}>
-            <input type="text" placeholder="#음식 #희망 #로또" />
-          </div>
-        </InputContainer>
+        </TextInfoContainer>
         <SubmitBtnContainer>
-          <SubmitBtn>등록하기</SubmitBtn>
+          <SubmitBtn disabled={isDisabledBtn()}>등록하기</SubmitBtn>
         </SubmitBtnContainer>
       </div>
     </>
