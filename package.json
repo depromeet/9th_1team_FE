@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/node": "12.0.12",
     "@types/react": "16.8.23",
+    "@types/react-color": "^3.0.4",
     "@types/react-dom": "16.8.4",
     "@types/react-modal": "^3.12.0",
     "@types/react-relay": "^11.0.1",
