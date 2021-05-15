@@ -46,11 +46,20 @@ export const BalanceCard = styled.div`
   font-size: 20px;
   font-weight: 800;
   color: rgba(52, 58, 64, 0.5);
-  > input {
+  > textarea {
     position: absolute;
-    width: 100%;
+    width: 80%;
     height: 100%;
-    opacity: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    text-align: center;
+    resize: none;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 140%;
   }
 `;
 

@@ -35,11 +35,15 @@ const Write = () => {
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
 
-  const onChangeText = (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
-    if ((type = "A")) {
-      setBalanceTextA(e.target.value);
+  const onChangeText = (type: string) => (
+    e: ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const str = e.target.value.replace(/\n/g, "");
+
+    if (type === "A") {
+      setBalanceTextA(str);
     } else if (type === "B") {
-      setBalanceTextB(e.target.value);
+      setBalanceTextB(str);
     }
   };
 
@@ -98,6 +102,8 @@ const Write = () => {
     }
   };
 
+  console.log(balanceTextA.replace(/\n/g, ""));
+
   return (
     <>
       <div>
@@ -123,13 +129,11 @@ const Write = () => {
                 backgroundImage: `url(${balanceBgImgSrcA})`,
               }}
             >
-              <input
-                type="text"
+              <TextareaAutosize
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("A")}
                 value={balanceTextA}
               />
-              {balanceTextA ? balanceTextA : "밸런스 선택지를 입력하세요"}
               {isExistBgImg("A") ? (
                 <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
                   사진삭제 <img src="img.png" alt="" />
@@ -155,14 +159,11 @@ const Write = () => {
                 backgroundImage: `url(${balanceBgImgSrcB})`,
               }}
             >
-              <input
-                type="text"
+              <TextareaAutosize
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("B")}
-                value={balanceTextA}
+                value={balanceTextB}
               />
-              {balanceTextB ? balanceTextB : "밸런스 선택지를 입력하세요"}
-
               {isExistBgImg("B") ? (
                 <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
                   사진삭제 <img src="img.png" alt="" />
@@ -206,10 +207,6 @@ const Write = () => {
         </BalanceContainer>
         <TextInfoContainer>
           <div className={"title"}>내용</div>
-          {/*<div className={"textarea"}>*/}
-          {/*  <textarea onChange={onChangeTextInfo} value={textInfo} />*/}
-          {/*  {textInfo ? textInfo : "제목을 입력해주세요!"}*/}
-          {/*</div>*/}
           <div className={"textarea"}>
             <TextareaAutosize
               placeholder={"제목을 입력해주세요!"}
