@@ -128,7 +128,7 @@ export const ColorSampleInfo = styled.div`
   line-height: 16px;
 `;
 
-export const InputTextInfoContainer = styled.div`
+export const TextInfoContainer = styled.div`
   position: relative;
   margin: 28px 16px 0;
   > .title {
@@ -147,10 +147,12 @@ export const InputTextInfoContainer = styled.div`
       margin: 0;
       padding: 0;
       border: 0;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 175%;
+      letter-spacing: -0.05em;
+      color: #343a40;
+      resize: none;
     }
   }
   > .length {

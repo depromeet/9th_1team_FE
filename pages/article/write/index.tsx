@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import Modal from "react-modal";
 import {
   Header,
@@ -17,7 +18,7 @@ import {
   InputContainer,
   SubmitBtn,
   SubmitBtnContainer,
-  InputTextInfoContainer,
+  TextInfoContainer,
   BalanceCardBgImgRemoveBtn,
 } from "./index.style";
 
@@ -203,14 +204,21 @@ const Write = () => {
             *한번 더 선택하면 위아래 색상이 전환됩니다.
           </ColorSampleInfo>
         </BalanceContainer>
-        <InputTextInfoContainer>
+        <TextInfoContainer>
           <div className={"title"}>내용</div>
+          {/*<div className={"textarea"}>*/}
+          {/*  <textarea onChange={onChangeTextInfo} value={textInfo} />*/}
+          {/*  {textInfo ? textInfo : "제목을 입력해주세요!"}*/}
+          {/*</div>*/}
           <div className={"textarea"}>
-            <textarea onChange={onChangeTextInfo} value={textInfo} />
-            {textInfo ? textInfo : "제목을 입력해주세요!"}
+            <TextareaAutosize
+              placeholder={"제목을 입력해주세요!"}
+              onChange={onChangeTextInfo}
+              value={textInfo}
+            />
           </div>
           <div className={"length"}>{textInfo.length}/250</div>
-        </InputTextInfoContainer>
+        </TextInfoContainer>
         <InputContainer>
           <div className={"title"}>키워드</div>
           <div className={"input"}>
