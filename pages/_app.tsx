@@ -1,12 +1,12 @@
-import { ReactRelayContext } from "react-relay";
-import { useEnvironment } from "../lib/relay";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "../lib/apolloClient";
 
 export default function App({ Component, pageProps }) {
-  const environment = useEnvironment(pageProps.initialRecords);
+  const apolloClient = useApollo(pageProps);
 
   return (
-    <ReactRelayContext.Provider value={{ environment, variables: {} }}>
+    <ApolloProvider client={apolloClient}>
       <Component {...pageProps} />
-    </ReactRelayContext.Provider>
+    </ApolloProvider>
   );
 }
