@@ -5,8 +5,6 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "relay": "relay-compiler --src ./ --exclude '**/.next/**' '**/node_modules/**' '**/test/**'  '**/__generated__/**' --exclude '**/schema/**' --schema ./schema/schema.graphql --language typescript",
-    "schema": "graphql get-schema -e dev"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
