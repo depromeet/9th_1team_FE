@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
