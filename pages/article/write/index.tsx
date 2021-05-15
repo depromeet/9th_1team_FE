@@ -15,7 +15,6 @@ import {
   ColorSamples,
   ColorSample,
   ColorSampleInfo,
-  KeywordContainer,
   SubmitBtn,
   SubmitBtnContainer,
   TextInfoContainer,
