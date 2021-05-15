@@ -13,6 +13,7 @@
     "@svgr/webpack": "^5.5.0",
     "graphql": "^14.6.0",
     "next": "^10.0.9",
+    "next-svgr": "0.0.2",
     "react": "^17.0.2",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.2",
