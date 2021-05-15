@@ -61,8 +61,12 @@ const Write = () => {
     }
   };
 
-  const onChangeBgImg = (type: string) => (e) => {
-    const [file] = e.target.files;
+  const onChangeBgImg = (type: string) => (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!e.target.files) return;
+
+    const [file]: any = e.target.files;
     if (file) {
       const src = URL.createObjectURL(file);
       if (type === "A") {
@@ -92,8 +96,6 @@ const Write = () => {
       return balanceBgImgSrcB && balanceBgImgFileB;
     }
   };
-
-  console.log(isExistBgImg("A"));
 
   return (
     <>
