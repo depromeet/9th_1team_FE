@@ -1,119 +1,225 @@
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import Modal from "react-modal";
-import { SketchPicker } from "react-color";
+import {
+  Header,
+  Title,
+  CloseBtn,
+  HelpBtn,
+  BalanceCardTitle,
+  BalanceCard,
+  BalanceTitle,
+  BalanceCardBtn,
+  BalanceCardContainer,
+  BalanceContainer,
+  ColorSamples,
+  ColorSample,
+  ColorSampleInfo,
+  InputContainer,
+  SubmitBtn,
+  SubmitBtnContainer,
+  InputTextInfoContainer,
+  BalanceCardBgImgRemoveBtn,
+} from "./index.style";
 
 Modal.setAppElement("#__next");
 
 const Write = () => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [isOpenColor, setIsOpenColorModal] = useState(false);
-  const [isOpenSubText, setIsOpenSubText] = useState(false);
-  const [balanceId, setBalanceId] = useState("");
-  const [color, setColor] = useState({});
-  const [text, setText] = useState("");
-  const [subText, setSubText] = useState("");
-  const [BallanceDataA, setBallanceDataA] = useState(null);
-  const [BallanceDataB, setBallanceDataB] = useState(null);
+  const [textInfo, setTextInfo] = useState("");
+  const [balanceBgA, setBalanceBgA] = useState("#E56F53");
+  const [balanceBgImgFileA, setBalanceBgImgFileA] = useState(null);
+  const [balanceBgImgSrcA, setBalanceBgImgSrcA] = useState("");
+  const [balanceBgB, setBalanceBgB] = useState("#FFD569");
+  const [balanceBgImgFileB, setBalanceBgImgFileB] = useState(null);
+  const [balanceBgImgSrcB, setBalanceBgImgSrcB] = useState("");
+  const [balanceTextA, setBalanceTextA] = useState("");
+  const [balanceTextB, setBalanceTextB] = useState("");
 
-  const onClose = () => {
-    setIsOpenModal(false);
-    setBalanceId("");
+  const onChangeText = (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
+    if ((type = "A")) {
+      setBalanceTextA(e.target.value);
+    } else if (type === "B") {
+      setBalanceTextB(e.target.value);
+    }
   };
 
-  const onColorClose = () => {
-    setIsOpenColorModal(false);
-    setColor("");
+  const onChangeTextInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length > 250) {
+      const newStr = e.target.value.substr(0, 250);
+      setTextInfo(newStr);
+      return;
+    }
+    setTextInfo(e.target.value);
   };
 
-  const onOpenBalance = (balanceId: string) => () => {
-    setIsOpenModal(true);
-    setBalanceId(balanceId);
+  const onChangeColorGroup = (colorA = "", colorB = "") => () => {
+    if (balanceBgA === colorA && balanceBgB === colorB) {
+      setBalanceBgA(colorB);
+      setBalanceBgB(colorA);
+    } else {
+      setBalanceBgA(colorA);
+      setBalanceBgB(colorB);
+    }
   };
 
-  const handleChangeComplete = (color: string) => {
-    setColor(color);
+  const onChangeBgImg = (type: string) => (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!e.target.files) return;
+
+    const [file]: any = e.target.files;
+    if (file) {
+      const src = URL.createObjectURL(file);
+      if (type === "A") {
+        setBalanceBgImgFileA(file);
+        setBalanceBgImgSrcA(src);
+      } else if (type === "B") {
+        setBalanceBgImgFileB(file);
+        setBalanceBgImgSrcB(src);
+      }
+    }
   };
 
-  const onAddSubText = () => {
-    setIsOpenSubText(true);
+  const onClickBgImgRemove = (type: string) => () => {
+    if (type === "A") {
+      setBalanceBgImgFileA(null);
+      setBalanceBgImgSrcA("");
+    } else if (type === "B") {
+      setBalanceBgImgFileB(null);
+      setBalanceBgImgSrcB("");
+    }
   };
 
-  const onRemoveSubText = () => {
-    setIsOpenSubText(false);
+  const isExistBgImg = (type: string) => {
+    if (type === "A") {
+      return balanceBgImgSrcA && balanceBgImgFileA;
+    } else if (type === "B") {
+      return balanceBgImgSrcB && balanceBgImgFileB;
+    }
   };
-
-  const onText = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
-
-  const onSubText = (e: ChangeEvent<HTMLInputElement>) => {
-    setSubText(e.target.value);
-  };
-
-  const onSuccess = () => {};
 
   return (
     <>
-      <Modal isOpen={isOpenModal} onRequestClose={onClose}>
-        <div>선택지 {balanceId}</div>
-        <div>
-          <input
-            placeholder="내용을 입력해주세요"
-            value={text}
-            onChange={onText}
-          />
-          {isOpenSubText && (
-            <input
-              placeholder="서브 텍스트 내용을 입력해주세요"
-              value={subText}
-              onChange={onSubText}
-            />
-          )}
-        </div>
-        <div>
-          {!isOpenSubText ? (
-            <button onClick={onAddSubText}>서브 텍스트 추가하기</button>
-          ) : (
-            <button onClick={onRemoveSubText}>서브 텍스트 삭제</button>
-          )}
-          <button onClick={() => setIsOpenColorModal(true)}>
-            텍스트 색상 변경
-          </button>
-          <input type="file" />
-        </div>
-        <div>
-          <button onClick={onSuccess}>완료</button>
-        </div>
-      </Modal>
-      <Modal isOpen={isOpenColor} onRequestClose={onColorClose}>
-        <SketchPicker
-          color={color.hex}
-          onChangeComplete={handleChangeComplete}
-        />
-      </Modal>
       <div>
-        <div>밸런스 게임 만들기</div>
-        <div>
-          <div>선택지</div>
-          <button onClick={onOpenBalance("A")}>선택지 등록</button>
-          <div>vs</div>
-          <button onClick={onOpenBalance("B")}>선택지 등록</button>
-        </div>
-        <div>
-          <div>내용</div>
-          <div>
-            <input type="text" placeholder="제목을 입력해주세요!" />
+        <Header>
+          <CloseBtn>x</CloseBtn>
+          <Title>밸런스 게임 만들기</Title>
+          <HelpBtn>x</HelpBtn>
+        </Header>
+        <BalanceTitle>
+          <div className={"img"}>
+            <img src="/img.png" width={38} height={34} alt="" />
           </div>
-        </div>
-        <div>
-          <div>키워드</div>
-          <div>
+          <div className={"title"}>
+            밸런스 선택지를 만들고 내용 작성을 통해 추가 설명이 가능합니다.
+          </div>
+        </BalanceTitle>
+        <BalanceContainer>
+          <BalanceCardTitle>선택지</BalanceCardTitle>
+          <BalanceCardContainer>
+            <BalanceCard
+              style={{
+                backgroundColor: balanceBgA,
+                backgroundImage: `url(${balanceBgImgSrcA})`,
+              }}
+            >
+              <input
+                type="text"
+                placeholder={"밸런스 선택지를 입력하세요"}
+                onChange={onChangeText("A")}
+                value={balanceTextA}
+              />
+              {balanceTextA ? balanceTextA : "밸런스 선택지를 입력하세요"}
+              {isExistBgImg("A") ? (
+                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
+                  사진삭제 <img src="img.png" alt="" />
+                </BalanceCardBgImgRemoveBtn>
+              ) : (
+                <BalanceCardBtn htmlFor={"balanceBgA"}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={"balanceBgA"}
+                    onChange={onChangeBgImg("A")}
+                  />
+                  <img src="img.png" alt="img" />
+                </BalanceCardBtn>
+              )}
+            </BalanceCard>
+            <div className={"vs"}>
+              <img src="img.png" alt="vs" />
+            </div>
+            <BalanceCard
+              style={{
+                backgroundColor: balanceBgB,
+                backgroundImage: `url(${balanceBgImgSrcB})`,
+              }}
+            >
+              <input
+                type="text"
+                placeholder={"밸런스 선택지를 입력하세요"}
+                onChange={onChangeText("B")}
+                value={balanceTextA}
+              />
+              {balanceTextB ? balanceTextB : "밸런스 선택지를 입력하세요"}
+
+              {isExistBgImg("B") ? (
+                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
+                  사진삭제 <img src="img.png" alt="" />
+                </BalanceCardBgImgRemoveBtn>
+              ) : (
+                <BalanceCardBtn htmlFor={"balanceBgB"}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={"balanceBgB"}
+                    onChange={onChangeBgImg("B")}
+                  />
+                  <img src="img.png" alt="img" />
+                </BalanceCardBtn>
+              )}
+            </BalanceCard>
+          </BalanceCardContainer>
+          <ColorSamples>
+            <ColorSample onClick={onChangeColorGroup("#E56F53", "#FFD569")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={onChangeColorGroup("#F99E4B", "#BAE476")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={onChangeColorGroup("#54BE92", "#FFAFB2")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={onChangeColorGroup("#74AADD", "#B0DD66")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={onChangeColorGroup("#6980D1", "#FFAFB2")}>
+              a
+            </ColorSample>
+            <ColorSample onClick={onChangeColorGroup("#72ABE1", "#FFD569")}>
+              a
+            </ColorSample>
+          </ColorSamples>
+          <ColorSampleInfo>
+            *한번 더 선택하면 위아래 색상이 전환됩니다.
+          </ColorSampleInfo>
+        </BalanceContainer>
+        <InputTextInfoContainer>
+          <div className={"title"}>내용</div>
+          <div className={"textarea"}>
+            <textarea onChange={onChangeTextInfo} value={textInfo} />
+            {textInfo ? textInfo : "제목을 입력해주세요!"}
+          </div>
+          <div className={"length"}>{textInfo.length}/250</div>
+        </InputTextInfoContainer>
+        <InputContainer>
+          <div className={"title"}>키워드</div>
+          <div className={"input"}>
             <input type="text" placeholder="#음식 #희망 #로또" />
           </div>
-        </div>
-        <div>
-          <button>등록하기</button>
-        </div>
+        </InputContainer>
+        <SubmitBtnContainer>
+          <SubmitBtn>등록하기</SubmitBtn>
+        </SubmitBtnContainer>
       </div>
     </>
   );
