@@ -50,6 +50,22 @@ const GlobalStyles = createGlobalStyle`
     border-collapse: collapse;
     border-spacing: 0;
   }
+
+  html,
+  body {
+  font-size: 10px;
+  margin: 0;
+  font-family: "NanumSquareRound";
+  color: #343a40;
+}
+
+@font-face {
+  font-family: "NanumSquareRound";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 `;
 
 export default class MyDocument extends Document {
