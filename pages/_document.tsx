@@ -1,4 +1,10 @@
-import Document, { DocumentContext } from "next/document";
+import Document, {
+  DocumentContext,
+  Html,
+  Head,
+  Main,
+  NextScript,
+} from "next/document";
 import { ServerStyleSheet, createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
@@ -53,11 +59,16 @@ const GlobalStyles = createGlobalStyle`
 
   html,
   body {
-  font-size: 10px;
-  margin: 0;
-  font-family: "Noto Sans KR";
-  color: #343a40;
-}
+    font-size: 10px;
+    margin: 0;
+    font-family: "Noto Sans KR";
+    color: #343a40;
+    height: 100%;
+  }
+  
+  #__next {
+    height: 100%;
+  }
 
 @font-face {
   font-family: "NanumSquareRound";
@@ -107,5 +118,19 @@ export default class MyDocument extends Document {
     } finally {
       sheet.seal();
     }
+  }
+
+  render() {
+    return (
+      <Html>
+        <Head>
+          <script src="https://developers.kakao.com/sdk/js/kakao.js" />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
   }
 }
