@@ -105,9 +105,11 @@ const Write = () => {
     return !balanceTextA || !balanceTextB;
   };
 
+  const onSubmit = () => {};
+
   return (
     <>
-      <div>
+      <form onSubmit={onSubmit}>
         <Header>
           <CloseBtn>x</CloseBtn>
           <Title>밸런스 게임 만들기</Title>
@@ -220,7 +222,7 @@ const Write = () => {
         <SubmitBtnContainer>
           <SubmitBtn disabled={isDisabledBtn()}>등록하기</SubmitBtn>
         </SubmitBtnContainer>
-      </div>
+      </form>
     </>
   );
 };
