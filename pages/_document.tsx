@@ -55,7 +55,7 @@ const GlobalStyles = createGlobalStyle`
   body {
   font-size: 10px;
   margin: 0;
-  font-family: "NanumSquareRound";
+  font-family: "Noto Sans KR";
   color: #343a40;
 }
 
@@ -66,6 +66,15 @@ const GlobalStyles = createGlobalStyle`
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  src: url("https://cdn.jsdelivr.net/npm/noto-sans-kr@0.1.1/fonts/NotoSans-Regular.woff");
+  font-style: normal;
+  font-weight: 400;
+}
+
+
 `;
 
 export default class MyDocument extends Document {

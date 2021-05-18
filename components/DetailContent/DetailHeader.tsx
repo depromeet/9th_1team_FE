@@ -6,7 +6,7 @@ import MoreIcon from "../../public/top-more.svg";
 import HeaderMore from "./HederMore";
 
 // header border-bottom 부분은 스크롤 했을때 나옴
-const DetailHeaderWrapper = styled.div`
+const HeaderWrapper = styled.div`
   width: 100%;
   height: 100px;
   position: relative;
@@ -35,7 +35,7 @@ const DetailHeader = () => {
   };
 
   return (
-    <DetailHeaderWrapper>
+    <HeaderWrapper>
       <header className="detail__header">
         <div className="icon">
           <PrevIcon />
@@ -50,7 +50,7 @@ const DetailHeader = () => {
         </div>
       </header>
       <HeaderMore isMine={false} isOpen={isOpen} />
-    </DetailHeaderWrapper>
+    </HeaderWrapper>
   );
 };
 
