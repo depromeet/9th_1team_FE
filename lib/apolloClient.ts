@@ -17,8 +17,8 @@ function createApolloClient() {
 
   const authLink = setContext((_, { headers }) => {
     // get the authentication token from local storage if it exists
-    console.log("??????????");
     const token = localStorage.getItem("token");
+    console.log("??????????", token);
     // return the headers to the context so httpLink can read them
     return {
       headers: {

@@ -29,6 +29,13 @@ export default function Login() {
     }
   }, []);
 
+  useEffect(() => {
+    const jwt = data?.login?.jwt;
+    if (jwt) {
+      localStorage.setItem("token", jwt);
+    }
+  }, [data?.login?.jwt]);
+
   const onKakaoLogin = () => {
     window.Kakao.Auth.login({
       scope: "profile,account_email",
