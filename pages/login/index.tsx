@@ -20,11 +20,13 @@ const LOGIN_MUTATION = gql`
 `;
 
 export default function Login() {
-  const [mLogin] = useMutation(LOGIN_MUTATION);
+  const [mLogin, { data }] = useMutation(LOGIN_MUTATION);
 
   useEffect(() => {
-    window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_ID);
-    window.Kakao.isInitialized();
+    if (window.Kakao.Auth == null) {
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_ID);
+      window.Kakao.isInitialized();
+    }
   }, []);
 
   const onKakaoLogin = () => {
@@ -44,6 +46,8 @@ export default function Login() {
       },
     });
   };
+
+  console.log("login data : ", data);
 
   return (
     <Container>
