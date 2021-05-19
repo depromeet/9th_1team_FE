@@ -6,8 +6,22 @@ import {
   Logo,
   WithoutLoginButton,
 } from "./index.style";
+import { useMutation } from "@apollo/client";
+import { gql } from "@apollo/client/core";
+
+const LOGIN_MUTATION = gql`
+  mutation login($type: String!, $key: String!) {
+    login(loginUserInput: { socialType: $type, socialKey: $key }) {
+      jwt
+      email
+      status
+    }
+  }
+`;
 
 export default function Login() {
+  const [mLogin] = useMutation(LOGIN_MUTATION);
+
   useEffect(() => {
     window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_ID);
     window.Kakao.isInitialized();
@@ -18,6 +32,12 @@ export default function Login() {
       scope: "profile,account_email",
       success: function (response: Object) {
         console.log(response);
+        mLogin({
+          variables: {
+            type: "kakao",
+            key: response.access_token,
+          },
+        });
       },
       fail: function (error: Error) {
         console.log(error);
