@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Modal from "react-modal";
 import {
@@ -20,19 +20,82 @@ import {
   TextInfoContainer,
   BalanceCardBgImgRemoveBtn,
 } from "./index.style";
+import { gql } from "@apollo/client/core";
+import { useMutation } from "@apollo/client";
+import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
 
 Modal.setAppElement("#__next");
 
+const [
+  INIT_BALANCE_FONT_COLOR_A,
+  INIT_BALANCE_BG_COLOR_A,
+  INIT_BALANCE_FONT_COLOR_B,
+  INIT_BALANCE_BG_COLOR_B,
+] = BALANCE_COLOR_SAMPLE_LIST[0];
+
+const CREATE_BALANCE_GAME_MUTATION = gql`
+  mutation createBalanceGame(
+    $balanceA: CreateBalanceGameSelectionInput!
+    $balanceB: CreateBalanceGameSelectionInput!
+    $description: String!
+  ) {
+    createBalanceGame(
+      createBalanceGameInput: {
+        description: $description
+        balanceGameSelections: [$balanceA, $balanceB]
+        balanceGameKeywords: [
+          { name: "음식" }
+          { name: "토사물" }
+          { name: "고전" }
+        ]
+      }
+    ) {
+      id
+      userId
+      totalVoteCount
+      balanceGameSelections {
+        id
+        order
+        voteCount
+        description
+        textColor
+        backgroundColor
+        backgroundImage
+        balanceGameId
+      }
+      balanceGameKeywords {
+        id
+        name
+        balanceGameId
+      }
+    }
+  }
+`;
+
 const Write = () => {
   const [textInfo, setTextInfo] = useState("");
-  const [balanceBgA, setBalanceBgA] = useState("#E56F53");
+  const [balanceFontColorA, setBalanceFontColorA] = useState(
+    INIT_BALANCE_FONT_COLOR_A
+  );
+  const [balanceBgColorA, setBalanceBgColorA] = useState(
+    INIT_BALANCE_BG_COLOR_A
+  );
   const [balanceBgImgFileA, setBalanceBgImgFileA] = useState(null);
   const [balanceBgImgSrcA, setBalanceBgImgSrcA] = useState("");
-  const [balanceBgB, setBalanceBgB] = useState("#FFD569");
+  const [balanceFontColorB, setBalanceFontColorB] = useState(
+    INIT_BALANCE_FONT_COLOR_B
+  );
+  const [balanceBgColorB, setBalanceBgColorB] = useState(
+    INIT_BALANCE_BG_COLOR_B
+  );
   const [balanceBgImgFileB, setBalanceBgImgFileB] = useState(null);
   const [balanceBgImgSrcB, setBalanceBgImgSrcB] = useState("");
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
+
+  const [mCreateBalanceGame, { data }] = useMutation(
+    CREATE_BALANCE_GAME_MUTATION
+  );
 
   const onChangeText = (type: string) => (
     e: ChangeEvent<HTMLTextAreaElement>
@@ -55,13 +118,22 @@ const Write = () => {
     setTextInfo(e.target.value);
   };
 
-  const onChangeColorGroup = (colorA = "", colorB = "") => () => {
-    if (balanceBgA === colorA && balanceBgB === colorB) {
-      setBalanceBgA(colorB);
-      setBalanceBgB(colorA);
+  const onChangeColorGroup = (
+    fontColorA = "",
+    bgColorA = "",
+    fontColorB = "",
+    bgColorB = ""
+  ) => () => {
+    if (balanceBgColorA === bgColorA && balanceBgColorB === bgColorB) {
+      setBalanceFontColorA(fontColorB);
+      setBalanceBgColorA(bgColorB);
+      setBalanceFontColorB(fontColorA);
+      setBalanceBgColorB(bgColorA);
     } else {
-      setBalanceBgA(colorA);
-      setBalanceBgB(colorB);
+      setBalanceFontColorA(fontColorA);
+      setBalanceBgColorA(bgColorA);
+      setBalanceFontColorB(fontColorB);
+      setBalanceBgColorB(bgColorB);
     }
   };
 
@@ -102,10 +174,33 @@ const Write = () => {
   };
 
   const isDisabledBtn = () => {
-    return !balanceTextA || !balanceTextB;
+    return !balanceTextA || !balanceTextB || !textInfo;
   };
 
-  const onSubmit = () => {};
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mCreateBalanceGame({
+      variables: {
+        balanceA: {
+          order: 0,
+          description: balanceTextA,
+          textColor: balanceFontColorA,
+          backgroundColor: balanceBgColorA,
+          backgroundImage: "미구현인데 필수 필드",
+        },
+        balanceB: {
+          order: 1,
+          description: balanceTextB,
+          textColor: balanceFontColorB,
+          backgroundColor: balanceBgColorB,
+          backgroundImage: "미구현인데 필수 필드",
+        },
+        description: textInfo,
+      },
+    });
+  };
+
+  console.log(data?.createBalanceGame);
 
   return (
     <>
@@ -127,12 +222,16 @@ const Write = () => {
           <BalanceCardTitle>선택지</BalanceCardTitle>
           <BalanceCardContainer>
             <BalanceCard
+              placeholderColor={balanceFontColorA}
               style={{
-                backgroundColor: balanceBgA,
+                backgroundColor: balanceBgColorA,
                 backgroundImage: `url(${balanceBgImgSrcA})`,
               }}
             >
               <TextareaAutosize
+                style={{
+                  color: balanceFontColorA,
+                }}
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("A")}
                 value={balanceTextA}
@@ -142,11 +241,11 @@ const Write = () => {
                   사진삭제 <img src="img.png" alt="" />
                 </BalanceCardBgImgRemoveBtn>
               ) : (
-                <BalanceCardBtn htmlFor={"balanceBgA"}>
+                <BalanceCardBtn htmlFor={"balanceBgColorA"}>
                   <input
                     type="file"
                     accept="image/*"
-                    id={"balanceBgA"}
+                    id={"balanceBgColorA"}
                     onChange={onChangeBgImg("A")}
                   />
                   <img src="img.png" alt="img" />
@@ -157,12 +256,16 @@ const Write = () => {
               <img src="img.png" alt="vs" />
             </div>
             <BalanceCard
+              placeholderColor={balanceFontColorB}
               style={{
-                backgroundColor: balanceBgB,
+                backgroundColor: balanceBgColorB,
                 backgroundImage: `url(${balanceBgImgSrcB})`,
               }}
             >
               <TextareaAutosize
+                style={{
+                  color: balanceFontColorB,
+                }}
                 placeholder={"밸런스 선택지를 입력하세요"}
                 onChange={onChangeText("B")}
                 value={balanceTextB}
@@ -172,11 +275,11 @@ const Write = () => {
                   사진삭제 <img src="img.png" alt="" />
                 </BalanceCardBgImgRemoveBtn>
               ) : (
-                <BalanceCardBtn htmlFor={"balanceBgB"}>
+                <BalanceCardBtn htmlFor={"balanceBgColorB"}>
                   <input
                     type="file"
                     accept="image/*"
-                    id={"balanceBgB"}
+                    id={"balanceBgColorB"}
                     onChange={onChangeBgImg("B")}
                   />
                   <img src="img.png" alt="img" />
@@ -185,24 +288,11 @@ const Write = () => {
             </BalanceCard>
           </BalanceCardContainer>
           <ColorSamples>
-            <ColorSample onClick={onChangeColorGroup("#E56F53", "#FFD569")}>
-              a
-            </ColorSample>
-            <ColorSample onClick={onChangeColorGroup("#F99E4B", "#BAE476")}>
-              a
-            </ColorSample>
-            <ColorSample onClick={onChangeColorGroup("#54BE92", "#FFAFB2")}>
-              a
-            </ColorSample>
-            <ColorSample onClick={onChangeColorGroup("#74AADD", "#B0DD66")}>
-              a
-            </ColorSample>
-            <ColorSample onClick={onChangeColorGroup("#6980D1", "#FFAFB2")}>
-              a
-            </ColorSample>
-            <ColorSample onClick={onChangeColorGroup("#72ABE1", "#FFD569")}>
-              a
-            </ColorSample>
+            {BALANCE_COLOR_SAMPLE_LIST.map((colors, i) => (
+              <ColorSample key={i} onClick={onChangeColorGroup(...colors)}>
+                a
+              </ColorSample>
+            ))}
           </ColorSamples>
           <ColorSampleInfo>
             *한번 더 선택하면 위아래 색상이 전환됩니다.

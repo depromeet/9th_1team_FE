@@ -4,13 +4,15 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "schema": "apollo client:download-schema --endpoint=http://15.164.234.174:3000/graphql output.gql"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
     "@next/bundle-analyzer": "^10.2.0",
     "@svgr/webpack": "^5.5.0",
     "graphql": "^14.6.0",
+    "graphql-tools": "^7.0.5",
     "lodash": "^4.17.21",
     "next": "^10.0.9",
     "next-svgr": "0.0.2",

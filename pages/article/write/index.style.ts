@@ -36,7 +36,7 @@ export const BalanceCardTitle = styled.h2`
   padding: 5px 0;
 `;
 
-export const BalanceCard = styled.div`
+export const BalanceCard = styled.div<{ placeholderColor: string }>`
   position: relative;
   height: 143px;
   display: flex;
@@ -60,6 +60,10 @@ export const BalanceCard = styled.div`
     font-weight: 800;
     font-size: 20px;
     line-height: 140%;
+    &::placeholder {
+      color: ${(props) => props.placeholderColor};
+      opacity: 0.5;
+    }
   }
 `;
 
@@ -122,7 +126,9 @@ export const ColorSamples = styled.div`
   padding: 10px 2px;
 `;
 
-export const ColorSample = styled.button`
+export const ColorSample = styled.button.attrs({
+  type: "button",
+})`
   width: 36px;
   height: 36px;
   margin-left: 14px;
@@ -178,7 +184,9 @@ export const SubmitBtnContainer = styled.div`
   margin: 28px 16px;
 `;
 
-export const SubmitBtn = styled.button`
+export const SubmitBtn = styled.button.attrs({
+  type: "submit",
+})`
   height: 50px;
   display: flex;
   justify-content: center;
