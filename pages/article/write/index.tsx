@@ -19,6 +19,7 @@ import {
   SubmitBtnContainer,
   TextInfoContainer,
   BalanceCardBgImgRemoveBtn,
+  KeywordsContainer,
 } from "./index.style";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
@@ -38,16 +39,13 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
     $balanceA: CreateBalanceGameSelectionInput!
     $balanceB: CreateBalanceGameSelectionInput!
     $description: String!
+    $keywords: [CreateBalanceGameKeywordInput!]!
   ) {
     createBalanceGame(
       createBalanceGameInput: {
         description: $description
         balanceGameSelections: [$balanceA, $balanceB]
-        balanceGameKeywords: [
-          { name: "음식" }
-          { name: "토사물" }
-          { name: "고전" }
-        ]
+        balanceGameKeywords: $keywords
       }
     ) {
       id
@@ -92,22 +90,22 @@ const Write = () => {
   const [balanceBgImgSrcB, setBalanceBgImgSrcB] = useState("");
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
+  const [keywords, setKeywords] = useState("");
 
   const [mCreateBalanceGame, { data }] = useMutation(
     CREATE_BALANCE_GAME_MUTATION
   );
 
-  const onChangeText = (type: string) => (
-    e: ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const str = e.target.value.replace(/\n/g, "");
+  const onChangeText =
+    (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const str = e.target.value.replace(/\n/g, "");
 
-    if (type === "A") {
-      setBalanceTextA(str);
-    } else if (type === "B") {
-      setBalanceTextB(str);
-    }
-  };
+      if (type === "A") {
+        setBalanceTextA(str);
+      } else if (type === "B") {
+        setBalanceTextB(str);
+      }
+    };
 
   const onChangeTextInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 250) {
@@ -118,42 +116,38 @@ const Write = () => {
     setTextInfo(e.target.value);
   };
 
-  const onChangeColorGroup = (
-    fontColorA = "",
-    bgColorA = "",
-    fontColorB = "",
-    bgColorB = ""
-  ) => () => {
-    if (balanceBgColorA === bgColorA && balanceBgColorB === bgColorB) {
-      setBalanceFontColorA(fontColorB);
-      setBalanceBgColorA(bgColorB);
-      setBalanceFontColorB(fontColorA);
-      setBalanceBgColorB(bgColorA);
-    } else {
-      setBalanceFontColorA(fontColorA);
-      setBalanceBgColorA(bgColorA);
-      setBalanceFontColorB(fontColorB);
-      setBalanceBgColorB(bgColorB);
-    }
-  };
-
-  const onChangeBgImg = (type: string) => (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    if (!e.target.files) return;
-
-    const [file]: any = e.target.files;
-    if (file) {
-      const src = URL.createObjectURL(file);
-      if (type === "A") {
-        setBalanceBgImgFileA(file);
-        setBalanceBgImgSrcA(src);
-      } else if (type === "B") {
-        setBalanceBgImgFileB(file);
-        setBalanceBgImgSrcB(src);
+  const onChangeColorGroup =
+    (fontColorA = "", bgColorA = "", fontColorB = "", bgColorB = "") =>
+    () => {
+      if (balanceBgColorA === bgColorA && balanceBgColorB === bgColorB) {
+        setBalanceFontColorA(fontColorB);
+        setBalanceBgColorA(bgColorB);
+        setBalanceFontColorB(fontColorA);
+        setBalanceBgColorB(bgColorA);
+      } else {
+        setBalanceFontColorA(fontColorA);
+        setBalanceBgColorA(bgColorA);
+        setBalanceFontColorB(fontColorB);
+        setBalanceBgColorB(bgColorB);
       }
-    }
-  };
+    };
+
+  const onChangeBgImg =
+    (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files) return;
+
+      const [file]: any = e.target.files;
+      if (file) {
+        const src = URL.createObjectURL(file);
+        if (type === "A") {
+          setBalanceBgImgFileA(file);
+          setBalanceBgImgSrcA(src);
+        } else if (type === "B") {
+          setBalanceBgImgFileB(file);
+          setBalanceBgImgSrcB(src);
+        }
+      }
+    };
 
   const onClickBgImgRemove = (type: string) => () => {
     if (type === "A") {
@@ -174,11 +168,28 @@ const Write = () => {
   };
 
   const isDisabledBtn = () => {
-    return !balanceTextA || !balanceTextB || !textInfo;
+    return !balanceTextA || !balanceTextB || !textInfo || !keywords;
+  };
+
+  const findHashtags = (searchText = "") => {
+    const regexp = /\#\w\w+\b/g;
+    const result = searchText.match(regexp);
+    if (result) {
+      return result.map((name) => ({ name }));
+    } else {
+      return null;
+    }
+  };
+
+  const onChangeKeywords = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeywords(e.target.value);
+    console.log(findHashtags(keywords));
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    console.log(findHashtags(keywords));
     mCreateBalanceGame({
       variables: {
         balanceA: {
@@ -196,6 +207,7 @@ const Write = () => {
           backgroundImage: "미구현인데 필수 필드",
         },
         description: textInfo,
+        keywords: findHashtags(keywords),
       },
     });
   };
@@ -309,6 +321,16 @@ const Write = () => {
           </div>
           <div className={"length"}>{textInfo.length}/250</div>
         </TextInfoContainer>
+        <KeywordsContainer>
+          <div className={"title"}>키워드</div>
+          <div className={"input"}>
+            <input
+              placeholder={"제목을 입력해주세요!"}
+              onChange={onChangeKeywords}
+              value={keywords}
+            />
+          </div>
+        </KeywordsContainer>
         <SubmitBtnContainer>
           <SubmitBtn disabled={isDisabledBtn()}>등록하기</SubmitBtn>
         </SubmitBtnContainer>
