@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchQuery, graphql } from "relay-runtime";
-import { useEnvironment } from "../lib/relay";
+import { gql, useMutation } from "@apollo/client";
+import { LOGIN_USER } from "lib/queries";
 
 const KakaoLoginWrapper = styled.div`
   .login-btn {
@@ -46,45 +46,28 @@ const KakaoLoginWrapper = styled.div`
 // `;
 
 const test = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [login, { data }] = useMutation(LOGIN_USER);
 
-  useEffect(() => {
-    const kakaoScript = document.createElement("script");
-    kakaoScript.src = "https://developers.kakao.com/sdk/js/kakao.min.js";
-    document.head.appendChild(kakaoScript);
+  const onLogin = () => {
+    window.Kakao.Auth.login({
+      success: (res) => {
+        console.log("S", res);
+        const variables = { socialKey: res.access_token, socialType: "kakao" };
+        login({ variables })
+          .then((res) => console.log("로그인 전달완료", res, data))
+          .catch((err) => console.log("err", err));
+      },
 
-    kakaoScript.onload = () => {
-      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_ID);
-      window.Kakao.Auth.createLoginButton({
-        container: "#kakao-login",
-        success: (auth: any) => {
-          console.log("kakao 로그인 완료", auth);
-
-          // const variables = {
-          //   socialKey: "",
-          //   socialType: "kakao",
-          // };
-          // //key: auth.access_token
-          // fetchQuery(useEnvironment, query, variables).then((data) => {
-          //   console.log(data);
-          //   // access the graphql response
-          // });
-
-          window.Kakao.API.request({
-            url: "/v2/user/me",
-            success: (res: any) => console.log("kakao 사용자 정보", res),
-            fail: (err: any) => console.log(err),
-          });
-        },
-        fail: (err: any) => console.log(err),
-      });
-    };
-  }, []);
+      fail: (res) => {
+        console.log("F", res);
+      },
+    });
+  };
 
   return (
     <>
       <KakaoLoginWrapper>
-        <button className="login-btn">
+        <button className="login-btn" onClick={onLogin}>
           <div id="kakao-login"></div>
           <a>카카오 로그인</a>
         </button>
