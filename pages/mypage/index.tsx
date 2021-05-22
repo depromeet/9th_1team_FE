@@ -5,8 +5,9 @@ import PencilIcon from "public/pencil.svg";
 import FacebookIcon from "public/facebook.svg";
 import { MypageWrapper } from "./index.style";
 import { gql } from "@apollo/client/core";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import NotLogin from "../../components/MypageContent/NotLogin";
 
 const MYPAGE_QUERY = gql`
   query {
@@ -32,18 +33,20 @@ const MYPAGE_QUERY = gql`
 `;
 
 const mypage = () => {
-  const router = useRouter();
-  const { data } = useQuery(MYPAGE_QUERY);
+  const [qMypqge, { data }] = useLazyQuery(MYPAGE_QUERY);
   const [isModifyMode, setIsModifyMode] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/");
+    console.log("??????????", token);
+    if (token) {
+      qMypqge();
     }
   }, []);
 
-  if (!data) return null;
+  console.log(data);
+
+  if (!data) return <NotLogin />;
 
   const { balanceGames } = data?.mypage;
 
