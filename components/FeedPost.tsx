@@ -4,7 +4,7 @@ import Share from "public/share.svg";
 import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
-import VS from "public/VS.svg";
+import VS from "public/versus.svg";
 import Fire from "public/fire.svg";
 import { Dispatch, SetStateAction, useState } from "react";
 
@@ -36,8 +36,8 @@ const OptionBox = ({
   };
   return (
     <OptionBoxContainer
+      {...{ checkType, isSelected }}
       style={{ background, color: "white" }}
-      isSelected={isSelected}
     >
       <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
       <div className="title" onClick={() => handleCheckType(type)}>
@@ -169,7 +169,10 @@ const Container = styled.div`
   }
 `;
 
-const OptionBoxContainer = styled.div<{ isSelected: boolean }>`
+const OptionBoxContainer = styled.div<{
+  isSelected: boolean;
+  checkType: CHECK_TYPE;
+}>`
   position: relative;
   height: 12.8rem;
   font-weight: 800;
@@ -188,7 +191,8 @@ const OptionBoxContainer = styled.div<{ isSelected: boolean }>`
     position: absolute;
     height: 100%;
     z-index: 2;
-    opacity: ${({ isSelected }) => (isSelected ? 0.4 : 1)};
+    opacity: ${({ isSelected, checkType }) =>
+      !isSelected ? (checkType === CHECK_TYPE.NONE ? 1 : 0.4) : 1};
     display: flex;
     align-items: center;
     text-align: center;
