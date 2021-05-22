@@ -4,6 +4,7 @@ import MiniCard from "./MiniCard";
 
 type ListProps = {
   list: { id: string }[];
+  isModifyMode: Boolean;
 };
 
 const CardsWrapper = styled.div`
@@ -13,11 +14,14 @@ const CardsWrapper = styled.div`
   margin-top: 2rem;
 `;
 
-const MiniCards: React.FC<ListProps> = ({ list = [] }) => {
+const MiniCards: React.FC<ListProps> = ({
+  list = [],
+  isModifyMode = false,
+}) => {
   return (
     <CardsWrapper>
       {list.map((item) => (
-        <MiniCard key={item.id} data={item} />
+        <MiniCard key={item.id} item={item} isModifyMode={isModifyMode} />
       ))}
     </CardsWrapper>
   );

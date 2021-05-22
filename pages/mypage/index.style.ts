@@ -30,6 +30,8 @@ export const MypageWrapper = styled.div`
   .edit-btn {
     font-size: 1.4rem;
     color: #797878;
+    background-color: transparent;
+    border: none;
   }
   .logout {
     padding: 2.4rem;

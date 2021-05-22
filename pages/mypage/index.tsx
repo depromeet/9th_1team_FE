@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MiniCards from "components/MypageContent/MiniCards";
 import MypageHeader from "components/MypageContent/MypageHeader";
 import PencilIcon from "public/pencil.svg";
@@ -34,6 +34,7 @@ const MYPAGE_QUERY = gql`
 const mypage = () => {
   const router = useRouter();
   const { data } = useQuery(MYPAGE_QUERY);
+  const [isModifyMode, setIsModifyMode] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -53,6 +54,13 @@ const mypage = () => {
     }
   };
 
+  const onCompleteModifyMode = () => {
+    setIsModifyMode(false);
+  };
+  const onModifyMode = () => {
+    setIsModifyMode(true);
+  };
+
   return (
     <>
       <MypageHeader />
@@ -66,9 +74,25 @@ const mypage = () => {
           <section className="cards">
             <div className="cards__header">
               <h2>내가 만든 밸런스 게임({balanceGames.length})</h2>
-              <a className="edit-btn">편집</a>
+              {isModifyMode ? (
+                <button
+                  type="button"
+                  className="edit-btn"
+                  onClick={onCompleteModifyMode}
+                >
+                  편집 완료
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="edit-btn"
+                  onClick={onModifyMode}
+                >
+                  편집
+                </button>
+              )}
             </div>
-            <MiniCards list={balanceGames} />
+            <MiniCards isModifyMode={isModifyMode} list={balanceGames} />
           </section>
           <div className="logout">
             <button
