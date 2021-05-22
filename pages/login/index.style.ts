@@ -20,6 +20,28 @@ export const BtnContainer = styled.div`
   width: 100%;
 `;
 
+export const NaverButton = styled.button`
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 12px;
+  background-color: #2db400;
+  font-weight: 500;
+  font-size: 16px;
+  color: #fff;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: none;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+  > img {
+    width: 20px;
+    height: 18px;
+    margin-right: 17px;
+  }
+`;
+
 export const KakaoButton = styled.button`
   width: 100%;
   padding: 15px 20px;
@@ -32,6 +54,7 @@ export const KakaoButton = styled.button`
   align-items: center;
   box-sizing: border-box;
   border: none;
+  cursor: pointer;
   > img {
     width: 20px;
     height: 18px;
