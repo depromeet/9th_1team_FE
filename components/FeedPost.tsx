@@ -6,54 +6,32 @@ import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
 import Fire from "public/fire.svg";
-import React, { Dispatch, SetStateAction, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import dayjs from "dayjs";
+import { countDate } from "lib/utils";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
   SECOND = "SECOND",
   NONE = "NONE",
 }
-interface OptionBoxProps {
-  type: CHECK_TYPE;
-  isSelected: boolean;
-  title: string;
-  checkType: CHECK_TYPE;
-  setCheckType: Dispatch<SetStateAction<CHECK_TYPE>>;
-  background: string;
-  color: string;
-}
 
-const OptionBox = ({
-  type,
-  isSelected,
-  title,
-  checkType,
-  setCheckType,
-  background,
-  color,
-}: OptionBoxProps) => {
-  const handleCheckType = (type: CHECK_TYPE) => {
-    if (checkType === type) setCheckType(CHECK_TYPE.NONE);
-    else setCheckType(type);
-  };
-  return (
-    <OptionBoxContainer
-      {...{ checkType, isSelected }}
-      style={{ background, color }}
-    >
-      <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
-      <div className="title" onClick={() => handleCheckType(type)}>
-        {title}
-      </div>
-    </OptionBoxContainer>
-  );
-};
-
-const GameFire = () => (
+const GameFire = ({
+  fistColor,
+  secondColor,
+  firstVote,
+  secondVote,
+}: {
+  fistColor: string;
+  secondColor: string;
+  firstVote: number;
+  secondVote: number;
+}) => (
   <>
     <div className="fire">
-      <div className="fire__rectangle">50</div>
+      <div className="fire__rectangle" style={{ color: fistColor }}>
+        {firstVote}
+      </div>
       <div
         style={{
           position: "absolute",
@@ -64,52 +42,92 @@ const GameFire = () => (
       >
         <Fire />
       </div>
-      <div className="fire__rectangle">50</div>
+      <div className="fire__rectangle" style={{ color: secondColor }}>
+        {secondVote}
+      </div>
     </div>
-    <div className="line" />
-    <div className="line" />
+    <div className="line" style={{ background: fistColor }} />
+    <div className="line" style={{ background: secondColor }} />
   </>
 );
 
-interface FeedPostProps {
-  data?: any;
-}
+const Selection = ({
+  selection,
+  checkedId,
+  setCheckedId,
+}: {
+  selection: any;
+  checkedId: string | null;
+  setCheckedId: any;
+}) => {
+  // <OptionBox
+  //   type={CHECK_TYPE.FIRST}
+  //   isSelected={checkedId === selection.id}
+  //   title={selection.description}
+  //   // checkType={checkType}
+  //   setCheckType={setCheckType}
+  //   background="#E66F53"
+  // />
+  const handleCheckType = (id: CHECK_TYPE) => {
+    if (checkedId === id) setCheckedId(null);
+    else setCheckedId(id);
+  };
+  const isChecked = checkedId === null ? null : checkedId === selection.id;
+  return (
+    <OptionBoxContainer
+      {...{ isChecked }}
+      style={{
+        background: selection.backgroundImage || selection.backgroundColor,
+        color: selection.textColor,
+      }}
+      onClick={() => handleCheckType(selection.id)}
+    >
+      <div className="checkbox">{isChecked ? <Select /> : <Unselect />}</div>
+      <div className="title">{selection.description}</div>
+    </OptionBoxContainer>
+  );
+};
 
-const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
-  const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
+const FeedPost = ({ post }: { post: any }) => {
+  const [checkedId, setCheckedId] = useState(null);
 
-  const [balanceA, balanceB] = data.balanceGameSelections;
-
+  const before = countDate(
+    dayjs(post.createdAt || new Date()).format("YYYY-MM-DD HH:mm")
+  );
+  console.log(post.balanceGameSelections[0].voteCount, post.totalVoteCount);
   return (
     <Container>
-      <OptionBox
-        type={CHECK_TYPE.FIRST}
-        isSelected={checkType === CHECK_TYPE.FIRST}
-        title={balanceA.description}
-        checkType={checkType}
-        setCheckType={setCheckType}
-        background={balanceA.backgroundColor}
-        color={balanceA.textColor}
-      />
-      <OptionBox
-        type={CHECK_TYPE.SECOND}
-        isSelected={checkType === CHECK_TYPE.SECOND}
-        title={balanceB.description}
-        checkType={checkType}
-        setCheckType={setCheckType}
-        background={balanceB.backgroundColor}
-        color={balanceB.textColor}
-      />
-      <Versus>{checkType === CHECK_TYPE.NONE ? <VS /> : <GameFire />}</Versus>
+      {post.balanceGameSelections.map((selection: any) => (
+        <Selection
+          key={selection.id}
+          {...{ selection, checkedId, setCheckedId }}
+        />
+      ))}
+      <Versus>
+        {checkedId === null ? (
+          <VS />
+        ) : (
+          <GameFire
+            fistColor={post.balanceGameSelections[0].backgroundColor}
+            secondColor={post.balanceGameSelections[1].backgroundColor}
+            firstVote={
+              (post.balanceGameSelections[0].voteCount / post.totalVoteCount) *
+                100 || 0
+            }
+            secondVote={
+              (post.balanceGameSelections[1].voteCount / post.totalVoteCount) *
+                100 || 0
+            }
+          />
+        )}
+      </Versus>
 
       <div className="content">
-        <div className="content__title">
-          <Link href={`/article/${data.id}`}>{data.description}</Link>
-        </div>
+        <div className="content__title">{post.description}</div>
         <div className="content__state">
           <div>
-            참여 {data.totalVoteCount} • 의견 {data.commentCount} • 1일전
-            {data.createdAt}
+            참여 {post.totalVoteCount || 0} • 의견 {post.commnetCount || 0} •
+            {before}
           </div>
         </div>
         <div className="content__buttons">
@@ -188,8 +206,7 @@ const Container = styled.div`
 `;
 
 const OptionBoxContainer = styled.div<{
-  isSelected: boolean;
-  checkType: CHECK_TYPE;
+  isChecked: boolean | null;
 }>`
   position: relative;
   height: 12.8rem;
@@ -209,8 +226,8 @@ const OptionBoxContainer = styled.div<{
     position: absolute;
     height: 100%;
     z-index: 2;
-    opacity: ${({ isSelected, checkType }) =>
-      !isSelected ? (checkType === CHECK_TYPE.NONE ? 1 : 0.4) : 1};
+    opacity: ${({ isChecked }) =>
+      isChecked === null ? 1 : isChecked ? 1 : 0.4};
     display: flex;
     align-items: center;
     text-align: center;

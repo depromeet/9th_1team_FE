@@ -4,7 +4,7 @@ import Header from "components/Header/HomeHeader";
 import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
 import { MouseEventHandler, useEffect, useState } from "react";
-import { useLazyQuery, gql } from "@apollo/client";
+import { useLazyQuery, gql, useQuery } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 
@@ -37,7 +37,9 @@ const BALANCE_GAMES_QUERY = gql`
         balanceGameSelections {
           id
           description
+          voteCount
           backgroundColor
+          backgroundImage
           textColor
         }
       }
@@ -46,12 +48,18 @@ const BALANCE_GAMES_QUERY = gql`
 `;
 
 const Today = () => {
+  const { data } = useQuery(BALANCE_GAMES_QUERY, {
+    variables: {
+      limit: 1,
+      offset: 0,
+    },
+  });
   return (
     <TodayContainer>
       <div className="title" style={{ fontSize: "1.6rem" }}>
         오늘의 밸런스게임
       </div>
-      {/*<FeedPost />*/}
+      <FeedPost post={data?.balanceGames?.balanceGames[0]} />
     </TodayContainer>
   );
 };
@@ -88,8 +96,6 @@ const Index = () => {
   }, [data]);
 
   if (_.isEmpty(list)) return null;
-
-  // const balanceGames = data?.balanceGames?.balanceGames;
 
   const fetchMoreData = () => {
     const nextOffset = offset + BALANCE_GAMES_TICK;
@@ -135,7 +141,8 @@ const Index = () => {
           loader={<h4>Loading...</h4>}
         >
           {list.map((data, i) => {
-            return <FeedPost key={i} data={data} />;
+            console.log("list", list);
+            return <FeedPost key={i} post={data} />;
           })}
         </InfiniteScroll>
       </Container>
@@ -145,7 +152,6 @@ const Index = () => {
 
 const TodayContainer = styled.div`
   padding: 1.6rem;
-  margin-top: 5.2rem;
   margin-bottom: -2.5rem;
   background: #f8f9fa;
   .title {
@@ -174,6 +180,9 @@ const Container = styled.div`
       box-sizing: border-box;
       border-radius: 8px;
       letter-spacing: -0.05em;
+      :last-child {
+        margin-left: 0.8rem;
+      }
     }
   }
   .selects {
