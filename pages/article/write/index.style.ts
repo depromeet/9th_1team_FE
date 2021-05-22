@@ -1,32 +1,5 @@
 import styled from "styled-components";
 
-export const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 52px;
-`;
-
-export const Title = styled.h1`
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 21px;
-
-  color: #2a2a2d;
-`;
-
-export const CloseBtn = styled.button`
-  width: 16px;
-  height: 16px;
-`;
-
-export const HelpBtn = styled.button`
-  width: 16px;
-  height: 16px;
-`;
-
 export const BalanceCardTitle = styled.h2`
   font-family: Roboto;
   font-style: normal;

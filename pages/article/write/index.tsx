@@ -2,10 +2,6 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Modal from "react-modal";
 import {
-  Header,
-  Title,
-  CloseBtn,
-  HelpBtn,
   BalanceCardTitle,
   BalanceCard,
   BalanceTitle,
@@ -24,6 +20,7 @@ import {
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
+import CommonHeader from "../../../components/Header/CommonHeader";
 
 Modal.setAppElement("#__next");
 
@@ -172,7 +169,7 @@ const Write = () => {
   };
 
   const findHashtags = (searchText = "") => {
-    const regexp = /\#\w\w+\b/g;
+    const regexp = /\B(\#[a-zA-Z]+\b)(?!;)/g;
     const result = searchText.match(regexp);
     if (result) {
       return result.map((name) => ({ name }));
@@ -189,7 +186,6 @@ const Write = () => {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(findHashtags(keywords));
     mCreateBalanceGame({
       variables: {
         balanceA: {
@@ -212,16 +208,10 @@ const Write = () => {
     });
   };
 
-  console.log(data?.createBalanceGame);
-
   return (
     <>
       <form onSubmit={onSubmit}>
-        <Header>
-          <CloseBtn>x</CloseBtn>
-          <Title>밸런스 게임 만들기</Title>
-          <HelpBtn>x</HelpBtn>
-        </Header>
+        <CommonHeader title={"게임 만들기"} />
         <BalanceTitle>
           <div className={"img"}>
             <img src="/img.png" width={38} height={34} alt="" />
