@@ -5,8 +5,7 @@ import PencilIcon from "public/pencil.svg";
 import FacebookIcon from "public/facebook.svg";
 import { MypageWrapper } from "./index.style";
 import { gql } from "@apollo/client/core";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { useRouter } from "next/router";
+import { useLazyQuery } from "@apollo/client";
 import NotLogin from "../../components/MypageContent/NotLogin";
 
 const MYPAGE_QUERY = gql`
