@@ -1,4 +1,3 @@
-// article > [id].tsx로 변경해야함
 import styled from "styled-components";
 import Comments from "../components/Comment/Comments";
 import DetailHeader from "../components/DetailContent/DetailHeader";
@@ -8,6 +7,7 @@ import NextGameIcon from "../public/game-next.svg";
 import FacebookIcon from "../public/facebook.svg";
 import TwitterIcon from "../public/twitter.svg";
 import UrlIcon from "../public/url.svg";
+import { gql, useQuery } from "@apollo/client";
 
 const DetailWrapper = styled.div`
   .contents__wrapper {
@@ -108,7 +108,19 @@ const DetailWrapper = styled.div`
   }
 `;
 
+const GET_GAME = gql`
+  query {
+    balanceGame($id: String!) {
+      id
+      userId
+      description
+    }
+  }
+  
+`;
+
 const Detail = () => {
+  const { loading, error, data } = useQuery(GET_GAME);
   return (
     <>
       <DetailHeader />
