@@ -1,32 +1,5 @@
 import styled from "styled-components";
 
-export const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 52px;
-`;
-
-export const Title = styled.h1`
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 21px;
-
-  color: #2a2a2d;
-`;
-
-export const CloseBtn = styled.button`
-  width: 16px;
-  height: 16px;
-`;
-
-export const HelpBtn = styled.button`
-  width: 16px;
-  height: 16px;
-`;
-
 export const BalanceCardTitle = styled.h2`
   font-family: Roboto;
   font-style: normal;
@@ -177,6 +150,34 @@ export const TextInfoContainer = styled.div`
     font-size: 13px;
     line-height: 140%;
     color: #868e96;
+  }
+`;
+export const KeywordsContainer = styled.div`
+  position: relative;
+  margin: 28px 16px 0;
+  > .title {
+    font-size: 13px;
+    line-height: 140%;
+    margin-bottom: 2px;
+  }
+  > .input {
+    border-bottom: 1px solid #e9ecef;
+    padding: 4px 0;
+    white-space: pre-wrap;
+    font-size: 14px;
+    word-break: break-word;
+    > input {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 175%;
+      letter-spacing: -0.05em;
+      color: #343a40;
+      resize: none;
+    }
   }
 `;
 

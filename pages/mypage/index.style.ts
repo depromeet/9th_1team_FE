@@ -1,12 +1,6 @@
-import MiniCards from "components/MypageContent/MiniCards";
-import MypageHeader from "components/MypageContent/MypageHeader";
-import React from "react";
 import styled from "styled-components";
-import RightArrowIcon from "../public/game-next.svg";
-import PencilIcon from "../public/pencil.svg";
-import FacebookIcon from "../public/facebook.svg";
 
-const MypageWrapper = styled.div`
+export const MypageWrapper = styled.div`
   .user__status {
     font-weight: 800;
     display: flex;
@@ -36,6 +30,8 @@ const MypageWrapper = styled.div`
   .edit-btn {
     font-size: 1.4rem;
     color: #797878;
+    background-color: transparent;
+    border: none;
   }
   .logout {
     padding: 2.4rem;
@@ -47,6 +43,8 @@ const MypageWrapper = styled.div`
     font-family: "Noto Sans KR";
     font-size: 1.4rem;
     position: relative;
+    background-color: transparent;
+    border: none;
     &:after {
       content: "";
       position: absolute;
@@ -68,32 +66,3 @@ const MypageWrapper = styled.div`
     }
   }
 `;
-
-const mypage = () => {
-  return (
-    <>
-      <MypageHeader />
-      <MypageWrapper>
-        <div className="contents__wrapper">
-          <div className="user__status">
-            <FacebookIcon />
-            <span className="user-name">김정현님</span>
-            <PencilIcon />
-          </div>
-          <section className="cards">
-            <div className="cards__header">
-              <h2>내가 만든 밸런스 게임(4)</h2>
-              <a className="edit-btn">편집</a>
-            </div>
-            <MiniCards />
-          </section>
-          <footer className="logout">
-            <a className="logout-btn">로그아웃</a>
-          </footer>
-        </div>
-      </MypageWrapper>
-    </>
-  );
-};
-
-export default mypage;

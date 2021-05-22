@@ -2,9 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import MiniUserIcon from "../../public/mini-user.svg";
 import MiniChatIcon from "../../public/mini-chat.svg";
+import CloseCard from "../../public/close-card.svg";
+import { gql } from "@apollo/client/core";
+import { useMutation } from "@apollo/client";
+
+type CardProps = {
+  item: {
+    id: string;
+    commentCount: number;
+    totalVoteCount: number;
+  };
+  isModifyMode: Boolean;
+};
+
+const REMOVE_BALANCE_GAME_MUTATION = gql`
+  mutation removeBalanceGame($id: String!) {
+    removeBalanceGame(id: $id)
+  }
+`;
 
 const CardWrapper = styled.div`
-
   width: calc(50% - 5px);
   box-sizing: border-box;
   padding: 1rem;
@@ -51,11 +68,30 @@ const CardWrapper = styled.div`
   .count-number {
     margin-left: 0.3rem;
   }
-
-  .
+  .close-btn {
+    position: absolute;
+    right: -12px;
+    top: -12px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+  }
 `;
 
-const MiniCard = () => {
+const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
+  const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME_MUTATION);
+
+  const onRemove = (id: string) => async () => {
+    await mRemoveBalanceGame({
+      variables: {
+        id,
+      },
+    });
+    window.location.reload();
+  };
+
   return (
     <>
       <CardWrapper>
@@ -66,13 +102,22 @@ const MiniCard = () => {
         <div className="count__wrapper">
           <div className="count-item">
             <MiniUserIcon />
-            <span className="count-number">1,010</span>
+            <span className="count-number">{item.totalVoteCount}</span>
           </div>
           <div className="count-item">
             <MiniChatIcon />
-            <span className="count-number">604</span>
+            <span className="count-number">{item.commentCount}</span>
           </div>
         </div>
+        {isModifyMode && (
+          <button
+            type="button"
+            className="close-btn"
+            onClick={onRemove(item.id)}
+          >
+            <CloseCard />
+          </button>
+        )}
       </CardWrapper>
     </>
   );
