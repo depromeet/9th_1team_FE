@@ -127,6 +127,7 @@ export const typeDefs = gql`
     commentCount: Int!
     thumbs: Int!
     status: String!
+    isVoted: Boolean!
     createdAt: DateTime!
     updatedAt: DateTime!
     user: User!

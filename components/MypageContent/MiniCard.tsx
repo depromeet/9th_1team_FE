@@ -4,7 +4,6 @@ import MiniUserIcon from "../../public/mini-user.svg";
 import MiniChatIcon from "../../public/mini-chat.svg";
 
 const CardWrapper = styled.div`
-
   width: calc(50% - 5px);
   box-sizing: border-box;
   padding: 1rem;
@@ -51,11 +50,10 @@ const CardWrapper = styled.div`
   .count-number {
     margin-left: 0.3rem;
   }
-
-  .
 `;
 
-const MiniCard = () => {
+const MiniCard = ({ data }) => {
+  console.log(data);
   return (
     <>
       <CardWrapper>
@@ -66,11 +64,11 @@ const MiniCard = () => {
         <div className="count__wrapper">
           <div className="count-item">
             <MiniUserIcon />
-            <span className="count-number">1,010</span>
+            <span className="count-number">{data.totalVoteCount}</span>
           </div>
           <div className="count-item">
             <MiniChatIcon />
-            <span className="count-number">604</span>
+            <span className="count-number">{data.commentCount}</span>
           </div>
         </div>
       </CardWrapper>

@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import MiniCard from "./MiniCard";
 
-const items = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
+type ListProps = {
+  list: { id: string }[];
+};
 
 const CardsWrapper = styled.div`
   display: flex;
@@ -11,11 +13,11 @@ const CardsWrapper = styled.div`
   margin-top: 2rem;
 `;
 
-const MiniCards = () => {
+const MiniCards: React.FC<ListProps> = ({ list = [] }) => {
   return (
     <CardsWrapper>
-      {items.map((item) => (
-        <MiniCard key={item.id} />
+      {list.map((item) => (
+        <MiniCard key={item.id} data={item} />
       ))}
     </CardsWrapper>
   );
