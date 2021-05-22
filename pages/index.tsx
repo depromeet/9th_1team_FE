@@ -1,20 +1,6 @@
 import styled from "styled-components";
 import FeedPost from "components/FeedPost";
 import Header from "components/Header";
-import { gql, useQuery } from "@apollo/client";
-import { initializeApollo, addApolloState } from "../lib/apolloClient";
-
-const ALL_POSTS_QUERY = gql`
-  query {
-    launchesPast(limit: 10) {
-      mission_name
-      launch_date_local
-      launch_site {
-        site_name_long
-      }
-    }
-  }
-`;
 
 const Today = () => {
   return (
@@ -25,20 +11,7 @@ const Today = () => {
   );
 };
 
-const Index = () => {
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    ALL_POSTS_QUERY,
-    {
-      // variables: allPostsQueryVars,
-      // Setting this value to true will make the component rerender when
-      // the "networkStatus" changes, so we are able to know if it is fetching
-      // more data
-      notifyOnNetworkStatusChange: true,
-    }
-  );
-
-  console.log(loading, error, data, fetchMore, networkStatus);
-
+const Feed = () => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
@@ -71,18 +44,4 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-export async function getStaticProps() {
-  const apolloClient = initializeApollo();
-
-  await apolloClient.query({
-    query: ALL_POSTS_QUERY,
-    // variables: allPostsQueryVars,
-  });
-
-  return addApolloState(apolloClient, {
-    props: {},
-    revalidate: 1,
-  });
-}
-
-export default Index;
+export default Feed;
