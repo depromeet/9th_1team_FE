@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import OpinionIcon from "../../public/opinion.svg";
 import TriangleIcon from "../../public/opinion-triangle.svg";
 import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
+import TextareaAutosize from "react-textarea-autosize";
+import { gql, useMutation } from "@apollo/client";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
@@ -24,25 +26,36 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
   }
   form {
     position: relative;
-    border: 1px solid #e9ecef;
+    /* border: 1px solid #e9ecef; */
     border-radius: 4px;
     display: flex;
     align-items: center;
     margin: ${({ opened }) => (opened ? "0 16px" : "0 16px 45px 16px")};
+    /* height: 4.8rem; */
+    width: 100%;
+    box-sizing: border-box;
   }
+
   textarea {
-    margin-left: 3.4rem;
-    border: none;
-    flex: 1;
+    box-sizing: border-box;
+    min-height: 4rem;
+    max-height: 8rem;
+    padding-left: 3.4rem;
+    border: 1px solid #e9ecef;
     outline: none;
     resize: none;
     font-family: sans-serif;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+
     &::-webkit-scrollbar {
       background-color: #fff;
       width: 2px;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: red;
+      background-color: #e9ecef;
     }
   }
   .form__user-pick {
@@ -57,6 +70,9 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
     transform: translateY(-50%);
   }
   .submit-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
     border: none;
     background: none;
     outline: none;
@@ -74,25 +90,56 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
   }
   .comment__more-btn {
     font-size: 1.2rem;
+    font-weight: 500;
     background: none;
-    padding: 0.8rem 1.2rem;
+    /* padding: 0.8rem 1.2rem; */
     border: 1px solid #868e96;
     border-radius: 15px;
+    line-height: 3rem;
+    padding: 0 1.2rem;
+    color: #868e96;
   }
 `;
-// textarea 영역 구현가능한지 확인하기
-const Comments: React.FC = () => {
-  const comments = [
-    { id: 1, name: "니밸네밸", pubDate: "1분전", content: "안녕" },
-    {
-      id: 2,
-      name: "토맛토",
-      pubDate: "1분전",
-      content: "맛있는걸 먹어야지",
-    },
-    { id: 3, name: "니밸네벨", pubDate: "5분전", content: "카레가 낫지~" },
-  ];
+
+//
+const ADD_COMMENT_MUTATION = gql`
+  mutation createComment($gameId: String, $content: String!, $color: String) {
+    createComment(
+      createCommentInput: {
+        balanceGameId: $gameId
+        content: $content
+        color: $color
+      }
+    ) {
+      id
+      color
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+type CommentsProps = any;
+
+const Comments: React.FC<CommentsProps> = ({ comments }) => {
+  const [commentText, setCommentText] = useState<any>();
   const [opened, setOpened] = useState<boolean>(true);
+  const [addComment, { data: newComment }] = useMutation(ADD_COMMENT_MUTATION);
+
+  const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setCommentText(e.target.value);
+    console.log(commentText);
+  };
+
+  const onAddComment = () => {
+    addComment({
+      variables: {
+        balanceGameId: "a9e61383-165f-4caf-924e-1994de4a1ff2",
+        content: commentText,
+        color: "orange",
+      },
+    });
+  };
 
   return (
     <CommentsWrapper opened={opened}>
@@ -102,21 +149,27 @@ const Comments: React.FC = () => {
           className="toggle-btn"
           onClick={() => setOpened((prev) => !prev)}
         >
-          {opened ? "의견 접기" : "의견 보기"} ({comments.length})
+          {opened ? "의견 접기" : "의견 보기"} ({comments?.length || 0})
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
       <form>
-        <textarea placeholder="의견을 입력해주세요" />
+        <TextareaAutosize
+          placeholder={"의견을 입력해주세요."}
+          className="write-area"
+          value={commentText}
+          onChange={onChangeComment}
+        />
         <div className="form__user-pick"></div>
-        <button className="submit-btn">등록</button>
+        <button className="submit-btn" onClick={onAddComment}>
+          등록
+        </button>
       </form>
       {opened && (
         <>
           <ul className="comments">
-            {comments.map((comment) => (
-              <Comment comment={comment} />
-            ))}
+            {comments &&
+              comments.map((comment: any) => <Comment comment={comment} />)}
           </ul>
           <div className="btn__wrapper">
             <button className="comment__more-btn">의견 더보기</button>

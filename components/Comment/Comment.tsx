@@ -63,10 +63,11 @@ const CommentWrapper = styled.li`
 
 interface CommentProps {
   comment: {
-    id: number;
-    name: String;
-    pubDate: String;
-    content: String;
+    id: string;
+    color: string;
+    content: string;
+    createdAt: any;
+    updatedAt: any;
   };
 }
 // wrapper -> 내 거면 배경색
@@ -77,8 +78,8 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
       <div className="comment__content">
         <div className="info">
           <div className="comment__user-pick"></div>
-          <span className="author">{comment.name}</span>
-          <span className="pub-date">{comment.pubDate}</span>
+          <span className="author">{comment.id}</span>
+          <span className="pub-date">{comment.createdAt}</span>
           <div className="setting__more-btn">...</div>
         </div>
         <div className="comment__user-text">
