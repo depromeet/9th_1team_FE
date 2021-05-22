@@ -41,6 +41,8 @@ export const MypageWrapper = styled.div`
     font-family: "Noto Sans KR";
     font-size: 1.4rem;
     position: relative;
+    background-color: transparent;
+    border: none;
     &:after {
       content: "";
       position: absolute;
