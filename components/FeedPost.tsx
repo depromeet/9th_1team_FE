@@ -6,7 +6,8 @@ import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
 import Fire from "public/fire.svg";
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import Link from "next/link";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -93,7 +94,9 @@ const FeedPost = () => {
 
       <div className="content">
         <div className="content__title">
-          굳세게 무엇을 인생을 같이 청춘을 내려온 위여, 우리 위하여...
+          <Link href={"/article/08255d28-71f8-4c63-94d6-1a560093bea0"}>
+            굳세게 무엇을 인생을 같이 청춘을 내려온 위여, 우리 위하여...
+          </Link>
         </div>
         <div className="content__state">
           <div>참여 1034 • 의견 145 • 1일전</div>
@@ -129,6 +132,10 @@ const Container = styled.div`
       padding: 0 0.8rem;
       color: #222222;
       font-size: 1.3rem;
+      > a {
+        text-decoration: none;
+        color: inherit;
+      }
     }
     &__state {
       padding: 0 0.8rem;
