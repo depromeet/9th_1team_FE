@@ -9,6 +9,11 @@ import NextGameIcon from "../../../public/game-next.svg";
 import FacebookIcon from "../../../public/facebook.svg";
 import TwitterIcon from "../../../public/twitter.svg";
 import UrlIcon from "../../../public/url.svg";
+import CommonHeader from "../../../components/Header/CommonHeader";
+import ShareIcon from "../../../public/top-share.svg";
+import MoreIcon from "../../../public/top-more.svg";
+import React, { useState } from "react";
+import HeaderMore from "../../../components/DetailContent/HederMore";
 
 const DetailWrapper = styled.div`
   .contents__wrapper {
@@ -84,6 +89,13 @@ const DetailWrapper = styled.div`
     font-weight: 500;
     color: #868e96;
   }
+  .icon {
+    &:first-child {
+      margin-right: 0;
+    }
+    float: right;
+    margin-right: 1rem;
+  }
   .icon__wrapper {
     display: flex;
     justify-content: center;
@@ -124,18 +136,28 @@ const Post = () => {
   const router = useRouter();
   const { id } = router.query;
   const { loading, error, data } = useQuery(GET_GAME);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMore = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   console.log(id, data);
 
   return (
     <>
-      <h1>Post: {id}</h1>
       {data && (
         <>
           <DetailWrapper>
-            {console.log(data)}
-            <h1>{data.id}</h1>
-            <DetailHeader />
+            <CommonHeader>
+              <div className="icon">
+                <MoreIcon onClick={toggleMore} />
+              </div>
+              <div className="icon">
+                <ShareIcon />
+              </div>
+            </CommonHeader>
+            <HeaderMore isMine={false} isOpen={isOpen} />
             <div className="contents__wrapper">
               <RadioBox />
               <div className="status">

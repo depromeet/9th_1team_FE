@@ -3,7 +3,7 @@ import { BackBtn, BtnContainer, Container, Title } from "./CommonHeader.style";
 import { useRouter } from "next/router";
 
 type Props = {
-  title: string;
+  title?: string;
 };
 
 const CommonHeader: React.FC<Props> = ({ title = "", children }) => {
