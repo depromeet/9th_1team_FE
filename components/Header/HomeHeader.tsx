@@ -23,19 +23,15 @@ const HomeHeader = () => {
         </Link>
       </Title>
       <BtnContainer>
-        <Link href={"/article/write"}>
-          <a>
-            <CreateBalanceLink>
-              <img src="img.png" alt="" />
-            </CreateBalanceLink>
-          </a>
+        <Link href={"/article/write"} passHref>
+          <CreateBalanceLink>
+            <img src="img.png" alt="" />
+          </CreateBalanceLink>
         </Link>
-        <Link href={"/mypage"}>
-          <a>
-            <MypageLink>
-              <img src="img.png" alt="" />
-            </MypageLink>
-          </a>
+        <Link href={"/mypage"} passHref>
+          <MypageLink>
+            <img src="img.png" alt="" />
+          </MypageLink>
         </Link>
       </BtnContainer>
     </Container>

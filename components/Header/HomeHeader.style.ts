@@ -35,14 +35,14 @@ export const BtnContainer = styled.div`
   align-items: center;
 `;
 
-export const CreateBalanceLink = styled.div`
+export const CreateBalanceLink = styled.a`
   width: 24px;
   height: 24px;
   background-color: gray;
   margin-right: 10px;
 `;
 
-export const MypageLink = styled.div`
+export const MypageLink = styled.a`
   width: 24px;
   height: 24px;
   background-color: gray;

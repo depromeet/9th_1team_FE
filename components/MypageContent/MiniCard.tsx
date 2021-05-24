@@ -1,10 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import MiniUserIcon from "../../public/mini-user.svg";
 import MiniChatIcon from "../../public/mini-chat.svg";
 import CloseCard from "../../public/close-card.svg";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
+import Link from "next/link";
 
 type CardProps = {
   item: {
@@ -24,7 +25,7 @@ const REMOVE_BALANCE_GAME_MUTATION = gql`
   }
 `;
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.a`
   width: calc(50% - 5px);
   box-sizing: border-box;
   padding: 1rem;
@@ -33,6 +34,8 @@ const CardWrapper = styled.div`
   border-radius: 0.8rem;
   margin-bottom: 1.6rem;
   position: relative;
+  text-decoration: none;
+  color: inherit;
 
   .choices-box {
     border-radius: 0.8rem;
@@ -97,8 +100,10 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
 
   const [balanceA, balanceB] = item?.balanceGameSelections;
 
+  const Container = isModifyMode ? Fragment : Link;
+
   return (
-    <>
+    <Container href={`article/${item.id}`} passHref>
       <CardWrapper>
         <div className="choices-box">
           <div className="top">{balanceA.description}</div>
@@ -124,7 +129,7 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
           </button>
         )}
       </CardWrapper>
-    </>
+    </Container>
   );
 };
 
