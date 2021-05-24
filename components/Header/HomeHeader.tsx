@@ -1,19 +1,42 @@
+import Link from "next/link";
 import React from "react";
-import { BackBtn, BtnContainer, Container, Title } from "./HomeHeader.style";
+import {
+  CreateBalanceLink,
+  BtnContainer,
+  Container,
+  Title,
+  Logo,
+  MypageLink,
+} from "./HomeHeader.style";
 
 const HomeHeader = () => {
   return (
     <Container>
       <Title>
-        <Logo>
-          <img src="img.png" alt="" />
-        </Logo>
-        토맛토(LOGO)
+        <Link href={"/"}>
+          <a>
+            <Logo>
+              <img src="img.png" alt="" />
+            </Logo>
+            토맛토(LOGO)
+          </a>
+        </Link>
       </Title>
       <BtnContainer>
-        <CreateBalanceLink>
-          <img src="img.png" alt="" />
-        </CreateBalanceLink>
+        <Link href={"/article/write"}>
+          <a>
+            <CreateBalanceLink>
+              <img src="img.png" alt="" />
+            </CreateBalanceLink>
+          </a>
+        </Link>
+        <Link href={"/mypage"}>
+          <a>
+            <MypageLink>
+              <img src="img.png" alt="" />
+            </MypageLink>
+          </a>
+        </Link>
       </BtnContainer>
     </Container>
   );

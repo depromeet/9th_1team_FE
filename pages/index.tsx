@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import FeedPost from "components/FeedPost";
-import Header from "components/Header";
+import Header from "components/Header/HomeHeader";
 import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
 import { MouseEventHandler, useState } from "react";
