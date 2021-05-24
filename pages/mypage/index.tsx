@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import MiniCards from "components/MypageContent/MiniCards";
-import MypageHeader from "components/MypageContent/MypageHeader";
 import PencilIcon from "public/pencil.svg";
 import FacebookIcon from "public/facebook.svg";
-import { MypageWrapper } from "./index.style";
+import { MypageWrapper, NoticeLink } from "./index.style";
 import { gql } from "@apollo/client/core";
 import { useLazyQuery } from "@apollo/client";
 import NotLogin from "../../components/MypageContent/NotLogin";
+import CommonHeader from "../../components/Header/CommonHeader";
+import Link from "next/link";
 
 const MYPAGE_QUERY = gql`
   query {
@@ -24,7 +25,7 @@ const MYPAGE_QUERY = gql`
   }
 `;
 
-const mypage = () => {
+const Mypage = () => {
   const [qMypqge, { data }] = useLazyQuery(MYPAGE_QUERY);
   const [isModifyMode, setIsModifyMode] = useState(false);
 
@@ -56,7 +57,13 @@ const mypage = () => {
 
   return (
     <>
-      <MypageHeader />
+      <CommonHeader title={"마이페이지"}>
+        <Link href={"/notifications"}>
+          <NoticeLink>
+            <img src="img.png" alt="" />
+          </NoticeLink>
+        </Link>
+      </CommonHeader>
       <MypageWrapper>
         <div className="contents__wrapper">
           <div className="user__status">
@@ -102,4 +109,4 @@ const mypage = () => {
   );
 };
 
-export default mypage;
+export default Mypage;

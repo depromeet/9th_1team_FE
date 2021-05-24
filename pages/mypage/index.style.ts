@@ -66,3 +66,11 @@ export const MypageWrapper = styled.div`
     }
   }
 `;
+
+export const NoticeLink = styled.a`
+  float: right;
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+`;
