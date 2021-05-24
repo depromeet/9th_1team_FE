@@ -10,22 +10,15 @@ import NotLogin from "../../components/MypageContent/NotLogin";
 
 const MYPAGE_QUERY = gql`
   query {
-    mypage {
-      id
-      socialId
-      platformType
-      status
-      createdAt
-      updatedAt
-      balanceGames {
+    myGames {
+      balanceGames: balanceGame {
         id
         totalVoteCount
         commentCount
-        #        balanceGameSelections {
-        #          description
-        #          textColor
-        #          backgroundColor
-        #        }
+        balanceGameSelections {
+          order
+          description
+        }
       }
     }
   }
@@ -43,11 +36,9 @@ const mypage = () => {
     }
   }, []);
 
-  console.log(data);
-
   if (!data) return <NotLogin />;
 
-  const { balanceGames } = data?.mypage;
+  const balanceGames = data?.myGames?.balanceGames;
 
   const onClickLogout = () => {
     if (window.confirm("로그아웃 하시겠어요?")) {

@@ -89,9 +89,7 @@ const Write = () => {
   const [balanceTextB, setBalanceTextB] = useState("");
   const [keywords, setKeywords] = useState("");
 
-  const [mCreateBalanceGame, { data }] = useMutation(
-    CREATE_BALANCE_GAME_MUTATION
-  );
+  const [mCreateBalanceGame] = useMutation(CREATE_BALANCE_GAME_MUTATION);
 
   const onChangeText =
     (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {

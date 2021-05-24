@@ -11,6 +11,9 @@ type CardProps = {
     id: string;
     commentCount: number;
     totalVoteCount: number;
+    balanceGameSelections: {
+      description: string;
+    }[];
   };
   isModifyMode: Boolean;
 };
@@ -92,12 +95,14 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
     window.location.reload();
   };
 
+  const [balanceA, balanceB] = item?.balanceGameSelections;
+
   return (
     <>
       <CardWrapper>
         <div className="choices-box">
-          <div className="top">추성훈 선수한테 맞고 이국종 교수...</div>
-          <div className="bottom">이국종 교수한테 맞고 추성훈...</div>
+          <div className="top">{balanceA.description}</div>
+          <div className="bottom">{balanceB.description}</div>
         </div>
         <div className="count__wrapper">
           <div className="count-item">

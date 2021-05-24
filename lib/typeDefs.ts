@@ -127,7 +127,7 @@ export const typeDefs = gql`
     commentCount: Int!
     thumbs: Int!
     status: String!
-    isVoted: Boolean!
+    mySelection: String
     createdAt: DateTime!
     updatedAt: DateTime!
     user: User!
@@ -181,8 +181,12 @@ export const typeDefs = gql`
 
     # 밸런스 게임 list 형태로 return
     balanceGames(balanceGamesState: BalanceGamesStateInput): BalanceGameList!
+    myGames: BalanceGameList!
     balanceGamesTEST: [BalanceGame!]!
-    balanceGame(id: String!): BalanceGame!
+    balanceGameLogined(id: String!): BalanceGame!
+    balanceGameNotLogined(id: String!): BalanceGame!
+    nextGameByRandom: BalanceGame!
+    myVotedGames: [BalanceGame!]!
     balanceGameKeywords: [BalanceGameKeyword!]!
     balanceGameKeyword(id: Int!): BalanceGameKeyword!
     balanceGameSelection(id: Int!): BalanceGameSelection!
