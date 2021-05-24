@@ -5,7 +5,14 @@ import MiniCard from "./MiniCard";
 import { ContentContainer } from "./NotLogin.style";
 
 type ListProps = {
-  list: { id: string; commentCount: number; totalVoteCount: number }[];
+  list: {
+    id: string;
+    commentCount: number;
+    totalVoteCount: number;
+    balanceGameSelections: {
+      description: string;
+    }[];
+  }[];
   isModifyMode: Boolean;
 };
 
