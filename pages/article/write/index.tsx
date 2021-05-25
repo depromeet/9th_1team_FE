@@ -313,7 +313,7 @@ const Write = () => {
           <div className={"title"}>키워드</div>
           <div className={"input"}>
             <input
-              placeholder={"제목을 입력해주세요!"}
+              placeholder={"키워드를 입력해주세요!"}
               onChange={onChangeKeywords}
               value={keywords}
             />

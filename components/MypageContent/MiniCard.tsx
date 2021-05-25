@@ -14,6 +14,7 @@ type CardProps = {
     totalVoteCount: number;
     balanceGameSelections: {
       description: string;
+      backgroundColor: string;
     }[];
   };
   isModifyMode: Boolean;
@@ -106,8 +107,18 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
     <Container href={`article/${item.id}`} passHref>
       <CardWrapper>
         <div className="choices-box">
-          <div className="top">{balanceA.description}</div>
-          <div className="bottom">{balanceB.description}</div>
+          <div
+            className="top"
+            style={{ backgroundColor: balanceA.backgroundColor }}
+          >
+            {balanceA.description}
+          </div>
+          <div
+            className="bottom"
+            style={{ backgroundColor: balanceB.backgroundColor }}
+          >
+            {balanceB.description}
+          </div>
         </div>
         <div className="count__wrapper">
           <div className="count-item">

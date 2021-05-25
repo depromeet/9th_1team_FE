@@ -19,6 +19,7 @@ const MYPAGE_QUERY = gql`
         balanceGameSelections {
           order
           description
+          backgroundColor
         }
       }
     }

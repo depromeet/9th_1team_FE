@@ -11,6 +11,7 @@ type ListProps = {
     totalVoteCount: number;
     balanceGameSelections: {
       description: string;
+      backgroundColor: string;
     }[];
   }[];
   isModifyMode: Boolean;
