@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import OpinionIcon from "../../public/opinion.svg";
 import TriangleIcon from "../../public/opinion-triangle.svg";
 import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
@@ -80,19 +81,49 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
     border-radius: 15px;
   }
 `;
+
+const COMMENTS_BY_GAME_ID_QUERY = gql`
+  query {
+    comments: commentsByGameId(gameId: "a9e61383-165f-4caf-924e-1994de4a1ff2") {
+      id
+    }
+  }
+`;
+
+const CREATE_COMMENT_MUTATION = gql`
+  mutation createComment($createCommentInput: CreateCommentInput!) {
+    createComment(createCommentInput: $createCommentInput) {
+      id
+      userId
+      color
+      content
+    }
+  }
+`;
+
 // textarea 영역 구현가능한지 확인하기
-const Comments: React.FC = () => {
-  const comments = [
-    { id: 1, name: "니밸네밸", pubDate: "1분전", content: "안녕" },
-    {
-      id: 2,
-      name: "토맛토",
-      pubDate: "1분전",
-      content: "맛있는걸 먹어야지",
-    },
-    { id: 3, name: "니밸네벨", pubDate: "5분전", content: "카레가 낫지~" },
-  ];
-  const [opened, setOpened] = useState<boolean>(true);
+const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
+  const [opened, setOpened] = useState(true);
+  const [content, setContent] = useState("");
+  const [mCreateComment] = useMutation(CREATE_COMMENT_MUTATION);
+  const { data } = useQuery(COMMENTS_BY_GAME_ID_QUERY);
+
+  const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
+
+  const onSendComment = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mCreateComment({
+      variables: {
+        createCommentInput: {
+          balanceGameId: id,
+          content,
+          color: "",
+        },
+      },
+    });
+  };
 
   return (
     <CommentsWrapper opened={opened}>
@@ -102,25 +133,33 @@ const Comments: React.FC = () => {
           className="toggle-btn"
           onClick={() => setOpened((prev) => !prev)}
         >
-          {opened ? "의견 접기" : "의견 보기"} ({comments.length})
+          {opened ? "의견 접기" : "의견 보기"} ({data?.comments.length})
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
-      <form>
-        <textarea placeholder="의견을 입력해주세요" />
+      <form onSubmit={onSendComment}>
+        <textarea
+          placeholder="의견을 입력해주세요"
+          onChange={onChangeComment}
+          value={content}
+        />
         <div className="form__user-pick"></div>
         <button className="submit-btn">등록</button>
       </form>
       {opened && (
         <>
-          <ul className="comments">
-            {comments.map((comment) => (
-              <Comment comment={comment} />
-            ))}
-          </ul>
-          <div className="btn__wrapper">
-            <button className="comment__more-btn">의견 더보기</button>
-          </div>
+          {data && (
+            <>
+              <ul className="comments">
+                {data?.comments.map((comment) => (
+                  <Comment comment={comment} />
+                ))}
+              </ul>
+              <div className="btn__wrapper">
+                <button className="comment__more-btn">의견 더보기</button>
+              </div>
+            </>
+          )}
         </>
       )}
     </CommentsWrapper>

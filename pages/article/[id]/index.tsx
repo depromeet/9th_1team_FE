@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import RadioBox from "components/DetailContent/RadioBox";
 import Comments from "components/Comment/Comments";
@@ -133,6 +133,9 @@ const GET_GAME = gql`
         description
       }
     }
+    commentsByGameId(gameId: "a9e61383-165f-4caf-924e-1994de4a1ff2") {
+      id
+    }
   }
 `;
 
@@ -204,7 +207,7 @@ const Post = () => {
           </div>
         </nav>
       </div>
-      <Comments comments={data.comments} />
+      <Comments id={id} />
     </DetailWrapper>
   );
 };
