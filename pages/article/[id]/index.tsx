@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import styled from "styled-components";
-import DetailHeader from "components/DetailContent/DetailHeader";
 import RadioBox from "components/DetailContent/RadioBox";
 import Comments from "components/Comment/Comments";
 import PrevGameIcon from "../../../public/game-prev.svg";
@@ -128,6 +127,11 @@ const GET_GAME = gql`
       id
       userId
       description
+      balanceGameSelections {
+        backgroundImage
+        backgroundColor
+        description
+      }
     }
   }
 `;
@@ -144,62 +148,64 @@ const Post = () => {
 
   console.log(id, data);
 
+  if (!data) return null;
+
+  const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
+
+  console.log(balanceA, balanceB);
+
   return (
-    <>
-      {data && (
-        <>
-          <DetailWrapper>
-            <CommonHeader>
-              <div className="icon">
-                <MoreIcon onClick={toggleMore} />
-              </div>
-              <div className="icon">
-                <ShareIcon />
-              </div>
-            </CommonHeader>
-            <HeaderMore isMine={false} isOpen={isOpen} />
-            <div className="contents__wrapper">
-              <RadioBox />
-              <div className="status">
-                <div className="left">
-                  <div className="fake__image"></div>
-                  <div className="play__wrapper">
-                    <p className="play-ment">따끈따끈한 밸런스 게임</p>
-                    <span className="play-count">참여 2333</span>
-                  </div>
-                </div>
-                <span className="comment-count">의견 145</span>
-              </div>
-              <div className="contents">
-                <p>{data.description}</p>
-                <span className="author">made by 김정현</span>
-                <span>•</span>
-                <span className="pub-date">1일 전</span>
-              </div>
-              <div className="share">
-                <p>친구들에게 공유해서 의견을 들어볼까요?</p>
-                <div className="icon__wrapper">
-                  <FacebookIcon className="share-icon" />
-                  <TwitterIcon className="share-icon" />
-                  <UrlIcon className="share-icon" />
-                </div>
-              </div>
-              <nav>
-                <div className="prev">
-                  <PrevGameIcon />
-                  <span>이전 게임</span>
-                </div>
-                <div className="next">
-                  <span>다음 게임</span>
-                  <NextGameIcon />
-                </div>
-              </nav>
+    <DetailWrapper>
+      <CommonHeader>
+        <div className="icon">
+          <MoreIcon onClick={toggleMore} />
+        </div>
+        <div className="icon">
+          <ShareIcon />
+        </div>
+      </CommonHeader>
+      <HeaderMore isMine={false} isOpen={isOpen} />
+      <div className="contents__wrapper">
+        <RadioBox balanceA={balanceA} balanceB={balanceB} />
+        <div className="status">
+          <div className="left">
+            <div className="fake__image"></div>
+            <div className="play__wrapper">
+              <p className="play-ment">따끈따끈한 밸런스 게임</p>
+              <span className="play-count">
+                {data?.balanceGameLogined.description}
+              </span>
             </div>
-            <Comments comments={data.comments} />
-          </DetailWrapper>
-        </>
-      )}
-    </>
+          </div>
+          <span className="comment-count">의견 145</span>
+        </div>
+        <div className="contents">
+          <p>{data.description}</p>
+          <span className="author">made by 김정현</span>
+          <span>•</span>
+          <span className="pub-date">1일 전</span>
+        </div>
+        <div className="share">
+          <p>친구들에게 공유해서 의견을 들어볼까요?</p>
+          <div className="icon__wrapper">
+            <FacebookIcon className="share-icon" />
+            <TwitterIcon className="share-icon" />
+            <UrlIcon className="share-icon" />
+          </div>
+        </div>
+        <nav>
+          <div className="prev">
+            <PrevGameIcon />
+            <span>이전 게임</span>
+          </div>
+          <div className="next">
+            <span>다음 게임</span>
+            <NextGameIcon />
+          </div>
+        </nav>
+      </div>
+      <Comments comments={data.comments} />
+    </DetailWrapper>
   );
 };
 

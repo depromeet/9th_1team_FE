@@ -46,17 +46,23 @@ const RadioWrapper = styled.div`
   }
 `;
 
-const RadioBox: React.FC = () => {
+const RadioBox: React.FC = ({ balanceA, balanceB }) => {
   return (
     <RadioWrapper>
-      <div className="radio-box first">
-        <h2>카레맛 똥</h2>
+      <div
+        className="radio-box first"
+        style={{ backgroundColor: balanceA.backgroundColor }}
+      >
+        <h2>{balanceA.description}</h2>
 
         <input name="balance" type="radio" id="choice-1" />
         <label className="radio-btn" htmlFor="choice-1"></label>
       </div>
-      <div className="radio-box second">
-        <h2>똥맛 카레</h2>
+      <div
+        className="radio-box second"
+        style={{ backgroundColor: balanceB.backgroundColor }}
+      >
+        <h2>{balanceB.description}</h2>
 
         <input name="balance" type="radio" id="choice-2" />
         <label className="radio-btn" htmlFor="choice-2"></label>
