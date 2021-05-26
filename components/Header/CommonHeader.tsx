@@ -17,7 +17,7 @@ const CommonHeader: React.FC<Props> = ({ title = "", children }) => {
     <Container>
       <BtnContainer>
         <BackBtn onClick={onBack}>
-          <img src="img.png" alt="" />
+          <img src="static/img.png" alt="" />
         </BackBtn>
       </BtnContainer>
       <Title>{title}</Title>

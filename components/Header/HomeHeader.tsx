@@ -16,7 +16,7 @@ const HomeHeader = () => {
         <Link href={"/"}>
           <a>
             <Logo>
-              <img src="img.png" alt="" />
+              <img src="static/img.png" alt="" />
             </Logo>
             토맛토(LOGO)
           </a>
@@ -25,12 +25,12 @@ const HomeHeader = () => {
       <BtnContainer>
         <Link href={"/article/write"} passHref>
           <CreateBalanceLink>
-            <img src="img.png" alt="" />
+            <img src="static/img.png" alt="" />
           </CreateBalanceLink>
         </Link>
         <Link href={"/mypage"} passHref>
           <MypageLink>
-            <img src="img.png" alt="" />
+            <img src="static/img.png" alt="" />
           </MypageLink>
         </Link>
       </BtnContainer>

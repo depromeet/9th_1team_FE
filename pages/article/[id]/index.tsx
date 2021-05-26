@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import RadioBox from "components/DetailContent/RadioBox";
@@ -158,9 +157,7 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
-const Post = () => {
-  const router = useRouter();
-  const { id } = router.query;
+const Post = ({ id }) => {
   const { data } = useQuery(GET_GAME, { variables: { id } });
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
@@ -249,5 +246,14 @@ const Post = () => {
     </DetailWrapper>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { id } = context.query;
+  return {
+    props: {
+      id,
+    }, // will be passed to the page component as props
+  };
+}
 
 export default Post;

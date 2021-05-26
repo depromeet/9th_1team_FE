@@ -152,8 +152,8 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
           {data && (
             <>
               <ul className="comments">
-                {data?.comments.map((comment) => (
-                  <Comment comment={comment} />
+                {data?.comments.map((comment, i) => (
+                  <Comment key={i} comment={comment} />
                 ))}
               </ul>
               <div className="btn__wrapper">
