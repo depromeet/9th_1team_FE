@@ -11,7 +11,7 @@ import UrlIcon from "../../../public/url.svg";
 import CommonHeader from "../../../components/Header/CommonHeader";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 
 const DetailWrapper = styled.div`
@@ -127,7 +127,10 @@ const GET_GAME = gql`
       id
       userId
       description
+      mySelection
       balanceGameSelections {
+        id
+        balanceGameId
         backgroundImage
         backgroundColor
         description
@@ -139,23 +142,52 @@ const GET_GAME = gql`
   }
 `;
 
+const CREATE_VOTE_LOGINED_MUTATION = gql`
+  mutation createVoteLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { loading, error, data } = useQuery(GET_GAME);
+  const { data } = useQuery(GET_GAME);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
+  const [mySelection, setMySelection] = useState(null);
+
+  useEffect(() => {
+    setMySelection(data?.balanceGameLogined?.mySelection);
+  }, [data?.balanceGameLogined?.mySelection]);
 
   const toggleMore = () => {
     setIsOpen((prev) => !prev);
   };
 
-  console.log(id, data);
-
   if (!data) return null;
 
   const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
 
-  console.log(balanceA, balanceB);
+  const onChangeVote = (balanceGameId, balanceGameSelectionId) => () => {
+    console.log(balanceGameId, balanceGameSelectionId);
+    setMySelection(balanceGameSelectionId);
+    mCreateVoteLogined({
+      variables: {
+        balanceGameId,
+        balanceGameSelectionId,
+      },
+    });
+  };
 
   return (
     <DetailWrapper>
@@ -169,7 +201,13 @@ const Post = () => {
       </CommonHeader>
       <HeaderMore isMine={false} isOpen={isOpen} />
       <div className="contents__wrapper">
-        <RadioBox balanceA={balanceA} balanceB={balanceB} />
+        <RadioBox
+          balanceGameId={data?.balanceGameLogined?.id}
+          balanceA={balanceA}
+          balanceB={balanceB}
+          onChange={onChangeVote}
+          value={mySelection}
+        />
         <div className="status">
           <div className="left">
             <div className="fake__image"></div>

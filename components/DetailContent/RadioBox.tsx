@@ -46,7 +46,13 @@ const RadioWrapper = styled.div`
   }
 `;
 
-const RadioBox: React.FC = ({ balanceA, balanceB }) => {
+const RadioBox: React.FC = ({
+  balanceGameId,
+  balanceA,
+  balanceB,
+  onChange,
+  value,
+}) => {
   return (
     <RadioWrapper>
       <div
@@ -55,7 +61,13 @@ const RadioBox: React.FC = ({ balanceA, balanceB }) => {
       >
         <h2>{balanceA.description}</h2>
 
-        <input name="balance" type="radio" id="choice-1" />
+        <input
+          name="balance"
+          type="radio"
+          id="choice-1"
+          onChange={onChange(balanceGameId, balanceA.id)}
+          checked={balanceA.id === value}
+        />
         <label className="radio-btn" htmlFor="choice-1"></label>
       </div>
       <div
@@ -64,7 +76,13 @@ const RadioBox: React.FC = ({ balanceA, balanceB }) => {
       >
         <h2>{balanceB.description}</h2>
 
-        <input name="balance" type="radio" id="choice-2" />
+        <input
+          name="balance"
+          type="radio"
+          id="choice-2"
+          onChange={onChange(balanceGameId, balanceB.id)}
+          checked={balanceB.id === value}
+        />
         <label className="radio-btn" htmlFor="choice-2"></label>
       </div>
     </RadioWrapper>
