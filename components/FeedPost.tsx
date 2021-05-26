@@ -21,6 +21,7 @@ interface OptionBoxProps {
   checkType: CHECK_TYPE;
   setCheckType: Dispatch<SetStateAction<CHECK_TYPE>>;
   background: string;
+  color: string;
 }
 
 const OptionBox = ({
@@ -30,6 +31,7 @@ const OptionBox = ({
   checkType,
   setCheckType,
   background,
+  color,
 }: OptionBoxProps) => {
   const handleCheckType = (type: CHECK_TYPE) => {
     if (checkType === type) setCheckType(CHECK_TYPE.NONE);
@@ -38,7 +40,7 @@ const OptionBox = ({
   return (
     <OptionBoxContainer
       {...{ checkType, isSelected }}
-      style={{ background, color: "white" }}
+      style={{ background, color }}
     >
       <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
       <div className="title" onClick={() => handleCheckType(type)}>
@@ -69,37 +71,42 @@ const GameFire = () => (
   </>
 );
 
-const FeedPost = () => {
+const FeedPost = ({ data }) => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
+
+  const [balanceA, balanceB] = data.balanceGameSelections;
 
   return (
     <Container>
       <OptionBox
         type={CHECK_TYPE.FIRST}
         isSelected={checkType === CHECK_TYPE.FIRST}
-        title="추성훈 선수한테 맞고 이국종 교수한테 수술받기"
+        title={balanceA.description}
         checkType={checkType}
         setCheckType={setCheckType}
-        background="#E66F53"
+        background={balanceA.backgroundColor}
+        color={balanceA.textColor}
       />
       <OptionBox
         type={CHECK_TYPE.SECOND}
         isSelected={checkType === CHECK_TYPE.SECOND}
-        title="이국종 교수한테 맞고 추성훈 선수한테 수술받기"
+        title={balanceB.description}
         checkType={checkType}
         setCheckType={setCheckType}
-        background="#FFD569"
+        background={balanceB.backgroundColor}
+        color={balanceB.textColor}
       />
       <Versus>{checkType === CHECK_TYPE.NONE ? <VS /> : <GameFire />}</Versus>
 
       <div className="content">
         <div className="content__title">
-          <Link href={"/article/08255d28-71f8-4c63-94d6-1a560093bea0"}>
-            굳세게 무엇을 인생을 같이 청춘을 내려온 위여, 우리 위하여...
-          </Link>
+          <Link href={`/article/${data.id}`}>{data.description}</Link>
         </div>
         <div className="content__state">
-          <div>참여 1034 • 의견 145 • 1일전</div>
+          <div>
+            참여 {data.totalVoteCount} • 의견 {data.commentCount} • 1일전
+            {data.createdAt}
+          </div>
         </div>
         <div className="content__buttons">
           <div className="content__buttons__button">
