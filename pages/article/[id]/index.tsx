@@ -122,8 +122,8 @@ const DetailWrapper = styled.div`
 //주소 article/a9e61383-165f-4caf-924e-1994de4a1ff2
 
 const GET_GAME = gql`
-  query {
-    balanceGameLogined(id: "a9e61383-165f-4caf-924e-1994de4a1ff2") {
+  query balanceGameLogined($id: String!) {
+    balanceGameLogined(id: $id) {
       id
       userId
       description
@@ -136,7 +136,7 @@ const GET_GAME = gql`
         description
       }
     }
-    commentsByGameId(gameId: "a9e61383-165f-4caf-924e-1994de4a1ff2") {
+    commentsByGameId(gameId: $id) {
       id
     }
   }
@@ -161,7 +161,7 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { data } = useQuery(GET_GAME);
+  const { data } = useQuery(GET_GAME, { variables: { id } });
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState(null);

@@ -83,9 +83,11 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
 `;
 
 const COMMENTS_BY_GAME_ID_QUERY = gql`
-  query {
-    comments: commentsByGameId(gameId: "a9e61383-165f-4caf-924e-1994de4a1ff2") {
+  query commentsByGameId($id: String!) {
+    comments: commentsByGameId(gameId: $id) {
       id
+      content
+      userId
     }
   }
 `;
@@ -106,7 +108,7 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
   const [mCreateComment] = useMutation(CREATE_COMMENT_MUTATION);
-  const { data } = useQuery(COMMENTS_BY_GAME_ID_QUERY);
+  const { data } = useQuery(COMMENTS_BY_GAME_ID_QUERY, { variables: { id } });
 
   const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -119,7 +121,6 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
         createCommentInput: {
           balanceGameId: id,
           content,
-          color: "",
         },
       },
     });

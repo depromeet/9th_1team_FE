@@ -77,7 +77,7 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
       <div className="comment__content">
         <div className="info">
           <div className="comment__user-pick"></div>
-          <span className="author">{comment.name}</span>
+          <span className="author">{comment.userId}</span>
           <span className="pub-date">{comment.pubDate}</span>
           <div className="setting__more-btn">...</div>
         </div>
