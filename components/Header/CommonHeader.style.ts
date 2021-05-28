@@ -4,23 +4,22 @@ export const Container = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 52px;
-  padding: 13px;
+  height: 5.2rem;
+  padding: 1.3rem;
   box-sizing: border-box;
 `;
 
 export const BackBtn = styled.button.attrs({
   type: "button",
 })`
-  width: 32px;
-  height: 32px;
   box-sizing: border-box;
+  border: none;
+  background: none;
 `;
 
 export const Title = styled.h1`
-  font-weight: bold;
+  font-weight: 700;
   font-size: 17px;
-  line-height: 25px;
   text-align: center;
   color: #343a40;
 `;
