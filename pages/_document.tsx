@@ -72,15 +72,22 @@ const GlobalStyles = createGlobalStyle`
 
 @font-face {
   font-family: "NanumSquareRound";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
+  font-weight: 400;
+  src: url("https://cdn.jsdelivr.net/npm/typeface-nanum-square-round@1.0.2/NanumSquareRoundR.woff") format('woff');
 }
-
+@font-face {
+  font-family: "NanumSquareRound";
+  font-weight: 700;
+  src: url("https://cdn.jsdelivr.net/npm/typeface-nanum-square-round@1.0.2/NanumSquareRoundB.woff") format('woff');
+}
+@font-face {
+  font-family: "NanumSquareRound";
+  font-weight: 800;
+  src: url("https://cdn.jsdelivr.net/npm/typeface-nanum-square-round@1.0.2/NanumSquareRoundEB.woff") format('woff');
+}
 @font-face {
   font-family: 'Noto Sans KR';
-  src: url("https://cdn.jsdelivr.net/npm/noto-sans-kr@0.1.1/fonts/NotoSans-Regular.woff");
+  src: url("https://cdn.jsdelivr.net/npm/noto-sans-kr@0.1.1/fonts/NotoSans-Regular.woff") format('woff');
   font-style: normal;
   font-weight: 400;
 }

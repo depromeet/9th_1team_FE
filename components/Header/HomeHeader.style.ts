@@ -4,46 +4,46 @@ export const Container = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 52px;
-  padding: 13px;
+  height: 5.2rem;
+  padding: 1.3rem;
   box-sizing: border-box;
+  background-color: #fff;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.div`
   > a {
-    display: flex;
-    align-items: center;
-
-    font-family: NanumSquareRoundOTF;
-    font-weight: 800;
-    font-size: 18px;
-    color: #f64d4d;
+    display: inline-block;
     text-decoration: none;
   }
 `;
 
-export const Logo = styled.div`
-  width: 27px;
-  height: 24px;
-  background-color: red;
-  margin-right: 11px;
+export const Logo = styled.a`
+  display: inline-flex;
+  align-items: center;
+`;
+
+export const Text = styled.h1`
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1.1rem;
+  font-family: "NanumSquareRound";
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #f64d4d;
 `;
 
 export const BtnContainer = styled.div`
-  width: 72px;
   display: flex;
   align-items: center;
 `;
 
-export const CreateBalanceLink = styled.a`
-  width: 24px;
-  height: 24px;
-  background-color: gray;
-  margin-right: 10px;
-`;
+export const CreateBalanceLink = styled.a``;
 
 export const MypageLink = styled.a`
-  width: 24px;
-  height: 24px;
-  background-color: gray;
+  font-family: "NanumSquareRound";
+  font-weight: 700;
+  font-size: 1.7rem;
+  margin-left: 1.7rem;
+  color: #343a40;
+  text-decoration: none;
 `;

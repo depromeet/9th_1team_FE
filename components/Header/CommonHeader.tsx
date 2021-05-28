@@ -1,6 +1,7 @@
 import React from "react";
 import { BackBtn, BtnContainer, Container, Title } from "./CommonHeader.style";
 import { useRouter } from "next/router";
+import PrevIcon from "../../public/top-prev.svg";
 
 type Props = {
   title?: string;
@@ -17,7 +18,7 @@ const CommonHeader: React.FC<Props> = ({ title = "", children }) => {
     <Container>
       <BtnContainer>
         <BackBtn onClick={onBack}>
-          <img src="static/img.png" alt="" />
+          <PrevIcon />
         </BackBtn>
       </BtnContainer>
       <Title>{title}</Title>
