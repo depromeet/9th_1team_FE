@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import MiniCard from "./MiniCard";
 import { ContentContainer } from "./NotLogin.style";
+import VomitIcon from "../../public/tomato-vomit.svg";
 
 type ListProps = {
   list: {
@@ -24,17 +25,31 @@ const CardsWrapper = styled.div`
   margin-top: 2rem;
 `;
 
+const Empty = styled.div`
+  height: 100%;
+  font-size: 1.6rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+
+  p {
+    margin-top: 2rem;
+  }
+`;
+
 const MiniCards: React.FC<ListProps> = ({
   list = [],
   isModifyMode = false,
 }) => {
   if (_.isEmpty(list))
     return (
-      <ContentContainer>
-        <img src="img.png" alt="" />
-        로그인 후 <br />
-        밸런스 게임을 만들어보세요!
-      </ContentContainer>
+      <Empty>
+        <VomitIcon />
+        <p>내가 만든 밸런스 게임이 없습니다.</p>
+      </Empty>
     );
   return (
     <CardsWrapper>

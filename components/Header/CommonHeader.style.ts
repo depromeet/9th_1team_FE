@@ -5,7 +5,7 @@ export const Container = styled.header`
   justify-content: space-between;
   align-items: center;
   height: 5.2rem;
-  padding: 1.3rem;
+  padding: 1.6rem;
   box-sizing: border-box;
 `;
 
@@ -22,8 +22,7 @@ export const Title = styled.h1`
   font-size: 17px;
   text-align: center;
   color: #343a40;
+  flex: 1;
 `;
 
-export const BtnContainer = styled.div`
-  width: 72px;
-`;
+export const BtnContainer = styled.div``;

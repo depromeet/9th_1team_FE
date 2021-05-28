@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from "react";
 import MiniCards from "components/MypageContent/MiniCards";
 import PencilIcon from "public/pencil.svg";
-import FacebookIcon from "public/facebook.svg";
-import { MypageWrapper, NoticeLink } from "./index.style";
+import BellIcon from "../../public/bell.svg";
+import TomatoIcon from "public/tomato-character.svg";
+import {
+  CardsHeader,
+  CardsSection,
+  ContentWrapper,
+  EditBtn,
+  LogoutBtn,
+  LogoutWrapper,
+  MypageWrapper,
+  NoticeLink,
+  UserImage,
+  UserInfo,
+  UserName,
+} from "./index.style";
 import { gql } from "@apollo/client/core";
 import { useLazyQuery } from "@apollo/client";
 import NotLogin from "../../components/MypageContent/NotLogin";
@@ -56,55 +69,57 @@ const Mypage = () => {
     setIsModifyMode(true);
   };
 
+  const userImg = false;
+
   return (
     <>
       <CommonHeader title={"마이페이지"}>
         <Link href={"/notifications"}>
           <NoticeLink>
-            <img src="img.png" alt="" />
+            <BellIcon />
           </NoticeLink>
         </Link>
       </CommonHeader>
       <MypageWrapper>
-        <div className="contents__wrapper">
-          <div className="user__status">
-            <FacebookIcon />
-            <span className="user-name">김정현님</span>
-            <PencilIcon />
-          </div>
-          <section className="cards">
-            <div className="cards__header">
+        <UserInfo>
+          <UserImage>{userImg ? userImg : <TomatoIcon />}</UserImage>
+          <UserName>김정현님</UserName>
+          <PencilIcon />
+        </UserInfo>
+        <ContentWrapper>
+          <CardsSection>
+            <CardsHeader>
               <h2>내가 만든 밸런스 게임({balanceGames.length})</h2>
               {isModifyMode ? (
-                <button
+                <EditBtn
                   type="button"
                   className="edit-btn"
                   onClick={onCompleteModifyMode}
                 >
                   편집 완료
-                </button>
+                </EditBtn>
               ) : (
-                <button
+                <EditBtn
                   type="button"
                   className="edit-btn"
                   onClick={onModifyMode}
                 >
                   편집
-                </button>
+                </EditBtn>
               )}
-            </div>
+            </CardsHeader>
             <MiniCards isModifyMode={isModifyMode} list={balanceGames} />
-          </section>
-          <div className="logout">
-            <button
+          </CardsSection>
+          <LogoutWrapper>
+            <LogoutBtn
               type="button"
               className="logout-btn"
               onClick={onClickLogout}
             >
               로그아웃
-            </button>
-          </div>
-        </div>
+            </LogoutBtn>
+          </LogoutWrapper>
+        </ContentWrapper>
       </MypageWrapper>
     </>
   );
