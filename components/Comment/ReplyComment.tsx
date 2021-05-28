@@ -1,11 +1,10 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
-import TextareaComment from "./TextareaComment";
-import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
-import ReplyComment from "./ReplyComment";
+import { gql } from "@apollo/client/core";
+import TextareaComment from "./TextareaComment";
 
-const CommentWrapper = styled.li`
+const ReplyCommentWrapper = styled.li`
   &:nth-child(2) {
     // 내 게시글인 경우 배경색상
     background-color: #f8f9fa;
@@ -66,13 +65,14 @@ const CommentWrapper = styled.li`
   }
 `;
 
-interface CommentProps {
+interface ReplyCommentProps {
   balanceGameId: string;
-  comment: {
-    id: string;
-    name: string;
-    pubDate: string;
-    content: string;
+  commentId: string;
+  reply: {
+    id: number;
+    name: String;
+    pubDate: String;
+    content: String;
   };
 }
 
@@ -95,7 +95,11 @@ const CREATE_REPLY_MUTATION = gql`
   }
 `;
 
-const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
+const ReplyComment: React.FC<ReplyCommentProps> = ({
+  balanceGameId = "",
+  commentId = "",
+  reply,
+}) => {
   const [opened, setOpened] = useState(false);
   const [content, setContent] = useState("");
   const [mCreateReply] = useMutation(CREATE_REPLY_MUTATION);
@@ -112,7 +116,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
     mCreateReply({
       variables: {
         balanceGameId,
-        commentId: comment.id,
+        commentId,
         content,
       },
     });
@@ -123,16 +127,16 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
   };
 
   return (
-    <CommentWrapper key={comment.id}>
+    <ReplyCommentWrapper>
       <div className="comment__content">
         <div className="info">
           <div className="comment__user-pick" />
-          <span className="author">{comment.userId}</span>
-          <span className="pub-date">{comment.pubDate}</span>
+          <span className="author">{reply.userId}</span>
+          <span className="pub-date">{reply.pubDate}</span>
           <div className="setting__more-btn">...</div>
         </div>
         <div className="comment__user-text">
-          <p className="text">{comment.content}</p>
+          <p className="text">{reply.content}</p>
           <button className="reply-btn" onClick={onToggle}>
             답글 쓰기
           </button>
@@ -144,16 +148,9 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
             value={content}
           />
         )}
-        {comment.replies.map((reply) => (
-          <ReplyComment
-            balanceGameId={balanceGameId}
-            commentId={comment.id}
-            reply={reply}
-          />
-        ))}
       </div>
-    </CommentWrapper>
+    </ReplyCommentWrapper>
   );
 };
 
-export default Comment;
+export default ReplyComment;

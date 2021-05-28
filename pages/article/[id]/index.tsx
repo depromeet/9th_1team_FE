@@ -176,7 +176,6 @@ const Post = ({ id }) => {
   const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
 
   const onChangeVote = (balanceGameId, balanceGameSelectionId) => () => {
-    console.log(balanceGameId, balanceGameSelectionId);
     setMySelection(balanceGameSelectionId);
     mCreateVoteLogined({
       variables: {
@@ -252,7 +251,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id,
-    }, // will be passed to the page component as props
+    },
   };
 }
 

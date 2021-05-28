@@ -5,6 +5,7 @@ import OpinionIcon from "../../public/opinion.svg";
 import TriangleIcon from "../../public/opinion-triangle.svg";
 import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import TextareaComment from "./TextareaComment";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
@@ -86,8 +87,13 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
   query commentsByGameId($id: String!) {
     comments: commentsByGameId(gameId: $id) {
       id
-      content
       userId
+      content
+      replies {
+        id
+        userId
+        content
+      }
     }
   }
 `;
@@ -138,22 +144,18 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
-      <form onSubmit={onSendComment}>
-        <textarea
-          placeholder="의견을 입력해주세요"
-          onChange={onChangeComment}
-          value={content}
-        />
-        <div className="form__user-pick"></div>
-        <button className="submit-btn">등록</button>
-      </form>
+      <TextareaComment
+        onSubmit={onSendComment}
+        onChange={onChangeComment}
+        value={content}
+      />
       {opened && (
         <>
           {data && (
             <>
               <ul className="comments">
                 {data?.comments.map((comment, i) => (
-                  <Comment key={i} comment={comment} />
+                  <Comment key={i} balanceGameId={id} comment={comment} />
                 ))}
               </ul>
               <div className="btn__wrapper">
