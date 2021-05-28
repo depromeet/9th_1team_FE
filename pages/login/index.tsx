@@ -7,9 +7,13 @@ import {
   NaverButton,
   Logo,
   WithoutLoginButton,
+  LoginHeader,
 } from "./index.style";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
+import NaverIcon from "../../public/naver.svg";
+import KakaoIcon from "../../public/kakao.svg";
+import CloseIcon from "../../public/close.svg";
 
 const LOGIN_MUTATION = gql`
   mutation login($type: String!, $key: String!) {
@@ -177,21 +181,26 @@ export default function Login() {
   console.log("login data : ", data);
 
   return (
-    <Container>
-      <Logo>
-        <img src="img.png" alt="" />
-      </Logo>
-      <BtnContainer>
-        <NaverButton onClick={onNaver}>
+    <>
+      <LoginHeader>
+        <CloseIcon />
+      </LoginHeader>
+      <Container>
+        <Logo>
           <img src="img.png" alt="" />
-          네이버로 시작하기
-        </NaverButton>
-        <KakaoButton onClick={onKakaoLogin}>
-          <img src="img.png" alt="" />
-          카카오톡으로 시작하기
-        </KakaoButton>
-      </BtnContainer>
-      <WithoutLoginButton>로그인없이 둘러보기</WithoutLoginButton>
-    </Container>
+        </Logo>
+        <BtnContainer>
+          <NaverButton onClick={onNaver}>
+            <NaverIcon />
+            <span>네이버로 계속하기</span>
+          </NaverButton>
+          <KakaoButton onClick={onKakaoLogin}>
+            <KakaoIcon />
+            <span>카카오톡으로 계속하기</span>
+          </KakaoButton>
+        </BtnContainer>
+        <WithoutLoginButton>로그인없이 둘러보기</WithoutLoginButton>
+      </Container>
+    </>
   );
 }
