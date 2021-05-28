@@ -70,9 +70,15 @@ interface CommentProps {
   balanceGameId: string;
   comment: {
     id: string;
-    name: string;
+    userId: string;
     pubDate: string;
     content: string;
+    replies: {
+      id: number;
+      userId: string;
+      pubDate: string;
+      content: string;
+    }[];
   };
 }
 

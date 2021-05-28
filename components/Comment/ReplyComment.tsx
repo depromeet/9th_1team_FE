@@ -70,9 +70,9 @@ interface ReplyCommentProps {
   commentId: string;
   reply: {
     id: number;
-    name: String;
-    pubDate: String;
-    content: String;
+    userId: string;
+    pubDate: string;
+    content: string;
   };
 }
 
