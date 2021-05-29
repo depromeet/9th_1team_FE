@@ -19,6 +19,7 @@ export const BalanceCard = styled.div<{ placeholderColor: string }>`
   font-size: 20px;
   font-weight: 800;
   color: rgba(52, 58, 64, 0.5);
+
   > textarea {
     position: absolute;
     width: 80%;
@@ -87,11 +88,7 @@ export const BalanceCardContainer = styled.div`
     left: calc(50%);
     top: calc(50%);
     z-index: 1;
-    img {
-      display: block;
-      width: 25px;
-      height: 15px;
-    }
+    transform: translate(-50%, -50%);
   }
 `;
 

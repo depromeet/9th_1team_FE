@@ -21,6 +21,8 @@ import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
 import CommonHeader from "../../../components/Header/CommonHeader";
+import ImgIcon from "../../../public/image-frame.svg";
+import VsIcon from "../../../public/versus.svg";
 
 Modal.setAppElement("#__next");
 
@@ -248,12 +250,12 @@ const Write = () => {
                     id={"balanceBgColorA"}
                     onChange={onChangeBgImg("A")}
                   />
-                  <img src="img.png" alt="img" />
+                  <ImgIcon />
                 </BalanceCardBtn>
               )}
             </BalanceCard>
             <div className={"vs"}>
-              <img src="img.png" alt="vs" />
+              <VsIcon />
             </div>
             <BalanceCard
               placeholderColor={balanceFontColorB}
@@ -282,7 +284,7 @@ const Write = () => {
                     id={"balanceBgColorB"}
                     onChange={onChangeBgImg("B")}
                   />
-                  <img src="img.png" alt="img" />
+                  <ImgIcon />
                 </BalanceCardBtn>
               )}
             </BalanceCard>

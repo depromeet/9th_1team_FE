@@ -9,7 +9,7 @@ import {
   MypageLink,
   Text,
 } from "./HomeHeader.style";
-import TomatoIcon from "../../public/tomato-character.svg";
+import TomatoIcon from "../../public/tomato/smile-red.svg";
 import CheckSqureIcon from "../../public/check-square.svg";
 
 const HomeHeader = () => {
