@@ -27,6 +27,10 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
+interface KakaoResponse {
+  access_token: string;
+}
+
 export default function Login() {
   const router = useRouter();
   const [mLogin, { data }] = useMutation(LOGIN_MUTATION);
@@ -165,14 +169,19 @@ export default function Login() {
   const onKakaoLogin = () => {
     window.Kakao.Auth.login({
       scope: "profile,account_email",
-      success: function (response: Object) {
+      success: async function (response: KakaoResponse) {
         console.log(response);
-        mLogin({
-          variables: {
-            type: "kakao",
-            key: response.access_token,
-          },
-        });
+        try {
+          await mLogin({
+            variables: {
+              type: "kakao",
+              key: response.access_token,
+            },
+          });
+          router.push("/");
+        } catch (e) {
+          alert("로그인에 실패했습니다.");
+        }
       },
       fail: function (error: Error) {
         console.log(error);
