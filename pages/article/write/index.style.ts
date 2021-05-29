@@ -118,8 +118,8 @@ export const BalanceCardContainer = styled.div`
     position: absolute;
     width: 28px;
     height: 16px;
-    left: calc(50% - 14px);
-    top: calc(50% - 8px);
+    left: calc(50%);
+    top: calc(50%);
     z-index: 1;
     transform: translate(-50%, -50%);
   }
