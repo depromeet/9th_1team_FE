@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const WriteWrapper = styled.section`
+  padding-bottom: 3.8rem;
+`;
+
 export const BalanceCardTitle = styled.h2`
   font-family: Roboto;
   font-style: normal;
@@ -30,7 +34,7 @@ export const BalanceCard = styled.div<{ placeholderColor: string }>`
     background-color: transparent;
     text-align: center;
     resize: none;
-    font-style: normal;
+    font-family: "NanumSquareRound";
     font-weight: 800;
     font-size: 20px;
     line-height: 140%;
@@ -62,19 +66,47 @@ export const BalanceCardBtn = styled.label`
 `;
 
 export const BalanceTitle = styled.div`
-  padding: 3px 11px 0;
-  .img {
-    width: 38px;
-    height: 34px;
-  }
+  padding: 0 1.6rem;
   .title {
-    margin-top: 6px;
+    margin: 6px 0;
     font-size: 12px;
+    letter-spacing: -0.5px;
+  }
+`;
+
+export const TomatoMent = styled.div`
+  display: flex;
+  align-items: center;
+
+  > svg {
+    width: 22px;
+    height: 27px;
+  }
+`;
+
+export const ChatArea = styled.div`
+  position: relative;
+  flex: 1;
+  margin-left: 0.8rem;
+
+  p {
+    font-size: 1.1rem;
+    color: #2a2a2d;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 15.3rem;
+    text-align: center;
+    transform: translateY(-50%);
+  }
+
+  svg {
   }
 `;
 
 export const BalanceContainer = styled.div`
   padding: 18px 16px;
+  background-color: #f8f9fa;
 `;
 
 export const BalanceCardContainer = styled.div`
@@ -125,6 +157,7 @@ export const TextInfoContainer = styled.div`
     border-bottom: 1px solid #e9ecef;
     padding: 4px 0;
     white-space: pre-wrap;
+
     font-size: 14px;
     word-break: break-word;
     > textarea {
@@ -132,12 +165,16 @@ export const TextInfoContainer = styled.div`
       margin: 0;
       padding: 0;
       border: 0;
-      font-weight: normal;
+      font-family: "Noto Sans KR";
+      font-weight: 400;
       font-size: 14px;
       line-height: 175%;
       letter-spacing: -0.05em;
       color: #343a40;
       resize: none;
+      &::placeholder {
+        color: #adb5bd;
+      }
     }
   }
   > .length {
@@ -174,6 +211,9 @@ export const KeywordsContainer = styled.div`
       letter-spacing: -0.05em;
       color: #343a40;
       resize: none;
+      &::placeholder {
+        color: #adb5bd;
+      }
     }
   }
 `;
