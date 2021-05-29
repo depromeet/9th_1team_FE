@@ -129,6 +129,17 @@ export const ColorSamples = styled.div`
   padding: 10px 2px;
 `;
 
+export const ColorSample = styled.button.attrs({
+  type: "button",
+})`
+  width: 36px;
+  height: 36px;
+  margin-left: 14px;
+  &:first-child {
+    margin-left: 0;
+  }
+`;
+
 export const ColorSampleInfo = styled.div`
   color: #868e96;
   font-size: 11px;

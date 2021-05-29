@@ -18,6 +18,7 @@ import {
   TomatoMent,
   ChatArea,
   WriteWrapper,
+  ColorSample,
 } from "./index.style";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
