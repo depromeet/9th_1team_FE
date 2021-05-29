@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React, { ChangeEvent } from "react";
 
 const RadioWrapper = styled.div`
   width: 100%;
@@ -46,7 +47,24 @@ const RadioWrapper = styled.div`
   }
 `;
 
-const RadioBox: React.FC = ({
+interface balanceType {
+  id: string;
+  backgroundColor: string;
+  description: string;
+}
+
+interface RadioBoxProps {
+  balanceGameId: string;
+  balanceA: balanceType;
+  balanceB: balanceType;
+  onChange: (
+    balanceGameId: string,
+    balanceId: string
+  ) => (e: ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+}
+
+const RadioBox: React.FC<RadioBoxProps> = ({
   balanceGameId,
   balanceA,
   balanceB,
