@@ -21,6 +21,7 @@ import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
 import CommonHeader from "../../../components/Header/CommonHeader";
+import hashtag from "../../../lib/hashtag";
 
 Modal.setAppElement("#__next");
 
@@ -167,7 +168,7 @@ const Write = () => {
   };
 
   const findHashtags = (searchText = "") => {
-    const regexp = /\B(\#[a-zA-Z]+\b)(?!;)/g;
+    const regexp = /(\#[a-zA-Zㄱ-ㅎ|ㅏ-ㅣ|가-힣]+)/g;
     const result = searchText.match(regexp);
     if (result) {
       return result.map((name) => ({ name }));
@@ -178,7 +179,6 @@ const Write = () => {
 
   const onChangeKeywords = (e: ChangeEvent<HTMLInputElement>) => {
     setKeywords(e.target.value);
-    console.log(findHashtags(keywords));
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -205,6 +205,8 @@ const Write = () => {
       },
     });
   };
+
+  console.log(findHashtags(keywords));
 
   return (
     <>
