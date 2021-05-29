@@ -63,6 +63,7 @@ export const BalanceCardBtn = styled.label`
 export const BalanceTitle = styled.div`
   padding: 3px 11px 0;
   .img {
+    position: relative;
     width: 38px;
     height: 34px;
   }
@@ -73,7 +74,9 @@ export const BalanceTitle = styled.div`
 `;
 
 export const BalanceContainer = styled.div`
+  margin-top: 6px;
   padding: 18px 16px;
+  background-color: #f8f9fa;
 `;
 
 export const BalanceCardContainer = styled.div`
@@ -82,10 +85,10 @@ export const BalanceCardContainer = styled.div`
   overflow: hidden;
   .vs {
     position: absolute;
-    width: 25px;
-    height: 15px;
-    left: calc(50%);
-    top: calc(50%);
+    width: 28px;
+    height: 16px;
+    left: calc(50% - 14px);
+    top: calc(50% - 8px);
     z-index: 1;
     img {
       display: block;
@@ -97,17 +100,6 @@ export const BalanceCardContainer = styled.div`
 
 export const ColorSamples = styled.div`
   padding: 10px 2px;
-`;
-
-export const ColorSample = styled.button.attrs({
-  type: "button",
-})`
-  width: 36px;
-  height: 36px;
-  margin-left: 14px;
-  &:first-child {
-    margin-left: 0;
-  }
 `;
 
 export const ColorSampleInfo = styled.div`
@@ -226,4 +218,19 @@ export const BalanceCardBgImgRemoveBtn = styled.button`
     width: 8px;
     height: 8px;
   }
+`;
+
+export const TextBubble = styled.div`
+  position: absolute;
+  left: 40px;
+  top: 0;
+  width: max-content;
+  text-align: center;
+  line-height: 1.4em;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 19px;
+  font-family: sans-serif;
+  padding: 8px 12px;
+  font-size: 11px;
 `;

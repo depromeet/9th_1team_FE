@@ -9,19 +9,21 @@ import {
   BalanceCardContainer,
   BalanceContainer,
   ColorSamples,
-  ColorSample,
   ColorSampleInfo,
   SubmitBtn,
   SubmitBtnContainer,
   TextInfoContainer,
   BalanceCardBgImgRemoveBtn,
   KeywordsContainer,
+  TextBubble,
 } from "./index.style";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
 import CommonHeader from "../../../components/Header/CommonHeader";
-import hashtag from "../../../lib/hashtag";
+import VS from "../../../public/versus.svg";
+import TomatoIcon from "../../../public/tomato-character.svg";
+import ColorSampleBtn from "../../../components/Button/ColorSampleBtn";
 
 Modal.setAppElement("#__next");
 
@@ -214,7 +216,8 @@ const Write = () => {
         <CommonHeader title={"게임 만들기"} />
         <BalanceTitle>
           <div className={"img"}>
-            <img src="/img.png" width={38} height={34} alt="" />
+            <TomatoIcon />
+            <TextBubble>결정장애를 유발해 보세요!</TextBubble>
           </div>
           <div className={"title"}>
             밸런스 선택지를 만들고 내용 작성을 통해 추가 설명이 가능합니다.
@@ -238,24 +241,30 @@ const Write = () => {
                 onChange={onChangeText("A")}
                 value={balanceTextA}
               />
-              {isExistBgImg("A") ? (
-                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
-                  사진삭제 <img src="img.png" alt="" />
-                </BalanceCardBgImgRemoveBtn>
-              ) : (
-                <BalanceCardBtn htmlFor={"balanceBgColorA"}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id={"balanceBgColorA"}
-                    onChange={onChangeBgImg("A")}
-                  />
-                  <img src="img.png" alt="img" />
-                </BalanceCardBtn>
+              {false && (
+                <>
+                  {isExistBgImg("A") ? (
+                    <BalanceCardBgImgRemoveBtn
+                      onClick={onClickBgImgRemove("A")}
+                    >
+                      사진삭제 <img src="img.png" alt="" />
+                    </BalanceCardBgImgRemoveBtn>
+                  ) : (
+                    <BalanceCardBtn htmlFor={"balanceBgColorA"}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id={"balanceBgColorA"}
+                        onChange={onChangeBgImg("A")}
+                      />
+                      <img src="img.png" alt="img" />
+                    </BalanceCardBtn>
+                  )}
+                </>
               )}
             </BalanceCard>
             <div className={"vs"}>
-              <img src="img.png" alt="vs" />
+              <VS />
             </div>
             <BalanceCard
               placeholderColor={balanceFontColorB}
@@ -272,28 +281,39 @@ const Write = () => {
                 onChange={onChangeText("B")}
                 value={balanceTextB}
               />
-              {isExistBgImg("B") ? (
-                <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
-                  사진삭제 <img src="img.png" alt="" />
-                </BalanceCardBgImgRemoveBtn>
-              ) : (
-                <BalanceCardBtn htmlFor={"balanceBgColorB"}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id={"balanceBgColorB"}
-                    onChange={onChangeBgImg("B")}
-                  />
-                  <img src="img.png" alt="img" />
-                </BalanceCardBtn>
+              {false && (
+                <>
+                  {isExistBgImg("B") ? (
+                    <BalanceCardBgImgRemoveBtn
+                      onClick={onClickBgImgRemove("B")}
+                    >
+                      사진삭제 <img src="img.png" alt="" />
+                    </BalanceCardBgImgRemoveBtn>
+                  ) : (
+                    <BalanceCardBtn htmlFor={"balanceBgColorB"}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id={"balanceBgColorB"}
+                        onChange={onChangeBgImg("B")}
+                      />
+                      <img src="img.png" alt="img" />
+                    </BalanceCardBtn>
+                  )}
+                </>
               )}
             </BalanceCard>
           </BalanceCardContainer>
           <ColorSamples>
             {BALANCE_COLOR_SAMPLE_LIST.map((colors, i) => (
-              <ColorSample key={i} onClick={onChangeColorGroup(...colors)}>
+              <ColorSampleBtn
+                key={i}
+                bgColorA={colors[1]}
+                bgColorB={colors[3]}
+                onClick={onChangeColorGroup(...colors)}
+              >
                 a
-              </ColorSample>
+              </ColorSampleBtn>
             ))}
           </ColorSamples>
           <ColorSampleInfo>
