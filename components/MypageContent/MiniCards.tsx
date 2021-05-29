@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import MiniCard from "./MiniCard";
 import { ContentContainer } from "./NotLogin.style";
-import VomitIcon from "../../public/tomato-vomit.svg";
+import VomitIcon from "../../public/tomato/vomit-light-side.svg";
 
 type ListProps = {
   list: {
