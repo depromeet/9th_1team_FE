@@ -7,7 +7,7 @@ interface ColorSampleBtnProps {
   bgColorB: string;
 }
 
-export const Button = styled.button`
+export const Button = styled.button.attrs({ type: "button" })`
   display: inline-flex;
   width: 36px;
   height: 36px;
