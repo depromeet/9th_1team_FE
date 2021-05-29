@@ -71,3 +71,9 @@ export const WithoutLoginButton = styled.button`
   border: none;
   text-decoration: underline;
 `;
+
+export const CloseBtn = styled.button`
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+`;

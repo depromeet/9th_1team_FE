@@ -8,12 +8,14 @@ import {
   Logo,
   WithoutLoginButton,
   LoginHeader,
+  CloseBtn,
 } from "./index.style";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
 import NaverIcon from "../../public/naver.svg";
 import KakaoIcon from "../../public/kakao.svg";
 import CloseIcon from "../../public/close.svg";
+import Link from "next/link";
 
 const LOGIN_MUTATION = gql`
   mutation login($type: String!, $key: String!) {
@@ -183,7 +185,9 @@ export default function Login() {
   return (
     <>
       <LoginHeader>
-        <CloseIcon />
+        <CloseBtn onClick={() => router.back()}>
+          <CloseIcon />
+        </CloseBtn>
       </LoginHeader>
       <Container>
         <Logo>
@@ -199,7 +203,9 @@ export default function Login() {
             <span>카카오톡으로 계속하기</span>
           </KakaoButton>
         </BtnContainer>
-        <WithoutLoginButton>로그인없이 둘러보기</WithoutLoginButton>
+        <Link href={"/"}>
+          <WithoutLoginButton>로그인없이 둘러보기</WithoutLoginButton>
+        </Link>
       </Container>
     </>
   );
