@@ -12,6 +12,11 @@ import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
 import React, { useEffect, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
+import { GetServerSideProps } from "next";
+
+interface PostProps {
+  id: string;
+}
 
 const DetailWrapper = styled.div`
   .contents__wrapper {
@@ -157,11 +162,11 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
-const Post = ({ id }) => {
+const Post: React.FC<PostProps> = ({ id }) => {
   const { data } = useQuery(GET_GAME, { variables: { id } });
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
-  const [mySelection, setMySelection] = useState(null);
+  const [mySelection, setMySelection] = useState("");
 
   useEffect(() => {
     setMySelection(data?.balanceGameLogined?.mySelection);
@@ -175,15 +180,17 @@ const Post = ({ id }) => {
 
   const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
 
-  const onChangeVote = (balanceGameId, balanceGameSelectionId) => () => {
-    setMySelection(balanceGameSelectionId);
-    mCreateVoteLogined({
-      variables: {
-        balanceGameId,
-        balanceGameSelectionId,
-      },
-    });
-  };
+  const onChangeVote =
+    (balanceGameId = "", balanceGameSelectionId = "") =>
+    () => {
+      setMySelection(balanceGameSelectionId);
+      mCreateVoteLogined({
+        variables: {
+          balanceGameId,
+          balanceGameSelectionId,
+        },
+      });
+    };
 
   return (
     <DetailWrapper>
@@ -206,7 +213,7 @@ const Post = ({ id }) => {
         />
         <div className="status">
           <div className="left">
-            <div className="fake__image"></div>
+            <div className="fake__image" />
             <div className="play__wrapper">
               <p className="play-ment">따끈따끈한 밸런스 게임</p>
               <span className="play-count">
@@ -246,13 +253,13 @@ const Post = ({ id }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async function (context) {
   const { id } = context.query;
   return {
     props: {
       id,
     },
   };
-}
+};
 
 export default Post;
