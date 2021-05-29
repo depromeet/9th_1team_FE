@@ -15,6 +15,7 @@ type CardProps = {
     balanceGameSelections: {
       description: string;
       backgroundColor: string;
+      textColor: string;
     }[];
   };
   isModifyMode: Boolean;
@@ -109,13 +110,19 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
         <div className="choices-box">
           <div
             className="top"
-            style={{ backgroundColor: balanceA.backgroundColor }}
+            style={{
+              backgroundColor: balanceA.backgroundColor,
+              color: balanceA.textColor,
+            }}
           >
             {balanceA.description}
           </div>
           <div
             className="bottom"
-            style={{ backgroundColor: balanceB.backgroundColor }}
+            style={{
+              backgroundColor: balanceB.backgroundColor,
+              color: balanceB.textColor,
+            }}
           >
             {balanceB.description}
           </div>

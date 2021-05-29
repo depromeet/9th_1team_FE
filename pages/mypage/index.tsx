@@ -33,6 +33,7 @@ const MYPAGE_QUERY = gql`
           order
           description
           backgroundColor
+          textColor
         }
       }
     }
@@ -45,7 +46,6 @@ const Mypage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("??????????", token);
     if (token) {
       qMypqge();
     }
