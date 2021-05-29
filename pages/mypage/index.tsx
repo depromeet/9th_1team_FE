@@ -83,8 +83,12 @@ const Mypage = () => {
       <MypageWrapper>
         <UserInfo>
           <UserImage>{userImg ? userImg : <TomatoIcon />}</UserImage>
-          <UserName>김정현님</UserName>
-          <PencilIcon />
+          {false && (
+            <>
+              <UserName>김정현님</UserName>
+              <PencilIcon />
+            </>
+          )}
         </UserInfo>
         <ContentWrapper>
           <CardsSection>
