@@ -5,13 +5,22 @@ import PrevIcon from "../../public/top-prev.svg";
 
 type Props = {
   title?: string;
+  onClickBack?: () => void;
 };
 
-const CommonHeader: React.FC<Props> = ({ title = "", children }) => {
+const CommonHeader: React.FC<Props> = ({
+  title = "",
+  onClickBack,
+  children,
+}) => {
   const router = useRouter();
 
   const onBack = () => {
-    router.back();
+    if (onClickBack) {
+      onClickBack();
+    } else {
+      router.back();
+    }
   };
 
   return (

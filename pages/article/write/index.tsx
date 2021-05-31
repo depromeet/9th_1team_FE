@@ -1,6 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import Modal from "react-modal";
 import {
   BalanceCardTitle,
   BalanceCard,
@@ -28,8 +27,6 @@ import ImgIcon from "../../../public/image-frame.svg";
 import VsIcon from "../../../public/versus.svg";
 import VomitIcon from "../../../public/tomato/vomit-normal-front.svg";
 import UnionIcon from "../../../public/union.svg";
-
-Modal.setAppElement("#__next");
 
 const [
   INIT_BALANCE_FONT_COLOR_A,

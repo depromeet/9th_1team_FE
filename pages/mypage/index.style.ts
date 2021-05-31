@@ -106,3 +106,11 @@ export const LogoutBtn = styled.button`
 `;
 
 export const NoticeLink = styled.a``;
+
+export const PencilIconBtn = styled.button.attrs({ type: "button" })`
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 0;
+`;

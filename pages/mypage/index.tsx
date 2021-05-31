@@ -12,6 +12,7 @@ import {
   LogoutWrapper,
   MypageWrapper,
   NoticeLink,
+  PencilIconBtn,
   UserImage,
   UserInfo,
   UserName,
@@ -21,9 +22,17 @@ import { useLazyQuery } from "@apollo/client";
 import NotLogin from "../../components/MypageContent/NotLogin";
 import CommonHeader from "../../components/Header/CommonHeader";
 import Link from "next/link";
+import NicknameModal from "../../components/modal/NicknameModal";
 
 const MYPAGE_QUERY = gql`
   query {
+    mypage {
+      profile {
+        id
+        nickname
+        email
+      }
+    }
     myGames {
       balanceGames: balanceGame {
         id
@@ -43,6 +52,7 @@ const MYPAGE_QUERY = gql`
 const Mypage = () => {
   const [qMypqge, { data }] = useLazyQuery(MYPAGE_QUERY);
   const [isModifyMode, setIsModifyMode] = useState(false);
+  const [isOpenNicknameModify, setIsOpenNicknameModify] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,6 +64,7 @@ const Mypage = () => {
   if (!data) return <NotLogin />;
 
   const balanceGames = data?.myGames?.balanceGames;
+  const profile = data?.mypage?.profile;
 
   const onClickLogout = () => {
     if (window.confirm("로그아웃 하시겠어요?")) {
@@ -67,6 +78,14 @@ const Mypage = () => {
   };
   const onModifyMode = () => {
     setIsModifyMode(true);
+  };
+
+  const onOpenNicknameModifyModal = () => {
+    setIsOpenNicknameModify(true);
+  };
+
+  const onCloseNicknameModifyModal = () => {
+    setIsOpenNicknameModify(false);
   };
 
   const userImg = false;
@@ -83,12 +102,10 @@ const Mypage = () => {
       <MypageWrapper>
         <UserInfo>
           <UserImage>{userImg ? userImg : <TomatoIcon />}</UserImage>
-          {false && (
-            <>
-              <UserName>김정현님</UserName>
-              <PencilIcon />
-            </>
-          )}
+          <UserName>{profile.nickname}님</UserName>
+          <PencilIconBtn onClick={onOpenNicknameModifyModal}>
+            <PencilIcon />
+          </PencilIconBtn>
         </UserInfo>
         <ContentWrapper>
           <CardsSection>
@@ -125,6 +142,12 @@ const Mypage = () => {
           </LogoutWrapper>
         </ContentWrapper>
       </MypageWrapper>
+      <NicknameModal
+        initNickname={profile.nickname}
+        email={profile.email}
+        isOpen={isOpenNicknameModify}
+        onRequestClose={onCloseNicknameModifyModal}
+      />
     </>
   );
 };
