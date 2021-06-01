@@ -73,6 +73,11 @@ interface ReplyCommentProps {
     userId: string;
     pubDate: string;
     content: string;
+    user: {
+      profile: {
+        nickname: string;
+      };
+    };
   };
 }
 
@@ -131,7 +136,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
       <div className="comment__content">
         <div className="info">
           <div className="comment__user-pick" />
-          <span className="author">{reply.userId}</span>
+          <span className="author">{reply?.user?.profile?.nickname}</span>
           <span className="pub-date">{reply.pubDate}</span>
           <div className="setting__more-btn">...</div>
         </div>

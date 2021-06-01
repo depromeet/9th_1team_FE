@@ -89,10 +89,20 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
       id
       userId
       content
+      user {
+        profile {
+          nickname
+        }
+      }
       replies {
         id
         userId
         content
+        user {
+          profile {
+            nickname
+          }
+        }
       }
     }
   }
@@ -154,7 +164,7 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
           {data && (
             <>
               <ul className="comments">
-                {data?.comments.map((comment, i) => (
+                {data?.comments.map((comment: any, i: number) => (
                   <Comment key={i} balanceGameId={id} comment={comment} />
                 ))}
               </ul>

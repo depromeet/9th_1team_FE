@@ -73,11 +73,21 @@ interface CommentProps {
     userId: string;
     pubDate: string;
     content: string;
+    user: {
+      profile: {
+        nickname: string;
+      };
+    };
     replies: {
       id: number;
       userId: string;
       pubDate: string;
       content: string;
+      user: {
+        profile: {
+          nickname: string;
+        };
+      };
     }[];
   };
 }
@@ -133,7 +143,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
       <div className="comment__content">
         <div className="info">
           <div className="comment__user-pick" />
-          <span className="author">{comment.userId}</span>
+          <span className="author">{comment?.user?.profile?.nickname}</span>
           <span className="pub-date">{comment.pubDate}</span>
           <div className="setting__more-btn">...</div>
         </div>
