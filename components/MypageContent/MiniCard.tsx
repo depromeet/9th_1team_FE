@@ -92,12 +92,14 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
   const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME_MUTATION);
 
   const onRemove = (id: string) => async () => {
-    await mRemoveBalanceGame({
-      variables: {
-        id,
-      },
-    });
-    window.location.reload();
+    if (window.confirm("정말 삭제하시겠어요?")) {
+      await mRemoveBalanceGame({
+        variables: {
+          id,
+        },
+      });
+      window.location.reload();
+    }
   };
 
   const [balanceA, balanceB] = item?.balanceGameSelections;
