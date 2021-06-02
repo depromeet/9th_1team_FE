@@ -7,7 +7,13 @@ const Container = styled.form`
   border-radius: 4px;
   display: flex;
   align-items: center;
-  margin: 0 16px;
+  margin: 0 1.3rem;
+
+  .submit-btn {
+    font-family: "Noto Sans KR";
+    padding: 0;
+    font-size: 1.3rem;
+  }
 `;
 
 const TextareaComment = ({ onSubmit, onChange, value }) => {

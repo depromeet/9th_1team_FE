@@ -9,6 +9,7 @@ import TextareaComment from "./TextareaComment";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
+  padding-bottom: 0.1rem;
 
   .toggle__wrapper {
     margin: 2.2rem 0 1.2rem 1.6rem;
@@ -72,9 +73,11 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
   .btn__wrapper {
     display: flex;
     justify-content: center;
-    margin: 3rem 0 7.5rem;
+    align-items: center;
+    margin: 3rem 0 4.5rem;
   }
   .comment__more-btn {
+    color: #868e96;
     font-size: 1.2rem;
     background: none;
     padding: 0.8rem 1.2rem;
