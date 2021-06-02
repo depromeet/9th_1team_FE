@@ -4,35 +4,39 @@ import TextareaComment from "./TextareaComment";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import ReplyComment from "./ReplyComment";
+import MoreIcon from "../../public/more.svg";
+import CommentMore from "./CommentMore";
 
 const CommentWrapper = styled.li`
+  position: relative;
+
   &:nth-child(2) {
     // 내 게시글인 경우 배경색상
     background-color: #f8f9fa;
   }
-  padding: 0 16px;
+  padding: 0 1.6rem;
 
   .comment__content {
     border-bottom: 1px solid #e9ecef;
-    padding: 13px 0 8px;
+    padding: 1.3rem 0 0.8rem;
   }
   .comment__user-pick {
     display: inline-block;
     background-color: #ffd770;
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    margin-right: 6px;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-right: 0.6rem;
   }
   .info {
-    height: 16px;
+    height: 1.6rem;
     display: flex;
     align-items: center;
   }
   .author {
-    font-size: 11px;
+    font-size: 1.1rem;
     font-weight: 500;
-    line-height: 11px;
+    line-height: 1.1rem;
   }
   .pub-date {
     display: inline-block;
@@ -42,11 +46,12 @@ const CommentWrapper = styled.li`
     color: #868e96;
   }
   .comment__user-text {
-    margin-left: 22px;
+    margin-left: 2.2rem;
   }
   .text {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 1.3rem;
+    line-height: 1.8rem;
+    margin: 0.4rem 0;
   }
 
   .reply-btn {
@@ -59,10 +64,10 @@ const CommentWrapper = styled.li`
     color: #868e96;
     padding: 0;
   }
-  .setting__more-btn {
-    display: inline-block;
-    flex: 1;
-    text-align: right;
+  .comment__more {
+    position: absolute;
+    top: 1.3rem;
+    right: 1.6rem;
   }
 `;
 
@@ -113,6 +118,7 @@ const CREATE_REPLY_MUTATION = gql`
 
 const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
   const [opened, setOpened] = useState(false);
+  const [moreOpened, setMoreOpened] = useState(false); //comment more
   const [content, setContent] = useState("");
   const [mCreateReply] = useMutation(CREATE_REPLY_MUTATION);
 
@@ -138,14 +144,22 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
     setContent(e.target.value);
   };
 
+  const onToggleMore = () => {
+    setMoreOpened((prev) => !prev);
+  };
+
+  const onCloseMore = () => {
+    if (!moreOpened) return;
+    setMoreOpened(false);
+  };
+
   return (
     <CommentWrapper key={comment.id}>
-      <div className="comment__content">
+      <div className="comment__content" onClick={onCloseMore}>
         <div className="info">
           <div className="comment__user-pick" />
           <span className="author">{comment?.user?.profile?.nickname}</span>
           <span className="pub-date">{comment.pubDate}</span>
-          <div className="setting__more-btn">...</div>
         </div>
         <div className="comment__user-text">
           <p className="text">{comment.content}</p>
@@ -167,6 +181,11 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
             reply={reply}
           />
         ))}
+      </div>
+      <div className="comment__more">
+        <MoreIcon onClick={onToggleMore} />
+        {/** isMine: 내 코멘트인지 확인 필요 */}
+        <CommentMore isMine={true} isOpen={moreOpened} />
       </div>
     </CommentWrapper>
   );
