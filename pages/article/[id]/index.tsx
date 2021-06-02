@@ -132,6 +132,7 @@ const GET_GAME = gql`
       userId
       description
       mySelection
+      commentCount
       user {
         profile {
           nickname
@@ -142,11 +143,9 @@ const GET_GAME = gql`
         balanceGameId
         backgroundImage
         backgroundColor
+        textColor
         description
       }
-    }
-    commentsByGameId(gameId: $id) {
-      id
     }
   }
 `;
@@ -228,7 +227,9 @@ const Post: React.FC<PostProps> = ({ id }) => {
               </span>
             </div>
           </div>
-          <span className="comment-count">의견 145</span>
+          <span className="comment-count">
+            의견 {data?.balanceGameLogined.commentCount}
+          </span>
         </div>
         <div className="contents">
           <p>{data.description}</p>
