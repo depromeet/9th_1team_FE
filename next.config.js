@@ -1,14 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
-
-module.exports = withBundleAnalyzer({
-  target: "serverless",
-  env: {
-    BASE_URL: process.env.BASE_URL,
-  },
-
+module.exports = {
   webpack(conf) {
     conf.module.rules.push({
       test: /\.svg$/,
@@ -36,4 +26,4 @@ module.exports = withBundleAnalyzer({
     conf.resolve.modules.push(__dirname);
     return conf;
   },
-});
+};

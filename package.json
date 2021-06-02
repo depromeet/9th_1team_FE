@@ -1,10 +1,11 @@
 {
-  "name": "with-typescript-styled-components",
+  "name": "tomato",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prod": "pm2 start yarn --name \"nextjs\" --interpreter bash -- start"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",

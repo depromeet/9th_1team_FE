@@ -51,7 +51,7 @@ const Today = () => {
       <div className="title" style={{ fontSize: "1.6rem" }}>
         오늘의 밸런스게임
       </div>
-      <FeedPost />
+      {/*<FeedPost />*/}
     </TodayContainer>
   );
 };
