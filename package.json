@@ -4,8 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
-    "schema": "apollo client:download-schema --endpoint=http://15.164.234.174:3000/graphql output.gql"
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
