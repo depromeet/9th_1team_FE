@@ -132,6 +132,11 @@ const GET_GAME = gql`
       userId
       description
       mySelection
+      user {
+        profile {
+          nickname
+        }
+      }
       balanceGameSelections {
         id
         balanceGameId
@@ -192,6 +197,8 @@ const Post: React.FC<PostProps> = ({ id }) => {
       });
     };
 
+  console.log(data?.balanceGameLogined);
+
   return (
     <DetailWrapper>
       <CommonHeader>
@@ -225,7 +232,9 @@ const Post: React.FC<PostProps> = ({ id }) => {
         </div>
         <div className="contents">
           <p>{data.description}</p>
-          <span className="author">made by 김정현</span>
+          <span className="author">
+            made by {data?.balanceGameLogined?.user?.profile?.nickname}
+          </span>
           <span>•</span>
           <span className="pub-date">1일 전</span>
         </div>
