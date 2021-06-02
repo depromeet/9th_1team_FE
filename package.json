@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 80",
     "prod": "pm2 start yarn --name \"nextjs\" --interpreter bash -- start"
   },
   "dependencies": {
