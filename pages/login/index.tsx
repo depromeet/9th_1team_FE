@@ -1,15 +1,6 @@
-import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import {
-  BtnContainer,
-  Container,
-  KakaoButton,
-  NaverButton,
-  Logo,
-  WithoutLoginButton,
-  LoginHeader,
-  CloseBtn,
-} from "./index.style";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
 import NaverIcon from "../../public/naver.svg";
@@ -31,10 +22,87 @@ interface KakaoResponse {
   access_token: string;
 }
 
+const LoginHeader = styled.header`
+  width: 100%;
+  padding: 1.6rem;
+  height: 5.2rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 5.2rem);
+  padding: 1.6rem;
+  box-sizing: border-box;
+`;
+
+const Logo = styled.div`
+  width: 200px;
+  height: 200px;
+  background-color: gray;
+`;
+
+const BtnContainer = styled.div`
+  margin-top: 80px;
+  width: 100%;
+  max-width: 60rem;
+
+  button {
+    width: 100%;
+    height: 5.5rem;
+    padding: 2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border: none;
+    cursor: pointer;
+
+    span {
+      flex: 1;
+      height: 2rem;
+      line-height: 2rem;
+    }
+  }
+`;
+
+const NaverButton = styled.button`
+  background-color: #2db400;
+  color: #fff;
+  margin-bottom: 1.2rem;
+`;
+
+const KakaoButton = styled.button`
+  background-color: #fee500;
+  font-weight: 500;
+`;
+
+const WithoutLoginButton = styled.button`
+  font-size: 17px;
+  line-height: 25px;
+  color: #868e96;
+  margin-top: 30px;
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+`;
+
+const CloseBtn = styled.button`
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+`;
+
 export default function Login() {
   const router = useRouter();
   const [mLogin, { data }] = useMutation(LOGIN_MUTATION);
-  const [naverUser, setNaverUser] = useState({});
 
   useEffect(() => {
     if (window.Kakao.Auth == null) {

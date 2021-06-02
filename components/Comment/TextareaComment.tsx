@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import styled from "styled-components";
 
 const Container = styled.form`
@@ -16,7 +16,17 @@ const Container = styled.form`
   }
 `;
 
-const TextareaComment = ({ onSubmit, onChange, value }) => {
+interface TextareaCommentProps {
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  value: string;
+}
+
+const TextareaComment: React.FC<TextareaCommentProps> = ({
+  onSubmit,
+  onChange,
+  value,
+}) => {
   return (
     <Container onSubmit={onSubmit}>
       <textarea

@@ -71,7 +71,11 @@ const GameFire = () => (
   </>
 );
 
-const FeedPost = ({ data }) => {
+interface FeedPostProps {
+  data?: any;
+}
+
+const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
 
   const [balanceA, balanceB] = data.balanceGameSelections;

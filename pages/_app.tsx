@@ -1,8 +1,9 @@
+import { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import Head from "next/head";
 import { useApollo } from "../lib/apolloClient";
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
 
   return (
@@ -14,7 +15,7 @@ export default function App({ Component, pageProps }) {
           type="text/javascript"
           src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
           charSet="utf-8"
-        ></script>
+        />
 
         <script
           dangerouslySetInnerHTML={{

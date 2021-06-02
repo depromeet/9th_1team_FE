@@ -89,7 +89,7 @@ const Index = () => {
 
   if (_.isEmpty(list)) return null;
 
-  const balanceGames = data?.balanceGames?.balanceGames;
+  // const balanceGames = data?.balanceGames?.balanceGames;
 
   const fetchMoreData = () => {
     const nextOffset = offset + BALANCE_GAMES_TICK;
@@ -99,12 +99,12 @@ const Index = () => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
-      {/*<Today />*/}
+      <Today />
       <Container>
-        {/*<div className="buttons">*/}
-        {/*  <div className="buttons__btn">랜덤 플레이</div>*/}
-        {/*  <div className="buttons__btn">게임 만들기</div>*/}
-        {/*</div>*/}
+        <div className="buttons">
+          <div className="buttons__btn">랜덤 플레이</div>
+          <div className="buttons__btn">게임 만들기</div>
+        </div>
         <div className="selects">
           <Participate
             {...{ isChecked }}
