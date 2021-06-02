@@ -51,6 +51,7 @@ interface balanceType {
   id: string;
   backgroundColor: string;
   description: string;
+  textColor: string;
 }
 
 interface RadioBoxProps {
@@ -75,7 +76,10 @@ const RadioBox: React.FC<RadioBoxProps> = ({
     <RadioWrapper>
       <div
         className="radio-box first"
-        style={{ backgroundColor: balanceA.backgroundColor }}
+        style={{
+          backgroundColor: balanceA.backgroundColor,
+          color: balanceA.textColor,
+        }}
       >
         <h2>{balanceA.description}</h2>
 
@@ -90,7 +94,10 @@ const RadioBox: React.FC<RadioBoxProps> = ({
       </div>
       <div
         className="radio-box second"
-        style={{ backgroundColor: balanceB.backgroundColor }}
+        style={{
+          backgroundColor: balanceB.backgroundColor,
+          color: balanceB.textColor,
+        }}
       >
         <h2>{balanceB.description}</h2>
 
