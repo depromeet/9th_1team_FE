@@ -13,6 +13,7 @@ import MoreIcon from "../../../public/top-more.svg";
 import React, { useEffect, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
+import Share from "components/Share/Share";
 
 interface PostProps {
   id: string;
@@ -76,36 +77,13 @@ const DetailWrapper = styled.div`
     font-weight: 500;
     box-sizing: border-box;
   }
-  .share {
-    width: 100%;
-    height: 10.1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 2.2rem 0;
-  }
-  .share p {
-    font-size: 1.3rem;
-    font-weight: 500;
-    color: #868e96;
-  }
+
   .icon {
     &:first-child {
-      margin-right: 0;
+      margin-right: 1.4rem;
     }
-    float: right;
-    margin-right: 1rem;
   }
-  .icon__wrapper {
-    display: flex;
-    justify-content: center;
-  }
-  .share-icon {
-    margin: 0.5rem 0.2rem 0 0.2rem;
-  }
+
   nav {
     display: flex;
     justify-content: space-between;
@@ -202,10 +180,10 @@ const Post: React.FC<PostProps> = ({ id }) => {
     <DetailWrapper>
       <CommonHeader>
         <div className="icon">
-          <MoreIcon onClick={toggleMore} />
+          <ShareIcon />
         </div>
         <div className="icon">
-          <ShareIcon />
+          <MoreIcon onClick={toggleMore} />
         </div>
       </CommonHeader>
       <HeaderMore isMine={false} isOpen={isOpen} />
@@ -239,14 +217,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
           <span>•</span>
           <span className="pub-date">1일 전</span>
         </div>
-        <div className="share">
-          <p>친구들에게 공유해서 의견을 들어볼까요?</p>
-          <div className="icon__wrapper">
-            <FacebookIcon className="share-icon" />
-            <TwitterIcon className="share-icon" />
-            <UrlIcon className="share-icon" />
-          </div>
-        </div>
+        <Share />
         <nav>
           <div className="prev">
             <PrevGameIcon />

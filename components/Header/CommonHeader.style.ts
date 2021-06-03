@@ -25,4 +25,6 @@ export const Title = styled.h1`
   flex: 1;
 `;
 
-export const BtnContainer = styled.div``;
+export const BtnContainer = styled.div`
+  display: flex;
+`;
