@@ -4,6 +4,7 @@ import FacebookIcon from "../../public/facebook.svg";
 import TwitterIcon from "../../public/twitter.svg";
 import UrlIcon from "../../public/url.svg";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const ShareWrapper = styled.div`
   width: 100%;
@@ -46,7 +47,12 @@ const Share: React.FC<ShareProps> = ({ url, text }) => {
         <TwitterShareButton url={url} title={text}>
           <TwitterIcon className="share-icon" />
         </TwitterShareButton>
-        <UrlIcon className="share-icon" />
+        <CopyToClipboard
+          text={url}
+          onCopy={() => window.confirm("링크가 복사되었습니다.")}
+        >
+          <UrlIcon className="share-icon" />
+        </CopyToClipboard>
       </div>
     </ShareWrapper>
   );
