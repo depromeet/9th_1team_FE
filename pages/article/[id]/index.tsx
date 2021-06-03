@@ -4,9 +4,6 @@ import RadioBox from "components/DetailContent/RadioBox";
 import Comments from "components/Comment/Comments";
 import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
-import FacebookIcon from "../../../public/facebook.svg";
-import TwitterIcon from "../../../public/twitter.svg";
-import UrlIcon from "../../../public/url.svg";
 import CommonHeader from "../../../components/Header/CommonHeader";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
@@ -150,6 +147,9 @@ const Post: React.FC<PostProps> = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
 
+  const baseURL = "http://localhost:3000";
+  // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
+
   useEffect(() => {
     setMySelection(data?.balanceGameLogined?.mySelection);
   }, [data?.balanceGameLogined?.mySelection]);
@@ -217,7 +217,13 @@ const Post: React.FC<PostProps> = ({ id }) => {
           <span>•</span>
           <span className="pub-date">1일 전</span>
         </div>
-        <Share />
+        <Share
+          url={"http://naver.com"}
+          text={
+            data?.balanceGameLogined.description ||
+            "밸런스 게임에 참여해보세요!"
+          }
+        />
         <nav>
           <div className="prev">
             <PrevGameIcon />

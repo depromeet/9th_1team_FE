@@ -3,6 +3,7 @@ import styled from "styled-components";
 import FacebookIcon from "../../public/facebook.svg";
 import TwitterIcon from "../../public/twitter.svg";
 import UrlIcon from "../../public/url.svg";
+import { FacebookShareButton, TwitterShareButton } from "react-share";
 
 const ShareWrapper = styled.div`
   width: 100%;
@@ -29,13 +30,22 @@ const ShareWrapper = styled.div`
   }
 `;
 
-const Share = () => {
+interface ShareProps {
+  url: string;
+  text: string;
+}
+
+const Share: React.FC<ShareProps> = ({ url, text }) => {
   return (
     <ShareWrapper>
       <p>친구들에게 공유해서 의견을 들어볼까요?</p>
       <div className="icon__wrapper">
-        <FacebookIcon className="share-icon" />
-        <TwitterIcon className="share-icon" />
+        <FacebookShareButton url={url} quote={text}>
+          <FacebookIcon className="share-icon" />
+        </FacebookShareButton>
+        <TwitterShareButton url={url} title={text}>
+          <TwitterIcon className="share-icon" />
+        </TwitterShareButton>
         <UrlIcon className="share-icon" />
       </div>
     </ShareWrapper>
