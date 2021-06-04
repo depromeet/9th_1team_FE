@@ -218,7 +218,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
           <span className="pub-date">1일 전</span>
         </div>
         <Share
-          url={"http://naver.com"}
+          url={"http://localhost:3000"}
           text={
             data?.balanceGameLogined.description ||
             "밸런스 게임에 참여해보세요!"
