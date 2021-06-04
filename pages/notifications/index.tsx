@@ -2,35 +2,9 @@ import styled from "styled-components";
 import CommonHeader from "components/Header/CommonHeader";
 import React from "react";
 import ChatIcon from "../../public/opinion.svg";
-const data = [
-  {
-    id: 1,
-    createdAt: "1분전",
-    isRead: false,
-    color: "#FFD569",
-    name: "익명",
-    content:
-      "똥은 먹을게 못된다. 똥맛이어도 실체가 카레인게 낫다. 이런 어이없는 질문은 또 처음이네",
-  },
-  {
-    id: 2,
-    createdAt: "11분전",
-    isRead: false,
-    color: "#6980D1",
-    name: "익명2",
-    content:
-      "똥은 먹을게 못된다. 똥맛이어도 실체가 카레인게 낫다. 이런 어이없는 질문은 또 처음이네",
-  },
-  {
-    id: 3,
-    createdAt: "18분전",
-    isRead: true,
-    color: "#6980D1",
-    name: "아악",
-    content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus quod impedit deserunt accusantium dolor quis fugit odio repellendus, facilis laudantium.",
-  },
-];
+import { useQuery } from "@apollo/client";
+import { gql } from "@apollo/client/core";
+import Link from "next/link";
 
 const Container = styled.div`
   width: 100%;
@@ -43,10 +17,13 @@ const Container = styled.div`
 const NotiLists = styled.ul``;
 
 const NotiItem = styled.li`
-  display: flex;
-  padding: 1.5rem;
-  box-sizing: border-box;
-  border-bottom: 1px solid #e9ecef;
+  a {
+    display: flex;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e9ecef;
+    text-decoration: none;
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -108,34 +85,89 @@ const Footer = styled.footer`
   }
 `;
 
+const MY_NOTIFICATIONS_QUERY = gql`
+  query {
+    myNotifications {
+      id
+      kind
+      balanceGameId
+      userForId
+      userFromId
+      userFromNickname
+      commentId
+      commentContent
+      replyId
+      replyContent
+      status
+      createdAt
+    }
+  }
+`;
+
 const Notifications = () => {
+  const { data } = useQuery(MY_NOTIFICATIONS_QUERY);
+
+  console.log(data);
+
+  if (!data) return null;
+
+  const notifications = data?.myNotifications;
+
+  const getContent = (notification: any) => {
+    if (notification.commentId) {
+      return notification.commentContent;
+    } else if (notification.replyId) {
+      return notification.reolyContent;
+    } else {
+      return "";
+    }
+  };
+
+  const getContentId = (notification: any) => {
+    return notification.commentId || notification.replyId;
+  };
+
   return (
-    <>
+    <Container>
       <CommonHeader title="알림" />
-      <Container>
-        {data.map((item) => (
-          <NotiLists>
+      <NotiLists>
+        {notifications.map((notification: any) => {
+          const content = getContent(notification);
+          const contentId = getContentId(notification);
+          return (
             <NotiItem>
-              <IconWrapper>
-                <Background isRead={item.isRead} color={item.color}>
-                  <ChatIcon />
-                </Background>
-              </IconWrapper>
-              <ContentWrapper isRead={item.isRead}>
-                <div className="header">
-                  <h2>{item.name}님이 의견을 남기셨습니다.</h2>
-                  <span className="date">{item.createdAt}</span>
-                </div>
-                <p className="text">{item.content}</p>
-              </ContentWrapper>
+              <Link
+                href={`/article/${notification.balanceGameId}?contentId=${contentId}`}
+                passHref
+              >
+                <a>
+                  <IconWrapper>
+                    <Background
+                      isRead={notification.isRead}
+                      color={notification.color}
+                    >
+                      <ChatIcon />
+                    </Background>
+                  </IconWrapper>
+                  <ContentWrapper isRead={notification.isRead}>
+                    <div className="header">
+                      <h2>
+                        {notification.userFromNickname}님이 의견을 남기셨습니다.
+                      </h2>
+                      <span className="date">{notification.createdAt}</span>
+                    </div>
+                    <p className="text">{content}</p>
+                  </ContentWrapper>
+                </a>
+              </Link>
             </NotiItem>
-          </NotiLists>
-        ))}
-        <Footer>
-          <p>알림 내역은 30일 이전까지만 확인 가능합니다. </p>
-        </Footer>
-      </Container>
-    </>
+          );
+        })}
+      </NotiLists>
+      <Footer>
+        <p>알림 내역은 30일 이전까지만 확인 가능합니다. </p>
+      </Footer>
+    </Container>
   );
 };
 

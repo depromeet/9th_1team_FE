@@ -63,12 +63,15 @@ export const typeDefs = gql`
     commentId: String!
     color: String
     content: String!
+
+    # delete 면 삭제된 댓글
     status: String!
     createdAt: DateTime!
     updatedAt: DateTime!
     user: User!
     balanceGame: BalanceGame!
     comment: Comment!
+    notifications: [Notification!]!
   }
 
   type Comment {
@@ -77,6 +80,8 @@ export const typeDefs = gql`
     balanceGameId: String!
     color: String
     content: String!
+
+    # delete 면 삭제된 댓글
     status: String!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -88,18 +93,25 @@ export const typeDefs = gql`
 
   type Notification {
     id: String!
+
+    # new comment || new reply
+    kind: String!
+    balanceGameId: String!
     userForId: String!
     userFromId: String!
-    balanceGameId: String!
-    commentId: String!
-    content: String!
-    replyNickname: String!
+    userFromNickname: String!
+    commentId: String
+    commentContent: String
+    replyId: String
+    replyContent: String
+
+    #  unread || red
     status: String!
     createdAt: DateTime!
-    updatedAt: DateTime!
-    user: User!
     balanceGame: BalanceGame!
+    user: User!
     comment: Comment!
+    reply: Reply!
   }
 
   type User {
@@ -181,6 +193,11 @@ export const typeDefs = gql`
 
     # 밸런스 게임 list 형태로 return
     balanceGames(balanceGamesState: BalanceGamesStateInput): BalanceGameList!
+
+    # 로그인한 경우 투표한 게임의 선택과 밸런스 게임 list 형태로 return
+    balanceGamesLogined(
+      balanceGamesState: BalanceGamesStateInput
+    ): BalanceGameList!
     myGames: BalanceGameList!
     balanceGamesTEST: [BalanceGame!]!
     balanceGameLogined(id: String!): BalanceGame!
@@ -196,8 +213,7 @@ export const typeDefs = gql`
     balanceGameThumbs: [BalanceGameThumb!]!
     balanceGameThumb(id: Int!): BalanceGameThumb!
     commentsByGameId(gameId: String!): [Comment!]!
-    notifications: [Notification!]!
-    notification(id: String!): Notification!
+    myNotifications: [Notification!]!
   }
 
   input BalanceGamesStateInput {
@@ -218,6 +234,8 @@ export const typeDefs = gql`
     ): UserProfile!
     createBalanceGame(
       createBalanceGameInput: CreateBalanceGameInput!
+      file2: Upload!
+      file1: Upload!
     ): BalanceGame!
     uploadFile(file1: Upload!): Boolean!
     updateBalanceGame(
@@ -249,12 +267,10 @@ export const typeDefs = gql`
     createComment(createCommentInput: CreateCommentInput!): Comment!
     updateComment(updateCommentInput: UpdateCommentInput!): Comment!
     removeComment(id: String!): Boolean!
+    readNoti(id: String!): Boolean!
     createReply(createReplyInput: CreateReplyInput!): Reply!
     updateReply(updateReplyInput: UpdateReplyInput!): Reply!
     removeReply(replyId: String!): Boolean!
-    createNotification(
-      createNotificationInput: CreateNotificationInput!
-    ): Notification!
   }
 
   input NewRecipeInput {
@@ -372,13 +388,5 @@ export const typeDefs = gql`
   input UpdateReplyInput {
     replyId: String!
     content: String!
-  }
-
-  input CreateNotificationInput {
-    userId: String!
-    balanceGameId: String!
-    commentId: String
-    content: String!
-    replyNickname: String
   }
 `;
