@@ -9,6 +9,7 @@ import Fire from "public/fire.svg";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { countDate } from "lib/utils";
+import { gql, useMutation } from "@apollo/client";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -51,37 +52,86 @@ const GameFire = ({
   </>
 );
 
+const CREATE_VOTE_LOGINED = gql`
+  mutation createVoteLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+const CREATE_VOTE_NOT_LOGINED = gql`
+  mutation createVoteNotLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteNotLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const Selection = ({
   selection,
   checkedId,
+  postId,
   setCheckedId,
 }: {
   selection: any;
+  postId: string;
   checkedId: string | null;
   setCheckedId: any;
 }) => {
-  // <OptionBox
-  //   type={CHECK_TYPE.FIRST}
-  //   isSelected={checkedId === selection.id}
-  //   title={selection.description}
-  //   // checkType={checkType}
-  //   setCheckType={setCheckType}
-  //   background="#E66F53"
-  // />
-  const handleCheckType = (id: CHECK_TYPE) => {
-    if (checkedId === id) setCheckedId(null);
-    else setCheckedId(id);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
+  const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
+
+  const handleVote = (sectionId: string) => {
+    if (sectionId === checkedId) {
+      setCheckedId(null);
+    } else {
+      const token = localStorage.getItem("token");
+      setCheckedId(sectionId);
+      if (token) {
+        mCreateVoteLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: sectionId,
+          },
+        });
+      } else {
+        mCreateVoteNotLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: sectionId,
+          },
+        });
+      }
+    }
   };
+
   const isChecked = checkedId === null ? null : checkedId === selection.id;
   return (
     <OptionBoxContainer
       {...{ isChecked }}
       style={{
-        background: selection.backgroundImage || selection.backgroundColor,
+        background: selection.backgroundColor,
         color: selection.textColor,
       }}
-      onClick={() => handleCheckType(selection.id)}
+      onClick={() => handleVote(selection.id)}
     >
+      {selection.backgroundImage && <img src={selection.backgroundImage} />}
       <div className="checkbox">{isChecked ? <Select /> : <Unselect />}</div>
       <div className="title">{selection.description}</div>
     </OptionBoxContainer>
@@ -89,8 +139,8 @@ const Selection = ({
 };
 
 const FeedPost = ({ post }: { post: any }) => {
-  const [checkedId, setCheckedId] = useState(null);
-
+  console.log(post.myselection);
+  const [checkedId, setCheckedId] = useState(post.myselection || null);
   const before = countDate(
     dayjs(post.createdAt || new Date()).format("YYYY-MM-DD HH:mm")
   );
@@ -100,6 +150,7 @@ const FeedPost = ({ post }: { post: any }) => {
       {post.balanceGameSelections.map((selection: any) => (
         <Selection
           key={selection.id}
+          postId={post.id}
           {...{ selection, checkedId, setCheckedId }}
         />
       ))}
@@ -208,6 +259,14 @@ const Container = styled.div`
 const OptionBoxContainer = styled.div<{
   isChecked: boolean | null;
 }>`
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-height: 12.8rem;
+    object-fit: cover;
+  }
   position: relative;
   height: 12.8rem;
   font-weight: 800;

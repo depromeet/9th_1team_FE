@@ -54,6 +54,7 @@ const Today = () => {
       offset: 0,
     },
   });
+  console.log(data);
   return (
     <TodayContainer>
       <div className="title" style={{ fontSize: "1.6rem" }}>
