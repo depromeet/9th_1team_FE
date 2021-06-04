@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
+import { modifyDate } from "utils/date";
 
 interface PostProps {
   id: string;
@@ -108,6 +109,7 @@ const GET_GAME = gql`
       description
       mySelection
       commentCount
+      createdAt
       user {
         profile {
           nickname
@@ -214,9 +216,11 @@ const Post: React.FC<PostProps> = ({ id }) => {
           <span className="author">
             made by {data?.balanceGameLogined?.user?.profile?.nickname}
           </span>
-          <span>•</span>
-          <span className="pub-date">1일 전</span>
-        </div>
+          <span> • </span>
+          <span className="pub-date">
+            {modifyDate(data?.balanceGameLogined?.createdAt)}
+          </span>
+        </div>{" "}
         <Share
           url={"http://localhost:3000"}
           text={
