@@ -210,15 +210,17 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
           />
         ))}
       </div>
-      <div className="comment__more">
-        <MoreIcon onClick={onToggleMore} />
-        {/** isMine: 내 코멘트인지 확인 필요 */}
-        <CommentMore
-          isMine={true}
-          isOpen={moreOpened}
-          onDelete={onDeleteComment(comment.id)}
-        />
-      </div>
+      {comment.status !== "delete" && (
+        <div className="comment__more">
+          <MoreIcon onClick={onToggleMore} />
+          {/** isMine: 내 코멘트인지 확인 필요 */}
+          <CommentMore
+            isMine={true}
+            isOpen={moreOpened}
+            onDelete={onDeleteComment(comment.id)}
+          />
+        </div>
+      )}
     </CommentWrapper>
   );
 };
