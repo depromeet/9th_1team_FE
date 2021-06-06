@@ -123,6 +123,15 @@ const REMOVE_REPLY_MUTATION = gql`
   }
 `;
 
+const UPDATE_REPLY_MUTATION = gql`
+  mutation updateReply($id: String!, $content: String!) {
+    updateReply(updateReplyInput: { replyId: $id, content: $content }) {
+      id
+      content
+    }
+  }
+`;
+
 const ReplyComment: React.FC<ReplyCommentProps> = ({
   balanceGameId = "",
   commentId = "",
@@ -130,9 +139,12 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
 }) => {
   const [opened, setOpened] = useState(false);
   const [content, setContent] = useState("");
+  const [isModifyMode, setIsModifyMode] = useState(false);
+  const [modifyReply, setModifyReply] = useState(reply.content);
   const [moreOpened, setMoreOpened] = useState(false); //comment more
   const [mCreateReply] = useMutation(CREATE_REPLY_MUTATION);
   const [mRemoveReply] = useMutation(REMOVE_REPLY_MUTATION);
+  const [mUpdateReply] = useMutation(UPDATE_REPLY_MUTATION);
 
   const onToggle = () => {
     setOpened(!opened);
@@ -169,6 +181,24 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
     mRemoveReply({ variables: { id } });
   };
 
+  const onModifyReplyMode = () => {
+    setIsModifyMode(true);
+  };
+
+  const onSubmitModifyReply = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mUpdateReply({
+      variables: {
+        id: reply.id,
+        content: modifyReply,
+      },
+    });
+  };
+
+  const onChangeModifyReply = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setModifyReply(e.target.value);
+  };
+
   return (
     <ReplyCommentWrapper>
       <div className="reply__content" onClick={onCloseMore}>
@@ -182,7 +212,15 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
               <span className="pub-date">{reply.pubDate}</span>
             </div>
             <div className="reply__user-text">
-              <p className="text">{reply.content}</p>
+              {isModifyMode ? (
+                <TextareaComment
+                  onSubmit={onSubmitModifyReply}
+                  onChange={onChangeModifyReply}
+                  value={modifyReply}
+                />
+              ) : (
+                <p className="text">{reply.content}</p>
+              )}
               <button className="reply-btn" onClick={onToggle}>
                 답글 쓰기
               </button>
@@ -206,6 +244,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
             isMine={true}
             isOpen={moreOpened}
             onDelete={onDeleteReply(reply.id)}
+            onModify={onModifyReplyMode}
           />
         </div>
       )}
