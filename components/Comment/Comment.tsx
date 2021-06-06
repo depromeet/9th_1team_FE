@@ -26,6 +26,7 @@ const CommentWrapper = styled.li`
     color: #343a40;
     opacity: 0.6;
     padding-left: 38px;
+    padding-bottom: 0.8rem;
   }
   .comment__user-pick {
     display: inline-block;
