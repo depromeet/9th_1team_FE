@@ -132,12 +132,24 @@ const REMOVE_COMMENT_MUTATION = gql`
   }
 `;
 
+const UPDATE_COMMENT_MUTATION = gql`
+  mutation removeComment($id: String!, $content: String!) {
+    updateComment(updateCommentInput: { id: $id, content: $content }) {
+      id
+      content
+    }
+  }
+`;
+
 const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
   const [opened, setOpened] = useState(false);
+  const [isModifyMode, setIsModifyMode] = useState(false);
+  const [modifyComment, setModifyComment] = useState(comment.content);
   const [moreOpened, setMoreOpened] = useState(false); //comment more
   const [content, setContent] = useState("");
   const [mCreateReply] = useMutation(CREATE_REPLY_MUTATION);
   const [mRemoveComment] = useMutation(REMOVE_COMMENT_MUTATION);
+  const [mUpdateComment] = useMutation(UPDATE_COMMENT_MUTATION);
 
   const onToggle = () => {
     setOpened(!opened);
@@ -176,6 +188,23 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
     });
   };
 
+  const onModifyCommentMode = () => {
+    setIsModifyMode(true);
+  };
+  const onSubmitModifyComment = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mUpdateComment({
+      variables: {
+        id: comment.id,
+        content: modifyComment,
+      },
+    });
+  };
+
+  const onChangeModifyComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setModifyComment(e.target.value);
+  };
+
   return (
     <CommentWrapper key={comment.id}>
       <div className="comment__content" onClick={onCloseMore}>
@@ -189,7 +218,16 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
               <span className="pub-date">{comment.pubDate}</span>
             </div>
             <div className="comment__user-text">
-              <p className="text">{comment.content}</p>
+              {isModifyMode ? (
+                <TextareaComment
+                  onSubmit={onSubmitModifyComment}
+                  onChange={onChangeModifyComment}
+                  value={modifyComment}
+                />
+              ) : (
+                <p className="text">{comment.content}</p>
+              )}
+
               <button className="reply-btn" onClick={onToggle}>
                 답글 쓰기
               </button>
@@ -220,6 +258,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
             isMine={true}
             isOpen={moreOpened}
             onDelete={onDeleteComment(comment.id)}
+            onModify={onModifyCommentMode}
           />
         </div>
       )}

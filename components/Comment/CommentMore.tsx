@@ -30,9 +30,15 @@ interface IsMineProps {
   isMine: boolean;
   isOpen: boolean;
   onDelete: () => void;
+  onModify: () => void;
 }
 
-const CommentMore: React.FC<IsMineProps> = ({ isMine, isOpen, onDelete }) => {
+const CommentMore: React.FC<IsMineProps> = ({
+  isMine,
+  isOpen,
+  onDelete,
+  onModify,
+}) => {
   if (!isMine) {
     return (
       <MoreMenu isOpen={isOpen}>
@@ -45,7 +51,7 @@ const CommentMore: React.FC<IsMineProps> = ({ isMine, isOpen, onDelete }) => {
     return (
       <MoreMenu isOpen={isOpen}>
         <li>
-          <a>수정하기</a>
+          <a onClick={onModify}>수정하기</a>
         </li>
         <li>
           <a onClick={onDelete}>삭제</a>
