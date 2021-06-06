@@ -101,6 +101,7 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
       replies {
         id
         userId
+        status
         content
         user {
           profile {

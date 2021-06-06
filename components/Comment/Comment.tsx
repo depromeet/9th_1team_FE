@@ -93,10 +93,11 @@ interface CommentProps {
       };
     };
     replies: {
-      id: number;
+      id: string;
       userId: string;
       pubDate: string;
       content: string;
+      status: string;
       user: {
         profile: {
           nickname: string;
@@ -181,7 +182,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
         {comment.status === "delete" ? (
           <div className="comment__deleted">삭제된 댓글입니다.</div>
         ) : (
-          <div className="comment__content-inner">
+          <>
             <div className="info">
               <div className="comment__user-pick" />
               <span className="author">{comment?.user?.profile?.nickname}</span>
@@ -200,7 +201,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
                 value={content}
               />
             )}
-          </div>
+          </>
         )}
 
         {comment.replies.map((reply) => (
