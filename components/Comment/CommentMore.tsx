@@ -29,9 +29,10 @@ const MoreMenu = styled.ul<{ isOpen: boolean }>`
 interface IsMineProps {
   isMine: boolean;
   isOpen: boolean;
+  onDelete: () => void;
 }
 
-const CommentMore: React.FC<IsMineProps> = ({ isMine, isOpen }) => {
+const CommentMore: React.FC<IsMineProps> = ({ isMine, isOpen, onDelete }) => {
   if (!isMine) {
     return (
       <MoreMenu isOpen={isOpen}>
@@ -47,7 +48,7 @@ const CommentMore: React.FC<IsMineProps> = ({ isMine, isOpen }) => {
           <a>수정하기</a>
         </li>
         <li>
-          <a>삭제</a>
+          <a onClick={onDelete}>삭제</a>
         </li>
       </MoreMenu>
     );

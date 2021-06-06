@@ -91,6 +91,7 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
     comments: commentsByGameId(gameId: $id) {
       id
       userId
+      status
       content
       user {
         profile {
