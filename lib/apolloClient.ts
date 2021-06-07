@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import {
   ApolloClient,
-  createHttpLink,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
@@ -17,12 +16,9 @@ export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 function createApolloClient() {
-  const httpLink = createHttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAHPQL_ENDPOINT, // Server URL (must be absolute)
-    credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
-  });
   const uploadLink = createUploadLink({
     uri: process.env.NEXT_PUBLIC_GRAHPQL_ENDPOINT,
+    credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
   });
 
   const authLink = setContext((_, { headers }) => {
@@ -39,7 +35,7 @@ function createApolloClient() {
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(uploadLink.concat(httpLink)),
+    link: authLink.concat(uploadLink),
     typeDefs,
     cache: new InMemoryCache({
       typePolicies: {
