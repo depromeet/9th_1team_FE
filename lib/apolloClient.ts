@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 import { concatPagination } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
@@ -19,6 +20,9 @@ function createApolloClient() {
   const httpLink = createHttpLink({
     uri: process.env.NEXT_PUBLIC_GRAHPQL_ENDPOINT, // Server URL (must be absolute)
     credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
+  });
+  const uploadLink = createUploadLink({
+    uri: process.env.NEXT_PUBLIC_GRAHPQL_ENDPOINT,
   });
 
   const authLink = setContext((_, { headers }) => {
@@ -35,7 +39,7 @@ function createApolloClient() {
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(httpLink),
+    link: authLink.concat(uploadLink.concat(httpLink)),
     typeDefs,
     cache: new InMemoryCache({
       typePolicies: {
