@@ -23,6 +23,8 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
     $balanceB: CreateBalanceGameSelectionInput!
     $description: String!
     $keywords: [CreateBalanceGameKeywordInput!]!
+    $file1: Upload!
+    $file2: Upload!
   ) {
     createBalanceGame(
       createBalanceGameInput: {
@@ -30,6 +32,8 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
         balanceGameSelections: [$balanceA, $balanceB]
         balanceGameKeywords: $keywords
       }
+      file1: $file1
+      file2: $file2
     ) {
       id
       userId
@@ -453,11 +457,11 @@ const Write = () => {
         },
         description: textInfo,
         keywords: findHashtags(keywords),
+        file1: balanceBgImgFileA,
+        file2: balanceBgImgFileB,
       },
     });
   };
-
-  console.log(findHashtags(keywords));
 
   return (
     <>
