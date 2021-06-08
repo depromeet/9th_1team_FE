@@ -38,15 +38,14 @@ interface ShareProps {
   imgUrl?: string;
 }
 
-const Share: React.FC<ShareProps> = ({ url, text, imgUrl }) => {
-  // title. desc, img 변경 필요
+const Share: React.FC<ShareProps> = ({ url, text }) => {
   const onShareKakao = () => {
     window.Kakao.Link.sendDefault({
       objectType: "feed",
       content: {
-        title: `밸런스 게임 | ${text}`,
+        title: `토맛토 | 오늘의 밸런스 게임`,
         description: text,
-        imageUrl: imgUrl || "https://i.ibb.co/5F7ZQcR/tototo.png",
+        imageUrl: "https://i.ibb.co/qYjdGHJ/tomato-social.png",
         link: {
           webUrl: url,
           mobileWebUrl: url,

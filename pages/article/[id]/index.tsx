@@ -151,7 +151,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   const baseURL = "http://localhost:3000";
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
-
+  // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGameLogined?.mySelection);
   }, [data?.balanceGameLogined?.mySelection]);
@@ -222,11 +222,8 @@ const Post: React.FC<PostProps> = ({ id }) => {
           </span>
         </div>{" "}
         <Share
-          url={"http://localhost:3000"}
-          text={
-            data?.balanceGameLogined.description ||
-            "밸런스 게임에 참여해보세요!"
-          }
+          url={baseURL}
+          text={`${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`}
         />
         <nav>
           <div className="prev">
