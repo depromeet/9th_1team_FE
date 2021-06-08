@@ -2,9 +2,9 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import RadioBox from "components/DetailContent/RadioBox";
 import Comments from "components/Comment/Comments";
+import Header from "components/Header";
 import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
-import CommonHeader from "../../../components/Header/CommonHeader";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
 import React, { useEffect, useState } from "react";
@@ -180,14 +180,14 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   return (
     <DetailWrapper>
-      <CommonHeader>
+      <Header>
         <div className="icon">
           <ShareIcon />
         </div>
         <div className="icon">
           <MoreIcon onClick={toggleMore} />
         </div>
-      </CommonHeader>
+      </Header>
       <HeaderMore isMine={false} isOpen={isOpen} />
       <div className="contents__wrapper">
         <RadioBox

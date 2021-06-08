@@ -7,10 +7,10 @@ import {
   Title,
   Logo,
   MypageLink,
-  Text,
 } from "./HomeHeader.style";
 import TomatoIcon from "../../public/tomato/smile-red.svg";
-import CheckSqureIcon from "../../public/check-square.svg";
+import LetterIcon from "../../public/tomato/letter-logo.svg";
+import CheckSquareIcon from "../../public/check-square.svg";
 
 const HomeHeader = () => {
   return (
@@ -20,7 +20,7 @@ const HomeHeader = () => {
           <a>
             <Logo>
               <TomatoIcon />
-              <Text>토맛토</Text>
+              <LetterIcon className="letter" />
             </Logo>
           </a>
         </Link>
@@ -28,7 +28,7 @@ const HomeHeader = () => {
       <BtnContainer>
         <Link href={"/article/write"} passHref>
           <CreateBalanceLink>
-            <CheckSqureIcon />
+            <CheckSquareIcon />
           </CreateBalanceLink>
         </Link>
         <Link href={"/mypage"} passHref>

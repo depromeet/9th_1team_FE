@@ -10,6 +10,7 @@ import NotLogin from "../../components/MypageContent/NotLogin";
 import CommonHeader from "../../components/Header/CommonHeader";
 import Link from "next/link";
 import NicknameModal from "../../components/modal/NicknameModal";
+import Header from "components/Header";
 
 const MYPAGE_QUERY = gql`
   query {
@@ -192,13 +193,13 @@ const Mypage = () => {
 
   return (
     <>
-      <CommonHeader title={"마이페이지"}>
+      <Header title={"마이페이지"}>
         <Link href={"/notifications"}>
           <NoticeLink>
             <BellIcon />
           </NoticeLink>
         </Link>
-      </CommonHeader>
+      </Header>
       <MypageWrapper>
         <UserInfo>
           <UserImage>{userImg ? userImg : <TomatoIcon />}</UserImage>

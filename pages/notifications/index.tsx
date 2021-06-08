@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import CommonHeader from "components/Header/CommonHeader";
 import React from "react";
+import Header from "components/Header";
 import ChatIcon from "../../public/opinion.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client/core";
@@ -129,7 +129,7 @@ const Notifications = () => {
 
   return (
     <Container>
-      <CommonHeader title="알림" />
+      <Header title="알림" />
       <NotiLists>
         {notifications.map((notification: any) => {
           const content = getContent(notification);

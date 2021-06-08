@@ -1,14 +1,10 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { BackBtn, BtnContainer, Container, Title } from "./CommonHeader.style";
 import { useRouter } from "next/router";
 import PrevIcon from "../../public/top-prev.svg";
+import { HeaderProps } from "./";
 
-type Props = {
-  title?: string;
-  onClickBack?: () => void;
-};
-
-const CommonHeader: React.FC<Props> = ({
+const CommonHeader: React.FC<PropsWithChildren<HeaderProps>> = ({
   title = "",
   onClickBack,
   children,

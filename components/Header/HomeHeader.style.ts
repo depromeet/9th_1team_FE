@@ -20,16 +20,10 @@ export const Title = styled.div`
 export const Logo = styled.a`
   display: inline-flex;
   align-items: center;
-`;
 
-export const Text = styled.h1`
-  display: inline-flex;
-  align-items: center;
-  margin-left: 1.1rem;
-  font-family: "NanumSquareRound";
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #f64d4d;
+  .letter {
+    margin-left: 0.5rem;
+  }
 `;
 
 export const BtnContainer = styled.div`

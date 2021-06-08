@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
-import CommonHeader from "../../../components/Header/CommonHeader";
+import Header from "components/Header";
 import ImgIcon from "../../../public/image-frame.svg";
 import VsIcon from "../../../public/versus.svg";
 import VomitIcon from "../../../public/tomato/vomit-normal-front.svg";
@@ -465,7 +465,7 @@ const Write = () => {
 
   return (
     <>
-      <CommonHeader title={"게임 만들기"} />
+      <Header title={"게임 만들기"} />
       <WriteWrapper>
         <form onSubmit={onSubmit}>
           <BalanceTitle>
