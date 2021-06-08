@@ -46,6 +46,36 @@ const BALANCE_GAMES_QUERY = gql`
     }
   }
 `;
+const BALANCE_GAMES_LOGINED_QUERY = gql`
+  query balanceGamesLogined($offset: Float!) {
+    balanceGamesLogined(
+      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
+    ) {
+      num
+      balanceGames: balanceGame {
+        id
+        userId
+        balanceGameSelectionVotesCount
+        description
+        totalVoteCount
+        commentCount
+        thumbs
+        status
+        mySelection
+        createdAt
+        updatedAt
+        balanceGameSelections {
+          id
+          description
+          voteCount
+          backgroundColor
+          backgroundImage
+          textColor
+        }
+      }
+    }
+  }
+`;
 
 const Today = () => {
   const { data } = useQuery(BALANCE_GAMES_QUERY, {
@@ -54,7 +84,6 @@ const Today = () => {
       offset: 0,
     },
   });
-  console.log(data);
   return (
     <TodayContainer>
       <div className="title" style={{ fontSize: "1.6rem" }}>
@@ -70,11 +99,15 @@ const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
 );
 
 const Index = () => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isFiltered, setIsFiltered] = useState(false);
   const [isNewest, setIsNewest] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_QUERY);
+  const [qBalanceGamesLogined, { data: loginData }] = useLazyQuery(
+    BALANCE_GAMES_LOGINED_QUERY
+  );
 
   useEffect(() => {
     qBalanceGames({
@@ -82,19 +115,29 @@ const Index = () => {
         offset,
       },
     });
+    qBalanceGamesLogined({
+      variables: {
+        offset,
+      },
+    });
   }, [offset]);
 
   useEffect(() => {
-    console.log(
-      "data?.balanceGames?.balanceGames ::",
-      data?.balanceGames?.balanceGames
-    );
-
-    const newList = data?.balanceGames?.balanceGames;
+    const token = localStorage.getItem("token");
+    let newList;
+    if (token) {
+      newList = loginData?.balanceGamesLogined?.balanceGames;
+    } else {
+      newList = data?.balanceGames?.balanceGames;
+    }
     if (newList) {
       setList(list.concat(newList));
     }
   }, [data]);
+
+  useEffect(() => {
+    setFilteredList(list.filter((item) => item.mySelection !== null));
+  }, [list]);
 
   if (_.isEmpty(list)) return null;
 
@@ -114,10 +157,10 @@ const Index = () => {
         </div>
         <div className="selects">
           <Participate
-            {...{ isChecked }}
-            onClick={() => setIsChecked(!isChecked)}
+            {...{ isFiltered }}
+            onClick={() => setIsFiltered(!isFiltered)}
           >
-            {isChecked ? <Select /> : <Unselect />}
+            {isFiltered ? <Select /> : <Unselect />}
           </Participate>
           <div className="orders">
             <OrderButton
@@ -141,10 +184,9 @@ const Index = () => {
           hasMore={true}
           loader={<h4>Loading...</h4>}
         >
-          {list.map((data, i) => {
-            console.log("list", list);
-            return <FeedPost key={i} post={data} />;
-          })}
+          {isFiltered
+            ? filteredList.map((data, i) => <FeedPost key={i} post={data} />)
+            : list.map((data, i) => <FeedPost key={i} post={data} />)}
         </InfiniteScroll>
       </Container>
     </div>
@@ -162,6 +204,7 @@ const TodayContainer = styled.div`
 `;
 
 const Container = styled.div`
+  box-sizing: border-box;
   background: white;
   padding: 1.55rem 1.6rem;
   display: flex;
@@ -201,10 +244,10 @@ const Container = styled.div`
   }
 `;
 
-const Participate = styled.div<{ isChecked: boolean }>`
+const Participate = styled.div<{ isFiltered: boolean }>`
   ::after {
     content: "참여한 밸런스 게임만 보기";
-    color: ${({ isChecked }) => (isChecked ? "#343A40" : "#ADB5BD")};
+    color: ${({ isFiltered }) => (isFiltered ? "#343A40" : "#ADB5BD")};
     margin-left: 0.5rem;
     font-size: 1.3rem;
   }

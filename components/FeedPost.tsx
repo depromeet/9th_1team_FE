@@ -11,12 +11,6 @@ import dayjs from "dayjs";
 import { countDate } from "lib/utils";
 import { gql, useMutation } from "@apollo/client";
 
-enum CHECK_TYPE {
-  FIRST = "FIRST",
-  SECOND = "SECOND",
-  NONE = "NONE",
-}
-
 const GameFire = ({
   fistColor,
   secondColor,
@@ -82,6 +76,13 @@ const CREATE_VOTE_NOT_LOGINED = gql`
     }
   }
 `;
+const REMOVE_VOTE_LOGINED = gql`
+  mutation removeVoteLogined($balanceGameId: String!) {
+    removeVoteLogined(balanceGameId: $balanceGameId) {
+      id
+    }
+  }
+`;
 
 const Selection = ({
   selection,
@@ -94,34 +95,50 @@ const Selection = ({
   checkedId: string | null;
   setCheckedId: any;
 }) => {
-  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
-  const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mCreateVoteLogined, { data: dataCreateVoteLogined }] =
+    useMutation(CREATE_VOTE_LOGINED);
+  const [mCreateVoteNotLogined, { data: dataCreateVoteNotLogined }] =
+    useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mRemoveVoteLogined, { data: dataRemoveVoteLogined }] =
+    useMutation(REMOVE_VOTE_LOGINED);
 
-  const handleVote = (sectionId: string) => {
-    if (sectionId === checkedId) {
-      setCheckedId(null);
-    } else {
-      const token = localStorage.getItem("token");
-      setCheckedId(sectionId);
-      if (token) {
-        mCreateVoteLogined({
+  const handleVote = async (selectionId: string) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      if (checkedId === null) {
+        // 새로 create
+        setCheckedId(selectionId);
+        await mCreateVoteLogined({
           variables: {
             balanceGameId: postId,
-            balanceGameSelectionId: sectionId,
+            balanceGameSelectionId: selectionId,
           },
         });
       } else {
-        mCreateVoteNotLogined({
+        // remove
+        setCheckedId(null);
+        await mRemoveVoteLogined({
           variables: {
             balanceGameId: postId,
-            balanceGameSelectionId: sectionId,
           },
         });
+        if (checkedId === selectionId) {
+          // 다시 create
+          setCheckedId(selectionId);
+          await mCreateVoteLogined({
+            variables: {
+              balanceGameId: postId,
+              balanceGameSelectionId: selectionId,
+            },
+          });
+        }
       }
     }
   };
 
-  const isChecked = checkedId === null ? null : checkedId === selection.id;
+  const isChecked =
+    checkedId === null ? null : checkedId === selection.id ? true : false;
+
   return (
     <OptionBoxContainer
       {...{ isChecked }}
@@ -139,12 +156,10 @@ const Selection = ({
 };
 
 const FeedPost = ({ post }: { post: any }) => {
-  console.log(post.myselection);
-  const [checkedId, setCheckedId] = useState(post.myselection || null);
+  const [checkedId, setCheckedId] = useState(post.mySelection);
   const before = countDate(
     dayjs(post.createdAt || new Date()).format("YYYY-MM-DD HH:mm")
   );
-  console.log(post.balanceGameSelections[0].voteCount, post.totalVoteCount);
   return (
     <Container>
       {post.balanceGameSelections.map((selection: any) => (
@@ -198,7 +213,6 @@ const FeedPost = ({ post }: { post: any }) => {
 };
 
 const Container = styled.div`
-  width: 100%;
   height: 36rem;
   border: 1px solid #e9ecef;
   border-radius: 0.8rem;
@@ -206,6 +220,7 @@ const Container = styled.div`
   background: white;
   position: relative;
   .content {
+    box-sizing: border-box;
     padding: 1rem 0;
     color: #606060;
     &__title {
@@ -259,6 +274,15 @@ const Container = styled.div`
 const OptionBoxContainer = styled.div<{
   isChecked: boolean | null;
 }>`
+  :first-child {
+    border-top-left-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+    img {
+      border-top-left-radius: 0.8rem;
+      border-top-right-radius: 0.8rem;
+    }
+  }
+  width: 100%;
   img {
     position: absolute;
     top: 0;
@@ -271,26 +295,24 @@ const OptionBoxContainer = styled.div<{
   height: 12.8rem;
   font-weight: 800;
   line-height: 2.6rem;
-  :first-child {
-    border-top-left-radius: 0.8rem;
-    border-top-right-radius: 0.8rem;
-  }
   .checkbox {
     position: absolute;
     top: 0.9rem;
     right: 1.2rem;
   }
   .title {
+    width: 100%;
     font-size: 2rem;
     position: absolute;
+    left: 0;
+    top: 0;
     height: 100%;
     z-index: 2;
     opacity: ${({ isChecked }) =>
       isChecked === null ? 1 : isChecked ? 1 : 0.4};
     display: flex;
     align-items: center;
-    text-align: center;
-    padding: 0 2rem;
+    justify-content: center;
   }
 `;
 
