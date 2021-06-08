@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
-import NaverIcon from "../../public/naver.svg";
+import VomitIcon from "../../public/tomato/vomit-normal-front.svg";
 import KakaoIcon from "../../public/kakao.svg";
 import CloseIcon from "../../public/close.svg";
 import Link from "next/link";
@@ -42,13 +42,20 @@ const Container = styled.div`
 `;
 
 const Logo = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: gray;
+  width: 9rem;
+`;
+
+const Text = styled.p`
+  font-family: "NanumSquareRound";
+  font-size: 2rem;
+  line-height: 2.8rem;
+  font-weight: 800;
+  width: 20rem;
+  text-align: center;
+  margin: 2rem 0 3.6rem;
 `;
 
 const BtnContainer = styled.div`
-  margin-top: 80px;
   width: 100%;
   max-width: 60rem;
 
@@ -85,7 +92,7 @@ const KakaoButton = styled.button`
 `;
 
 const WithoutLoginButton = styled.button`
-  font-size: 17px;
+  font-size: 1.4rem;
   line-height: 25px;
   color: #868e96;
   margin-top: 30px;
@@ -268,13 +275,10 @@ export default function Login() {
       </LoginHeader>
       <Container>
         <Logo>
-          <img src="img.png" alt="" />
+          <VomitIcon />
         </Logo>
+        <Text>로그인 후 밸런스 게임에 참여해보세요!</Text>
         <BtnContainer>
-          <NaverButton onClick={onNaver}>
-            <NaverIcon />
-            <span>네이버로 계속하기</span>
-          </NaverButton>
           <KakaoButton onClick={onKakaoLogin}>
             <KakaoIcon />
             <span>카카오톡으로 계속하기</span>
