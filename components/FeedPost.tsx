@@ -8,6 +8,7 @@ import VS from "public/versus.svg";
 import Fire from "public/fire.svg";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Link from "next/link";
+import { modifyDate } from "utils/date";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -108,8 +109,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         </div>
         <div className="content__state">
           <div>
-            참여 {data.totalVoteCount} • 의견 {data.commentCount} • 1일전
-            {data.createdAt}
+            참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
+            {modifyDate(data.createdAt)}
           </div>
         </div>
         <div className="content__buttons">
@@ -136,13 +137,19 @@ const Container = styled.div`
   margin-bottom: 2.5rem;
   background: white;
   position: relative;
+  box-sizing: border-box;
   .content {
     padding: 1rem 0;
     color: #606060;
     &__title {
-      padding: 0 0.8rem;
+      display: block;
+      padding: 0 0.8rem 0.3rem 0.8rem;
       color: #222222;
       font-size: 1.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
       > a {
         text-decoration: none;
         color: inherit;
@@ -151,8 +158,10 @@ const Container = styled.div`
     &__state {
       padding: 0 0.8rem;
       display: flex;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
       font-size: 1.1rem;
+      line-height: 1.6rem;
+      color: #868e96;
     }
     &__buttons {
       padding: 1.3rem 0.8rem;
@@ -205,16 +214,19 @@ const OptionBoxContainer = styled.div<{
     right: 1.2rem;
   }
   .title {
+    font-family: "NanumSquareRound";
     font-size: 2rem;
     position: absolute;
     height: 100%;
+    width: 100%;
     z-index: 2;
     opacity: ${({ isSelected, checkType }) =>
       !isSelected ? (checkType === CHECK_TYPE.NONE ? 1 : 0.4) : 1};
     display: flex;
+    justify-content: center;
     align-items: center;
-    text-align: center;
     padding: 0 2rem;
+    box-sizing: border-box;
   }
 `;
 

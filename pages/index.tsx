@@ -3,6 +3,8 @@ import Header from "components/Header";
 import FeedPost from "components/FeedPost";
 import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
+import RandomIcon from "public/home-random.svg";
+import PlusIcon from "public/home-plus.svg";
 import { MouseEventHandler, useEffect, useState } from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -48,9 +50,7 @@ const BALANCE_GAMES_QUERY = gql`
 const Today = () => {
   return (
     <TodayContainer>
-      <div className="title" style={{ fontSize: "1.6rem" }}>
-        오늘의 밸런스게임
-      </div>
+      <div className="title">오늘의 밸런스게임</div>
       {/*<FeedPost />*/}
     </TodayContainer>
   );
@@ -102,8 +102,14 @@ const Index = () => {
       <Today />
       <Container>
         <div className="buttons">
-          <div className="buttons__btn">랜덤 플레이</div>
-          <div className="buttons__btn">게임 만들기</div>
+          <div className="buttons__btn">
+            <RandomIcon />
+            <span>랜덤 플레이</span>
+          </div>
+          <div className="buttons__btn">
+            <PlusIcon />
+            <span>게임 만들기</span>
+          </div>
         </div>
         <div className="selects">
           <Participate
@@ -117,8 +123,8 @@ const Index = () => {
               isSelect={isNewest}
               onClick={() => setIsNewest(true)}
               text="최신순"
-            />{" "}
-            •{" "}
+            />
+            <span className="dot">•</span>
             <OrderButton
               isSelect={!isNewest}
               onClick={() => setIsNewest(false)}
@@ -149,8 +155,10 @@ const TodayContainer = styled.div`
   margin-bottom: -2.5rem;
   background: #f8f9fa;
   .title {
+    font-family: "NanumSquareRound";
+    font-size: 1.6rem;
+    font-weight: 800;
     margin-bottom: 1rem;
-    font-weight: 700;
   }
 `;
 
@@ -161,7 +169,7 @@ const Container = styled.div`
   flex-direction: column;
   .buttons {
     display: flex;
-    flex: 1;
+    justify-content: space-between;
     &__btn {
       display: flex;
       align-items: center;
@@ -169,11 +177,14 @@ const Container = styled.div`
       height: 4.8rem;
       font-weight: bold;
       font-size: 1.4rem;
-      flex: 0.5;
+      flex: 0.49;
       border: 1px solid #e9ecef;
       box-sizing: border-box;
       border-radius: 8px;
       letter-spacing: -0.05em;
+      span {
+        margin-left: 0.4rem;
+      }
     }
   }
   .selects {
@@ -188,6 +199,9 @@ const Container = styled.div`
     align-items: center;
     color: #adb5bd;
     font-size: 1.3rem;
+  }
+  .dot {
+    margin: 0 0.78rem;
   }
 `;
 
