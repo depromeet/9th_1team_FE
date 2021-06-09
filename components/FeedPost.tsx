@@ -72,7 +72,7 @@ const GameFire: React.FC<{ voteCountA: number; voteCountB: number }> = ({
 
   return (
     <>
-      <div className="fire">
+      <div className="fire" style={{ left: `${leftBarPos}%` }}>
         <div className="fire__rectangle">{voteCountA}</div>
         <div
           style={{
