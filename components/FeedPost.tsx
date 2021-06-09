@@ -23,6 +23,7 @@ interface OptionBoxProps {
   setCheckType: Dispatch<SetStateAction<CHECK_TYPE>>;
   background: string;
   color: string;
+  backgroundImage: string;
 }
 
 const OptionBox = ({
@@ -32,6 +33,7 @@ const OptionBox = ({
   checkType,
   setCheckType,
   background,
+  backgroundImage,
   color,
 }: OptionBoxProps) => {
   const handleCheckType = (type: CHECK_TYPE) => {
@@ -41,7 +43,13 @@ const OptionBox = ({
   return (
     <OptionBoxContainer
       {...{ checkType, isSelected }}
-      style={{ background, color }}
+      style={{
+        background,
+        color,
+        backgroundImage: `url("${backgroundImage}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
       <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
       <div className="title" onClick={() => handleCheckType(type)}>
@@ -112,6 +120,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         checkType={checkType}
         setCheckType={setCheckType}
         background={balanceA.backgroundColor}
+        backgroundImage={balanceA.backgroundImage}
         color={balanceA.textColor}
       />
       <OptionBox
@@ -121,6 +130,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         checkType={checkType}
         setCheckType={setCheckType}
         background={balanceB.backgroundColor}
+        backgroundImage={balanceB.backgroundImage}
         color={balanceB.textColor}
       />
       <Versus>

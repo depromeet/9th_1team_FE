@@ -40,6 +40,7 @@ const BALANCE_GAMES_QUERY = gql`
           id
           description
           backgroundColor
+          backgroundImage
           textColor
           voteCount
         }
