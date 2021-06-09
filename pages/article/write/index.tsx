@@ -481,6 +481,8 @@ const Write = () => {
                 style={{
                   backgroundColor: balanceBgColorA,
                   backgroundImage: `url(${balanceBgImgSrcA})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 <TextareaAutosize
@@ -515,6 +517,8 @@ const Write = () => {
                 style={{
                   backgroundColor: balanceBgColorB,
                   backgroundImage: `url(${balanceBgImgSrcB})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 <TextareaAutosize
