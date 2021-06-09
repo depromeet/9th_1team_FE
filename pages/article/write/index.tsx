@@ -9,6 +9,7 @@ import ImgIcon from "../../../public/image-frame.svg";
 import VsIcon from "../../../public/versus.svg";
 import VomitIcon from "../../../public/tomato/vomit-normal-front.svg";
 import UnionIcon from "../../../public/union.svg";
+import ColorPicker from "components/ColorPicker";
 
 const [
   INIT_BALANCE_FONT_COLOR_A,
@@ -184,17 +185,9 @@ const BalanceCardContainer = styled.div`
 
 const ColorSamples = styled.div`
   padding: 10px 2px;
-`;
-
-const ColorSample = styled.button.attrs({
-  type: "button",
-})`
-  width: 36px;
-  height: 36px;
-  margin-left: 14px;
-  &:first-child {
-    margin-left: 0;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const ColorSampleInfo = styled.div`
@@ -344,7 +337,7 @@ const Write = () => {
   const [balanceTextA, setBalanceTextA] = useState("");
   const [balanceTextB, setBalanceTextB] = useState("");
   const [keywords, setKeywords] = useState("");
-
+  const [colorPickerState, setColorPickerState] = useState(0);
   const [mCreateBalanceGame] = useMutation(CREATE_BALANCE_GAME_MUTATION);
 
   const onChangeText =
@@ -551,9 +544,15 @@ const Write = () => {
             </BalanceCardContainer>
             <ColorSamples>
               {BALANCE_COLOR_SAMPLE_LIST.map((colors, i) => (
-                <ColorSample key={i} onClick={onChangeColorGroup(...colors)}>
-                  a
-                </ColorSample>
+                <ColorPicker
+                  key={i}
+                  id={i}
+                  colorA={colors[1]}
+                  colorB={colors[3]}
+                  picked={colorPickerState === i}
+                  setPicked={setColorPickerState}
+                  onChangeColor={onChangeColorGroup(...colors)}
+                />
               ))}
             </ColorSamples>
             <ColorSampleInfo>

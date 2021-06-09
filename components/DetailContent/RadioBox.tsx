@@ -42,6 +42,7 @@ const RadioWrapper = styled.div`
     background-color: #ffd569;
   }
   h2 {
+    font-family: "NanumSquareRound";
     font-size: 2rem;
     font-weight: 800;
   }
