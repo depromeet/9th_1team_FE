@@ -51,26 +51,46 @@ const OptionBox = ({
   );
 };
 
-const GameFire = () => (
-  <>
-    <div className="fire">
-      <div className="fire__rectangle">50</div>
-      <div
-        style={{
-          position: "absolute",
-          top: "-2.5rem",
-          left: "-2.1rem",
-          zIndex: 3,
-        }}
-      >
-        <Fire />
+const GameFire: React.FC<{ voteCountA: number; voteCountB: number }> = ({
+  voteCountA,
+  voteCountB,
+}) => {
+  let leftBarPos = 50;
+  let rightBarPos = 50;
+  if (voteCountA !== 0) {
+    if (voteCountB !== 0) {
+      leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
+      rightBarPos = 100 - rightBarPos;
+    } else {
+      leftBarPos = 100;
+      rightBarPos = 0;
+    }
+  } else if (voteCountB !== 0) {
+    leftBarPos = 0;
+    rightBarPos = 100;
+  }
+
+  return (
+    <>
+      <div className="fire">
+        <div className="fire__rectangle">{voteCountA}</div>
+        <div
+          style={{
+            position: "absolute",
+            top: "-2.5rem",
+            left: "-2.1rem",
+            zIndex: 3,
+          }}
+        >
+          <Fire />
+        </div>
+        <div className="fire__rectangle">{voteCountB}</div>
       </div>
-      <div className="fire__rectangle">50</div>
-    </div>
-    <div className="line" />
-    <div className="line" />
-  </>
-);
+      <div className="line" style={{ width: `${leftBarPos}%` }} />
+      <div className="line" style={{ width: `${rightBarPos}%` }} />
+    </>
+  );
+};
 
 interface FeedPostProps {
   data?: any;
@@ -80,6 +100,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
 
   const [balanceA, balanceB] = data.balanceGameSelections;
+
+  console.log(balanceA);
 
   return (
     <Container>
@@ -101,7 +123,16 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         background={balanceB.backgroundColor}
         color={balanceB.textColor}
       />
-      <Versus>{checkType === CHECK_TYPE.NONE ? <VS /> : <GameFire />}</Versus>
+      <Versus>
+        {checkType === CHECK_TYPE.NONE ? (
+          <VS />
+        ) : (
+          <GameFire
+            voteCountA={balanceA.voteCount}
+            voteCountB={balanceB.voteCount}
+          />
+        )}
+      </Versus>
 
       <div className="content">
         <div className="content__title">

@@ -41,6 +41,7 @@ const BALANCE_GAMES_QUERY = gql`
           description
           backgroundColor
           textColor
+          voteCount
         }
       }
     }
