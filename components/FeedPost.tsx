@@ -5,10 +5,11 @@ import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
+import { gql, useMutation } from "@apollo/client";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -20,11 +21,33 @@ interface OptionBoxProps {
   isSelected: boolean;
   title: string;
   checkType: CHECK_TYPE;
-  setCheckType: Dispatch<SetStateAction<CHECK_TYPE>>;
+  setCheckType: (
+    type: CHECK_TYPE,
+    balanceGameId: string,
+    balanceGameSelectionId: string
+  ) => void;
+  balanceGameId: string;
+  balanceGameSelectionId: string;
   background: string;
   color: string;
   backgroundImage: string;
 }
+
+const CREATE_VOTE_LOGINED_MUTATION = gql`
+  mutation createVoteLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
 
 const OptionBox = ({
   type,
@@ -34,11 +57,14 @@ const OptionBox = ({
   setCheckType,
   background,
   backgroundImage,
+  balanceGameId,
+  balanceGameSelectionId,
   color,
 }: OptionBoxProps) => {
   const handleCheckType = (type: CHECK_TYPE) => {
-    if (checkType === type) setCheckType(CHECK_TYPE.NONE);
-    else setCheckType(type);
+    if (checkType === type)
+      setCheckType(CHECK_TYPE.NONE, balanceGameId, balanceGameSelectionId);
+    else setCheckType(type, balanceGameId, balanceGameSelectionId);
   };
   return (
     <OptionBoxContainer
@@ -65,10 +91,27 @@ interface FeedPostProps {
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
 
   const [balanceA, balanceB] = data.balanceGameSelections;
 
-  console.log(balanceA);
+  const onClickCheckType = (
+    type: CHECK_TYPE,
+    balanceGameId: string,
+    balanceGameSelectionId: string
+  ) => {
+    setCheckType(type);
+    if (type !== CHECK_TYPE.NONE) {
+      mCreateVoteLogined({
+        variables: {
+          balanceGameId,
+          balanceGameSelectionId,
+        },
+      });
+    }
+  };
+
+  console.log("????????????", data);
 
   return (
     <Container>
@@ -77,7 +120,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         isSelected={checkType === CHECK_TYPE.FIRST}
         title={balanceA.description}
         checkType={checkType}
-        setCheckType={setCheckType}
+        setCheckType={onClickCheckType}
+        balanceGameId={data.id}
+        balanceGameSelectionId={balanceA.id}
         background={balanceA.backgroundColor}
         backgroundImage={balanceA.backgroundImage}
         color={balanceA.textColor}
@@ -87,7 +132,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         isSelected={checkType === CHECK_TYPE.SECOND}
         title={balanceB.description}
         checkType={checkType}
-        setCheckType={setCheckType}
+        setCheckType={onClickCheckType}
+        balanceGameId={data.id}
+        balanceGameSelectionId={balanceB.id}
         background={balanceB.backgroundColor}
         backgroundImage={balanceB.backgroundImage}
         color={balanceB.textColor}

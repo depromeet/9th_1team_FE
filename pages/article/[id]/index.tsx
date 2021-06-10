@@ -7,7 +7,7 @@ import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
