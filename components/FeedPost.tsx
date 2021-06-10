@@ -5,10 +5,10 @@ import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
-import Fire from "public/fire.svg";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
+import FireBar from "./FireBar/FireBar";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -59,47 +59,6 @@ const OptionBox = ({
   );
 };
 
-const GameFire: React.FC<{ voteCountA: number; voteCountB: number }> = ({
-  voteCountA,
-  voteCountB,
-}) => {
-  let leftBarPos = 50;
-  let rightBarPos = 50;
-  if (voteCountA !== 0) {
-    if (voteCountB !== 0) {
-      leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
-      rightBarPos = 100 - rightBarPos;
-    } else {
-      leftBarPos = 100;
-      rightBarPos = 0;
-    }
-  } else if (voteCountB !== 0) {
-    leftBarPos = 0;
-    rightBarPos = 100;
-  }
-
-  return (
-    <>
-      <div className="fire" style={{ left: `${leftBarPos}%` }}>
-        <div className="fire__rectangle">{voteCountA}</div>
-        <div
-          style={{
-            position: "absolute",
-            top: "-2.5rem",
-            left: "-2.1rem",
-            zIndex: 3,
-          }}
-        >
-          <Fire />
-        </div>
-        <div className="fire__rectangle">{voteCountB}</div>
-      </div>
-      <div className="line" style={{ width: `${leftBarPos}%` }} />
-      <div className="line" style={{ width: `${rightBarPos}%` }} />
-    </>
-  );
-};
-
 interface FeedPostProps {
   data?: any;
 }
@@ -137,7 +96,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         {checkType === CHECK_TYPE.NONE ? (
           <VS />
         ) : (
-          <GameFire
+          <FireBar
             voteCountA={balanceA.voteCount}
             voteCountB={balanceB.voteCount}
           />
@@ -280,32 +239,7 @@ const Versus = styled.div`
   left: 0;
   width: 100%;
   height: 25.6rem;
-  .fire {
-    position: absolute;
-    &__rectangle {
-      :first-child {
-        top: auto;
-        bottom: -0.4rem;
-        left: auto;
-        right: 0.3rem;
-        border-radius: 12px 12px 0px 12px;
-        color: #e56f53;
-      }
-      color: #f8d272;
 
-      top: -0.4rem;
-      left: 0.3rem;
-      position: absolute;
-      z-index: 1;
-      font-size: 1.4rem;
-      font-weight: 800;
-      padding: 0.3rem 0.9rem;
-      padding-top: 0.5rem;
-      background: #f8f9fa;
-      box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 0px 12px 12px 12px;
-    }
-  }
   .line {
     width: 50%;
     height: 0.8rem;
