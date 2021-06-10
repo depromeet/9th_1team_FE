@@ -8,6 +8,7 @@ import PlusIcon from "public/home-plus.svg";
 import { MouseEventHandler, useEffect, useState } from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useRouter } from "next/router";
 import _ from "lodash";
 
 interface OrderButtonProps {
@@ -68,6 +69,7 @@ const Index = () => {
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
   const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_QUERY);
+  const router = useRouter();
 
   useEffect(() => {
     qBalanceGames({
@@ -98,17 +100,25 @@ const Index = () => {
     setOffset(nextOffset);
   };
 
+  const onClickRandomPlay = () => {
+    alert("아직 준비중인 서비스입니다. 조금만 기다려주세요!");
+  };
+
+  const onClickCreateGame = () => {
+    router.push("/article/write");
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <Header />
       <Today />
       <Container>
         <div className="buttons">
-          <div className="buttons__btn">
+          <div className="buttons__btn" onClick={onClickRandomPlay}>
             <RandomIcon />
             <span>랜덤 플레이</span>
           </div>
-          <div className="buttons__btn">
+          <div className="buttons__btn" onClick={onClickCreateGame}>
             <PlusIcon />
             <span>게임 만들기</span>
           </div>
@@ -184,6 +194,7 @@ const Container = styled.div`
       box-sizing: border-box;
       border-radius: 8px;
       letter-spacing: -0.05em;
+      cursor: pointer;
       span {
         margin-left: 0.4rem;
       }
