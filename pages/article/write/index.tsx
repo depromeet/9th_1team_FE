@@ -89,6 +89,7 @@ const BalanceCard = styled.div<{ placeholderColor: string }>`
     padding: 0;
     margin: 0;
     border: none;
+    outline: none;
     background-color: transparent;
     text-align: center;
     resize: none;
@@ -125,6 +126,7 @@ const BalanceCardBtn = styled.label`
 
 const BalanceTitle = styled.div`
   padding: 0 1.6rem;
+
   .title {
     margin: 6px 0;
     font-size: 12px;
@@ -216,6 +218,7 @@ const TextInfoContainer = styled.div`
       margin: 0;
       padding: 0;
       border: 0;
+      outline: none;
       font-family: "Noto Sans KR";
       font-weight: 400;
       font-size: 14px;
@@ -256,6 +259,7 @@ const KeywordsContainer = styled.div`
       margin: 0;
       padding: 0;
       border: 0;
+      outline: none;
       font-weight: normal;
       font-size: 14px;
       line-height: 175%;
@@ -412,7 +416,7 @@ const Write = () => {
   };
 
   const isDisabledBtn = () => {
-    return !balanceTextA || !balanceTextB || !textInfo || !keywords;
+    return !balanceTextA || !balanceTextB || !textInfo;
   };
 
   const findHashtags = (searchText = "") => {
