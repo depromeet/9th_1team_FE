@@ -7,7 +7,7 @@ import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
-import React, { useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
@@ -148,6 +148,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
+  const mobileShareRef = useRef<HTMLDivElement>(null);
 
   const baseURL = "http://localhost:3000";
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
@@ -178,11 +179,23 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   console.log(data?.balanceGameLogined);
 
+  const onUseShareAPI = () => {
+    // HTTPS 에서만 동작
+    if (typeof navigator.share === "undefined") {
+      (mobileShareRef.current as HTMLElement).style.visibility = "hidden";
+    }
+    window.navigator.share({
+      title: "토맛토",
+      text: `${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`,
+      url: baseURL,
+    });
+  };
+
   return (
     <DetailWrapper>
       <Header>
-        <div className="icon">
-          <ShareIcon />
+        <div className="icon" ref={mobileShareRef}>
+          <ShareIcon onClick={onUseShareAPI} />
         </div>
         <div className="icon">
           <MoreIcon onClick={toggleMore} />
