@@ -6,6 +6,7 @@ import CloseCard from "../../public/close-card.svg";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
+import { getBalanceGameSelections } from "../../utils/common";
 
 type CardProps = {
   item: {
@@ -102,7 +103,7 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
     }
   };
 
-  const [balanceA, balanceB] = item?.balanceGameSelections;
+  const [balanceA, balanceB] = getBalanceGameSelections(item);
 
   const Container = isModifyMode ? Fragment : Link;
 

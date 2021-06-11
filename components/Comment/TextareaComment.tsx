@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import styled from "styled-components";
+import TextareaAutosize from "react-textarea-autosize";
 
 const Container = styled.form`
   position: relative;
@@ -8,6 +9,7 @@ const Container = styled.form`
   display: flex;
   align-items: center;
   margin: 0 1.3rem;
+  padding: 7px 0;
 
   .submit-btn {
     font-family: "Noto Sans KR";
@@ -29,7 +31,7 @@ const TextareaComment: React.FC<TextareaCommentProps> = ({
 }) => {
   return (
     <Container onSubmit={onSubmit}>
-      <textarea
+      <TextareaAutosize
         placeholder="의견을 입력해주세요"
         onChange={onChange}
         value={value}

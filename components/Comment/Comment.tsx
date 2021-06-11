@@ -56,6 +56,9 @@ const CommentWrapper = styled.li`
   .comment__user-text {
     margin-left: 2.2rem;
   }
+  .comment__textarea-comment {
+    margin-top: 6px;
+  }
   .text {
     font-size: 1.3rem;
     line-height: 1.8rem;
@@ -219,11 +222,13 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
             </div>
             <div className="comment__user-text">
               {isModifyMode ? (
-                <TextareaComment
-                  onSubmit={onSubmitModifyComment}
-                  onChange={onChangeModifyComment}
-                  value={modifyComment}
-                />
+                <div className="comment__textarea-comment">
+                  <TextareaComment
+                    onSubmit={onSubmitModifyComment}
+                    onChange={onChangeModifyComment}
+                    value={modifyComment}
+                  />
+                </div>
               ) : (
                 <p className="text">{comment.content}</p>
               )}
@@ -233,11 +238,13 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
               </button>
             </div>
             {opened && (
-              <TextareaComment
-                onSubmit={onSubmitReply}
-                onChange={onChangeReply}
-                value={content}
-              />
+              <div className="comment__textarea-comment">
+                <TextareaComment
+                  onSubmit={onSubmitReply}
+                  onChange={onChangeReply}
+                  value={content}
+                />
+              </div>
             )}
           </>
         )}

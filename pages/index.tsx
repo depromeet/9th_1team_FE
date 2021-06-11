@@ -10,6 +10,7 @@ import { useLazyQuery, gql } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
+import Loading from "../components/Loading";
 
 interface OrderButtonProps {
   isSelect: boolean;
@@ -39,6 +40,41 @@ const BALANCE_GAMES_QUERY = gql`
         updatedAt
         balanceGameSelections {
           id
+          order
+          status
+          description
+          backgroundColor
+          backgroundImage
+          textColor
+          voteCount
+        }
+      }
+    }
+  }
+`;
+
+const BALANCE_GAMES_LOGINED_QUERY = gql`
+  query balanceGamesLogined($offset: Float!) {
+    balanceGames: balanceGamesLogined(
+      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
+    ) {
+      num
+      balanceGames: balanceGame {
+        id
+        userId
+        balanceGameSelectionVotesCount
+        description
+        totalVoteCount
+        commentCount
+        thumbs
+        status
+        mySelection
+        createdAt
+        updatedAt
+        balanceGameSelections {
+          id
+          order
+          status
           description
           backgroundColor
           backgroundImage
@@ -66,9 +102,10 @@ const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
 const Index = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [isNewest, setIsNewest] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
-  const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_QUERY);
+  const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_LOGINED_QUERY);
   const router = useRouter();
 
   useEffect(() => {
@@ -80,14 +117,14 @@ const Index = () => {
   }, [offset]);
 
   useEffect(() => {
-    console.log(
-      "data?.balanceGames?.balanceGames ::",
-      data?.balanceGames?.balanceGames
-    );
-
     const newList = data?.balanceGames?.balanceGames;
+
     if (newList) {
-      setList(list.concat(newList));
+      if (newList.length === 0) {
+        setHasMore(false);
+      } else {
+        setList(list.concat(newList));
+      }
     }
   }, [data]);
 
@@ -149,8 +186,8 @@ const Index = () => {
           next={fetchMoreData}
           style={{ fontSize: 0 }} //To put endMessage and loader to the top.
           // inverse={true} //
-          hasMore={true}
-          loader={<h4>Loading...</h4>}
+          hasMore={hasMore}
+          loader={<Loading />}
         >
           {list.map((data, i) => {
             return <FeedPost key={i} data={data} />;

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import OpinionIcon from "../../public/opinion.svg";
@@ -6,6 +6,7 @@ import TriangleIcon from "../../public/opinion-triangle.svg";
 import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import TextareaComment from "./TextareaComment";
+import Loading from "../Loading";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
@@ -128,16 +129,29 @@ const CREATE_COMMENT_MUTATION = gql`
 const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
-  const [mCreateComment] = useMutation(CREATE_COMMENT_MUTATION);
-  const { data } = useQuery(COMMENTS_BY_GAME_ID_QUERY, { variables: { id } });
+  const [mCreateComment, { loading: createCommentLoading, error }] =
+    useMutation(CREATE_COMMENT_MUTATION);
+  const {
+    data,
+    loading: commentsLoading,
+    refetch,
+  } = useQuery(COMMENTS_BY_GAME_ID_QUERY, {
+    variables: { id },
+  });
+
+  useEffect(() => {
+    if (error) {
+      alert("게임에 투표 후 댓글을 남길 수 있습니다.");
+    }
+  }, [error]);
 
   const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
-  const onSendComment = (e: FormEvent<HTMLFormElement>) => {
+  const onSendComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mCreateComment({
+    await mCreateComment({
       variables: {
         createCommentInput: {
           balanceGameId: id,
@@ -145,7 +159,10 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
         },
       },
     });
+    refetch();
   };
+
+  if (commentsLoading) return <Loading />;
 
   return (
     <CommentsWrapper opened={opened}>
@@ -159,11 +176,15 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
-      <TextareaComment
-        onSubmit={onSendComment}
-        onChange={onChangeComment}
-        value={content}
-      />
+      {createCommentLoading ? (
+        <Loading height={"36px"} />
+      ) : (
+        <TextareaComment
+          onSubmit={onSendComment}
+          onChange={onChangeComment}
+          value={content}
+        />
+      )}
       {opened && (
         <>
           {data && (
@@ -173,9 +194,9 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
                   <Comment key={i} balanceGameId={id} comment={comment} />
                 ))}
               </ul>
-              <div className="btn__wrapper">
-                <button className="comment__more-btn">의견 더보기</button>
-              </div>
+              {/*<div className="btn__wrapper">*/}
+              {/*  <button className="comment__more-btn">의견 더보기</button>*/}
+              {/*</div>*/}
             </>
           )}
         </>

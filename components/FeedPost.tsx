@@ -10,6 +10,7 @@ import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
 import { gql, useMutation } from "@apollo/client";
+import { getBalanceGameSelections } from "../utils/common";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -89,25 +90,45 @@ interface FeedPostProps {
   data?: any;
 }
 
+const getInitCheckType = (data: any) => {
+  if (data.mySelection) {
+    const balanceGameSelection = data.balanceGameSelections.find(
+      (balanceGameSelection: any) =>
+        balanceGameSelection.id === data.mySelection
+    );
+    if (balanceGameSelection.order === 0) return CHECK_TYPE.FIRST;
+    else if (balanceGameSelection.order === 1) return CHECK_TYPE.SECOND;
+    else return CHECK_TYPE.NONE;
+  } else {
+    return CHECK_TYPE.NONE;
+  }
+};
+
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
-  const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
+  const [checkType, setCheckType] = useState(getInitCheckType(data));
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
+  const [balanceA, balanceB] = getBalanceGameSelections(data);
 
-  const [balanceA, balanceB] = data.balanceGameSelections;
+  console.log(balanceA);
 
-  const onClickCheckType = (
+  const onClickCheckType = async (
     type: CHECK_TYPE,
     balanceGameId: string,
     balanceGameSelectionId: string
   ) => {
     setCheckType(type);
     if (type !== CHECK_TYPE.NONE) {
-      mCreateVoteLogined({
-        variables: {
-          balanceGameId,
-          balanceGameSelectionId,
-        },
-      });
+      try {
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId,
+            balanceGameSelectionId,
+          },
+        });
+      } catch (e) {
+        alert("이미 투표에 참여 하셨습니다.");
+        setCheckType(checkType);
+      }
     }
   };
 

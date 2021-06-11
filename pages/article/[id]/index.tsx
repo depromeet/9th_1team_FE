@@ -12,6 +12,8 @@ import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
 import { modifyDate } from "utils/date";
+import { useRouter } from "next/router";
+import { getBalanceGameSelections } from "../../../utils/common";
 
 interface PostProps {
   id: string;
@@ -117,6 +119,7 @@ const GET_GAME = gql`
       }
       balanceGameSelections {
         id
+        order
         balanceGameId
         backgroundImage
         backgroundColor
@@ -143,12 +146,26 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
+const NEXT_GAME_BY_RANDOM_QUERY = gql`
+  query nextGameByRandom {
+    nextGameByRandom {
+      id
+    }
+  }
+`;
+
 const Post: React.FC<PostProps> = ({ id }) => {
+  const router = useRouter();
   const { data } = useQuery(GET_GAME, { variables: { id } });
+  const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    refetch();
+  }, [id]);
 
   const baseURL = "http://localhost:3000";
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
@@ -163,21 +180,26 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   if (!data) return null;
 
-  const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
+  const [balanceA, balanceB] = getBalanceGameSelections(
+    data?.balanceGameLogined
+  );
 
   const onChangeVote =
     (balanceGameId = "", balanceGameSelectionId = "") =>
-    () => {
+    async () => {
       setMySelection(balanceGameSelectionId);
-      mCreateVoteLogined({
-        variables: {
-          balanceGameId,
-          balanceGameSelectionId,
-        },
-      });
+      try {
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId,
+            balanceGameSelectionId,
+          },
+        });
+      } catch (e) {
+        alert("이미 투표에 참여 하셨습니다.");
+        setMySelection(mySelection);
+      }
     };
-
-  console.log(data?.balanceGameLogined);
 
   const onUseShareAPI = () => {
     // HTTPS 에서만 동작
@@ -189,6 +211,14 @@ const Post: React.FC<PostProps> = ({ id }) => {
       text: `${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`,
       url: baseURL,
     });
+  };
+
+  const onClickPrevGame = () => {
+    router.back();
+  };
+  const onClickNextGame = () => {
+    const { id } = nextGameData?.nextGameByRandom;
+    router.push(`/article/${id}`);
   };
 
   return (
@@ -239,11 +269,11 @@ const Post: React.FC<PostProps> = ({ id }) => {
           text={`${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`}
         />
         <nav>
-          <div className="prev">
-            <PrevGameIcon />
-            <span>이전 게임</span>
+          <div className="prev" onClick={onClickPrevGame}>
+            {/*<PrevGameIcon />*/}
+            {/*<span>이전 게임</span>*/}
           </div>
-          <div className="next">
+          <div className="next" onClick={onClickNextGame}>
             <span>다음 게임</span>
             <NextGameIcon />
           </div>
