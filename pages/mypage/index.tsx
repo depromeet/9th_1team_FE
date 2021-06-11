@@ -30,6 +30,7 @@ const MYPAGE_QUERY = gql`
           order
           description
           backgroundColor
+          backgroundImage
           textColor
         }
       }
