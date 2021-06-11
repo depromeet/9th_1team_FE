@@ -48,6 +48,36 @@ const BALANCE_GAMES_QUERY = gql`
     }
   }
 `;
+const BALANCE_GAMES_LOGINED_QUERY = gql`
+  query balanceGamesLogined($offset: Float!) {
+    balanceGamesLogined(
+      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
+    ) {
+      num
+      balanceGames: balanceGame {
+        id
+        userId
+        balanceGameSelectionVotesCount
+        description
+        totalVoteCount
+        commentCount
+        thumbs
+        status
+        mySelection
+        createdAt
+        updatedAt
+        balanceGameSelections {
+          id
+          description
+          voteCount
+          backgroundColor
+          backgroundImage
+          textColor
+        }
+      }
+    }
+  }
+`;
 
 const Today = () => {
   return (
@@ -63,14 +93,24 @@ const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
 );
 
 const Index = () => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isFiltered, setIsFiltered] = useState(false);
   const [isNewest, setIsNewest] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_QUERY);
+  const [qBalanceGamesLogined, { data: loginData }] = useLazyQuery(
+    BALANCE_GAMES_LOGINED_QUERY
+  );
 
   useEffect(() => {
+    console.log("rendered");
     qBalanceGames({
+      variables: {
+        offset,
+      },
+    });
+    qBalanceGamesLogined({
       variables: {
         offset,
       },
@@ -78,20 +118,24 @@ const Index = () => {
   }, [offset]);
 
   useEffect(() => {
-    console.log(
-      "data?.balanceGames?.balanceGames ::",
-      data?.balanceGames?.balanceGames
-    );
-
-    const newList = data?.balanceGames?.balanceGames;
+    const token = localStorage.getItem("token");
+    let newList;
+    if (token) {
+      newList = loginData?.balanceGamesLogined?.balanceGames;
+    } else {
+      newList = data?.balanceGames?.balanceGames;
+    }
     if (newList) {
       setList(list.concat(newList));
     }
-  }, [data]);
+  }, [data, loginData]);
+
+  useEffect(() => {
+    setFilteredList(list.filter((item) => item.mySelection !== null));
+    console.log(list);
+  }, [list]);
 
   if (_.isEmpty(list)) return null;
-
-  // const balanceGames = data?.balanceGames?.balanceGames;
 
   const fetchMoreData = () => {
     const nextOffset = offset + BALANCE_GAMES_TICK;
@@ -115,10 +159,10 @@ const Index = () => {
         </div>
         <div className="selects">
           <Participate
-            {...{ isChecked }}
-            onClick={() => setIsChecked(!isChecked)}
+            {...{ isFiltered }}
+            onClick={() => setIsFiltered(!isFiltered)}
           >
-            {isChecked ? <Select /> : <Unselect />}
+            {isFiltered ? <Select /> : <Unselect />}
           </Participate>
           <div className="orders">
             <OrderButton
@@ -142,9 +186,9 @@ const Index = () => {
           hasMore={true}
           loader={<h4>Loading...</h4>}
         >
-          {list.map((data, i) => {
-            return <FeedPost key={i} data={data} />;
-          })}
+          {isFiltered
+            ? filteredList.map((data, i) => <FeedPost key={i} data={data} />)
+            : list.map((data, i) => <FeedPost key={i} data={data} />)}
         </InfiniteScroll>
       </Container>
     </div>
@@ -207,10 +251,10 @@ const Container = styled.div`
   }
 `;
 
-const Participate = styled.div<{ isChecked: boolean }>`
+const Participate = styled.div<{ isFiltered: boolean }>`
   ::after {
     content: "참여한 밸런스 게임만 보기";
-    color: ${({ isChecked }) => (isChecked ? "#343A40" : "#ADB5BD")};
+    color: ${({ isFiltered }) => (isFiltered ? "#343A40" : "#ADB5BD")};
     margin-left: 0.5rem;
     font-size: 1.3rem;
   }

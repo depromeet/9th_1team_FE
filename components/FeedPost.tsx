@@ -10,52 +10,116 @@ import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
 import { shareAPI } from "utils/mobileShare";
+import { gql, useMutation } from "@apollo/client";
 
-enum CHECK_TYPE {
-  FIRST = "FIRST",
-  SECOND = "SECOND",
-  NONE = "NONE",
-}
 interface OptionBoxProps {
-  type: CHECK_TYPE;
-  isSelected: boolean;
-  title: string;
-  checkType: CHECK_TYPE;
-  setCheckType: Dispatch<SetStateAction<CHECK_TYPE>>;
-  background: string;
-  color: string;
-  backgroundImage: string;
+  selection: any;
+  postId: string;
+  checkedId: string | null;
+  setCheckedId: Dispatch<SetStateAction<string | null>>;
 }
+
+const CREATE_VOTE_LOGINED = gql`
+  mutation createVoteLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+const CREATE_VOTE_NOT_LOGINED = gql`
+  mutation createVoteNotLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteNotLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+const REMOVE_VOTE_LOGINED = gql`
+  mutation removeVoteLogined($balanceGameId: String!) {
+    removeVoteLogined(balanceGameId: $balanceGameId) {
+      id
+    }
+  }
+`;
 
 const OptionBox = ({
-  type,
-  isSelected,
-  title,
-  checkType,
-  setCheckType,
-  background,
-  backgroundImage,
-  color,
+  selection,
+  checkedId,
+  postId,
+  setCheckedId,
 }: OptionBoxProps) => {
-  const handleCheckType = (type: CHECK_TYPE) => {
-    if (checkType === type) setCheckType(CHECK_TYPE.NONE);
-    else setCheckType(type);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
+  // const [mCreateVoteNotLogined, ] =
+  //   useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
+
+  const handleVote = async (selectionId: string) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      if (checkedId === null) {
+        // 새로 create
+        setCheckedId(selectionId);
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: selectionId,
+          },
+        });
+      } else {
+        // remove
+        setCheckedId(null);
+        await mRemoveVoteLogined({
+          variables: {
+            balanceGameId: postId,
+          },
+        });
+        if (checkedId === selectionId) {
+          // 다시 create
+          setCheckedId(selectionId);
+          await mCreateVoteLogined({
+            variables: {
+              balanceGameId: postId,
+              balanceGameSelectionId: selectionId,
+            },
+          });
+        }
+      }
+    }
   };
+
+  const isChecked =
+    checkedId === null ? null : checkedId === selection.id ? true : false;
+
   return (
     <OptionBoxContainer
-      {...{ checkType, isSelected }}
+      {...{ isChecked }}
       style={{
-        background,
-        color,
-        backgroundImage: `url("${backgroundImage}")`,
+        background: selection.backgroundColor,
+        color: selection.color,
+        backgroundImage: `url("${selection.backgroundImage}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
-      <div className="title" onClick={() => handleCheckType(type)}>
-        {title}
+      <div className="checkbox" onClick={() => handleVote(selection.id)}>
+        {isChecked ? <Select /> : <Unselect />}
       </div>
+      <div className="title">{selection.description}</div>
     </OptionBoxContainer>
   );
 };
@@ -65,9 +129,9 @@ interface FeedPostProps {
 }
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
-  const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
-  const [balanceA, balanceB] = data.balanceGameSelections;
-  console.log(balanceA);
+  const [checkedId, setCheckedId] = useState(data.mySelection);
+  const balanceA = data.balanceGameSelections[0];
+  const balanceB = data.balanceGameSelections[1];
   const baseURL = "http://localhost:3000";
 
   const renderShare = () => {
@@ -91,27 +155,19 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   return (
     <Container>
       <OptionBox
-        type={CHECK_TYPE.FIRST}
-        isSelected={checkType === CHECK_TYPE.FIRST}
-        title={balanceA.description}
-        checkType={checkType}
-        setCheckType={setCheckType}
-        background={balanceA.backgroundColor}
-        backgroundImage={balanceA.backgroundImage}
-        color={balanceA.textColor}
+        key={balanceA.id}
+        postId={data.id}
+        selection={balanceA}
+        {...{ checkedId, setCheckedId }}
       />
       <OptionBox
-        type={CHECK_TYPE.SECOND}
-        isSelected={checkType === CHECK_TYPE.SECOND}
-        title={balanceB.description}
-        checkType={checkType}
-        setCheckType={setCheckType}
-        background={balanceB.backgroundColor}
-        backgroundImage={balanceB.backgroundImage}
-        color={balanceB.textColor}
+        key={balanceB.id}
+        postId={data.id}
+        selection={balanceB}
+        {...{ checkedId, setCheckedId }}
       />
       <Versus>
-        {checkType === CHECK_TYPE.NONE ? (
+        {checkedId === null ? (
           <VS />
         ) : (
           <FireBar
@@ -216,8 +272,7 @@ const Container = styled.div`
 `;
 
 const OptionBoxContainer = styled.div<{
-  isSelected: boolean;
-  checkType: CHECK_TYPE;
+  isChecked: boolean | null;
 }>`
   position: relative;
   height: 12.8rem;
@@ -239,8 +294,8 @@ const OptionBoxContainer = styled.div<{
     height: 100%;
     width: 100%;
     z-index: 2;
-    opacity: ${({ isSelected, checkType }) =>
-      !isSelected ? (checkType === CHECK_TYPE.NONE ? 1 : 0.4) : 1};
+    opacity: ${({ isChecked }) =>
+      isChecked === null ? 1 : isChecked ? 1 : 0.4};
     display: flex;
     justify-content: center;
     align-items: center;
