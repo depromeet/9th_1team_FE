@@ -181,16 +181,18 @@ interface FeedPostProps {
 
 const MY_GAMES = gql`
   query myGames {
-    balanceGames: balanceGame {
-      id
-      totalVoteCount
-      commentCount
-      balanceGameSelections {
-        order
-        description
-        backgroundColor
-        backgroundImage
-        textColor
+    myGames {
+      balanceGames: balanceGame {
+        id
+        totalVoteCount
+        commentCount
+        balanceGameSelections {
+          order
+          description
+          backgroundColor
+          backgroundImage
+          textColor
+        }
       }
     }
   }
@@ -210,7 +212,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   useEffect(() => {
     setIsVoted(false);
     if (myGames) {
-      myGames?.myGames.forEach((game: any) => {
+      console.log(myGames);
+      myGames?.myGames.balanceGames.forEach((game: any) => {
+        console.log(game.id, data.id);
         if (game.id === data.id) setIsMine(true);
       });
     }
