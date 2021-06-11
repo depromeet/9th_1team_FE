@@ -159,6 +159,7 @@ const Mypage = () => {
     const token = localStorage.getItem("token");
     if (token) {
       qMypqge();
+      console.log(data);
     }
   }, []);
 
