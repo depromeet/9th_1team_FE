@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client";
 import ReplyComment from "./ReplyComment";
 import MoreIcon from "../../public/more.svg";
 import CommentMore from "./CommentMore";
+import { modifyDate } from "../../utils/date";
 
 const CommentWrapper = styled.li`
   position: relative;
@@ -91,9 +92,9 @@ interface CommentProps {
     id: string;
     userId: string;
     color: string;
-    pubDate: string;
     content: string;
     status: string;
+    createdAt: string;
     user: {
       profile: {
         nickname: string;
@@ -103,9 +104,9 @@ interface CommentProps {
       id: string;
       userId: string;
       color: string;
-      pubDate: string;
       content: string;
       status: string;
+      createdAt: string;
       user: {
         profile: {
           nickname: string;
@@ -249,7 +250,7 @@ const Comment: React.FC<CommentProps> = ({
                 }}
               />
               <span className="author">{comment?.user?.profile?.nickname}</span>
-              <span className="pub-date">{comment.pubDate}</span>
+              <span className="pub-date">{modifyDate(comment.createdAt)}</span>
             </div>
             <div className="comment__user-text">
               {isModifyMode ? (

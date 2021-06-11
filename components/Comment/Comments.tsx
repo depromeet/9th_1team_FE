@@ -97,6 +97,7 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
       status
       color
       content
+      createdAt
       user {
         profile {
           nickname
@@ -108,6 +109,7 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
         status
         color
         content
+        createdAt
         user {
           profile {
             nickname

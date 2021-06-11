@@ -5,6 +5,7 @@ import { ApolloQueryResult, gql } from "@apollo/client/core";
 import TextareaComment from "./TextareaComment";
 import CommentMore from "./CommentMore";
 import MoreIcon from "../../public/more.svg";
+import { modifyDate } from "../../utils/date";
 
 const ReplyCommentWrapper = styled.li`
   position: relative;
@@ -91,9 +92,9 @@ interface ReplyCommentProps {
     id: string;
     userId: string;
     color: string;
-    pubDate: string;
     content: string;
     status: string;
+    createdAt: string;
     user: {
       profile: {
         nickname: string;
@@ -239,7 +240,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
                 }}
               />
               <span className="author">{reply?.user?.profile?.nickname}</span>
-              <span className="pub-date">{reply.pubDate}</span>
+              <span className="pub-date">{modifyDate(reply.createdAt)}</span>
             </div>
             <div className="reply__user-text">
               {isModifyMode ? (
