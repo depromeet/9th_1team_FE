@@ -11,7 +11,7 @@ import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
 import { getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import HeaderMore from "./DetailContent/HederMore";
 import { parseCookies } from "nookies";
 
@@ -179,17 +179,41 @@ interface FeedPostProps {
   data?: any;
 }
 
+const MY_GAMES = gql`
+  query myGames {
+    balanceGames: balanceGame {
+      id
+      totalVoteCount
+      commentCount
+      balanceGameSelections {
+        order
+        description
+        backgroundColor
+        backgroundImage
+        textColor
+      }
+    }
+  }
+`;
+
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
+  const [isMine, setIsMine] = useState(false);
   const baseURL = "http://localhost:3000";
-  const { token } = parseCookies();
 
   const [isMoreOpened, setIsMoreOpened] = useState(false);
+
+  const { data: myGames } = useQuery(MY_GAMES);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
     setIsVoted(false);
+    if (myGames) {
+      myGames?.myGames.forEach((game: any) => {
+        if (game.id === data.id) setIsMine(true);
+      });
+    }
   }, []);
 
   const renderShare = () => {
@@ -273,9 +297,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           <div
             onClick={(e) => e.stopPropagation()}
             className="content__headermore"
-            style={{ bottom: token ? "2.5rem" : "-2rem" }}
+            style={{ bottom: isMine ? "2.5rem" : "-2rem" }}
           >
-            <HeaderMore isMine={token ? true : false} isOpen postId={data.id} />
+            <HeaderMore isMine={isMine} isOpen postId={data.id} />
           </div>
         )}
       </div>
