@@ -9,11 +9,11 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
-import { getBalanceGameSelections } from "../utils/common";
+import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
-import { gql, useMutation } from "@apollo/client";
-import HeaderMore from "./DetailContent/HederMore";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { parseCookies } from "nookies";
+import { useRouter } from "next/router";
 
 interface OptionBoxProps {
   selection: any;
@@ -72,7 +72,7 @@ const OptionBox = ({
   const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
-  const token = localStorage.getItem("token");
+  const { token } = parseCookies();
 
   console.log(checkedId);
   useEffect(() => {
@@ -179,15 +179,41 @@ interface FeedPostProps {
   data?: any;
 }
 
+const MY_GAMES = gql`
+  query myGames {
+    balanceGames: balanceGame {
+      id
+      totalVoteCount
+      commentCount
+      balanceGameSelections {
+        order
+        description
+        backgroundColor
+        backgroundImage
+        textColor
+      }
+    }
+  }
+`;
+
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
+  const [isMine, setIsMine] = useState(false);
   const baseURL = "http://localhost:3000";
-  const token = localStorage.getItem("token");
+
+  const [isMoreOpened, setIsMoreOpened] = useState(false);
+
+  const { data: myGames } = useQuery(MY_GAMES);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
     setIsVoted(false);
+    if (myGames) {
+      myGames?.myGames.forEach((game: any) => {
+        if (game.id === data.id) setIsMine(true);
+      });
+    }
   }, []);
 
   const renderShare = () => {
@@ -208,7 +234,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
     }
   };
   return (
-    <Container>
+    <Container onClick={() => setIsMoreOpened(false)}>
       <OptionBox
         key={balanceA.id}
         postId={data.id}
@@ -257,19 +283,80 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             </div>
           </Link>
           {renderShare()}
-          <div className="content__buttons__button">
+          <div
+            className="content__buttons__button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMoreOpened(true);
+            }}
+          >
             <More />
           </div>
         </div>
-        <div
-          className="content__headermore"
-          style={{ bottom: token ? "6.5rem" : "2rem" }}
-        >
-          <HeaderMore isMine={token ? true : false} isOpen={true} />
-        </div>
+        {isMoreOpened && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="content__headermore"
+            style={{ bottom: isMine ? "2.5rem" : "-2rem" }}
+          >
+            <HeaderMore isMine={isMine} isOpen postId={data.id} />
+          </div>
+        )}
       </div>
     </Container>
   );
+};
+
+const REMOVE_BALANCE_GAME = gql`
+  mutation removeBalanceGame($id: String!) {
+    removeBalanceGame(id: $id)
+  }
+`;
+interface IsMineProps {
+  isMine: boolean;
+  isOpen: boolean;
+  postId?: string;
+}
+const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
+  const router = useRouter();
+  const url = "http://localhost:3000/article/" + postId;
+
+  const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
+  const handleRemove = async () => {
+    await mRemoveBalanceGame({
+      variables: {
+        id: postId,
+      },
+    });
+    router.push("/");
+  };
+
+  if (!isMine) {
+    return (
+      <MoreMenu>
+        <li>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
+        </li>
+        {/* <li>
+          <a>신고</a>
+        </li> */}
+      </MoreMenu>
+    );
+  } else {
+    return (
+      <MoreMenu>
+        <li>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
+        </li>
+        {/* <li>
+          <a>수정하기</a>
+        </li> */}
+        <li>
+          <a onClick={handleRemove}>삭제</a>
+        </li>
+      </MoreMenu>
+    );
+  }
 };
 
 const Container = styled.div`
@@ -337,12 +424,6 @@ const Container = styled.div`
         }
       }
     }
-    &__headermore {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      right: -2rem;
-    }
   }
 `;
 
@@ -389,6 +470,30 @@ const Versus = styled.div`
   left: 0;
   width: 100%;
   height: 25.6rem;
+`;
+
+const MoreMenu = styled.ul`
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  width: 140px;
+  position: absolute;
+  right: -3rem;
+  bottom: 4.5rem;
+  z-index: 2;
+  background-color: #fff;
+  margin-right: 1.6rem;
+
+  li a {
+    display: inline-block;
+    width: 100%;
+    padding: 15px 0 15px 16px;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #e9ecef;
+    box-sizing: border-box;
+  }
+  li:last-child a {
+    border-bottom: none;
+  }
 `;
 
 export default FeedPost;

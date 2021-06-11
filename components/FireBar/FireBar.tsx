@@ -53,7 +53,7 @@ const FireBar: React.FC<FireBarProps> = ({
     <FireBarWrapper>
       <div className="fire" style={{ left: `${leftBarPos}%` }}>
         <div className="fire__rectangle" style={{ color: fistColor }}>
-          {cntA}
+          {Math.round(leftBarPos)}
         </div>
         <div
           style={{
@@ -63,10 +63,10 @@ const FireBar: React.FC<FireBarProps> = ({
             zIndex: 3,
           }}
         >
-          <Fire />
+          {cntA !== 0 && cntB !== 0 && <Fire />}
         </div>
         <div className="fire__rectangle" style={{ color: secondColor }}>
-          {cntB}
+          {100 - Math.round(leftBarPos)}
         </div>
       </div>
       <div
