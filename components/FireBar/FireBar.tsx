@@ -10,6 +10,7 @@ interface FireBarProps {
   checkedId: string;
   idA: string;
   idB: string;
+  isVoted: boolean;
 }
 
 const FireBar: React.FC<FireBarProps> = ({
@@ -20,17 +21,19 @@ const FireBar: React.FC<FireBarProps> = ({
   checkedId,
   idA,
   idB,
+  isVoted,
 }) => {
   let leftBarPos = 50;
   let rightBarPos = 50;
   let cntA = voteCountA;
   let cntB = voteCountB;
-  if (checkedId === idA) {
-    cntA++;
-    if (cntB !== 0) cntB--;
-  } else if (checkedId === idB) {
-    if (cntA !== 0) cntA--;
-    cntB++;
+  console.log(cntA, cntB, isVoted);
+  if (isVoted) {
+    if (checkedId === idA) {
+      cntA++;
+    } else if (checkedId === idB) {
+      cntB++;
+    }
   }
 
   if (cntA !== 0) {

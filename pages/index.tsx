@@ -5,7 +5,7 @@ import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
@@ -13,11 +13,11 @@ import _ from "lodash";
 import Loading from "../components/Loading";
 import { parseCookies } from "nookies";
 
-interface OrderButtonProps {
-  isSelect: boolean;
-  onClick: MouseEventHandler<HTMLDivElement>;
-  text: string;
-}
+// interface OrderButtonProps {
+//   isSelect: boolean;
+//   onClick: MouseEventHandler<HTMLDivElement>;
+//   text: string;
+// }
 
 const BALANCE_GAMES_TICK = 5;
 
@@ -86,22 +86,22 @@ const BALANCE_GAMES_LOGINED_QUERY = gql`
   }
 `;
 
-const Today = () => {
-  return (
-    <TodayContainer>
-      <div className="title">오늘의 밸런스게임</div>
-      {/*<FeedPost />*/}
-    </TodayContainer>
-  );
-};
+// const Today = () => {
+//   return (
+//     <TodayContainer>
+//       <div className="title">오늘의 밸런스게임</div>
+//       {/*<FeedPost />*/}
+//     </TodayContainer>
+//   );
+// };
 
-const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
-  <Order {...{ isSelect, onClick }}>{text}</Order>
-);
+// const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
+//   <Order {...{ isSelect, onClick }}>{text}</Order>
+// );
 
 const Index = () => {
   const [isFiltered, setIsFiltered] = useState(false);
-  const [isNewest, setIsNewest] = useState(true);
+  // const [isNewest, setIsNewest] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
@@ -113,7 +113,6 @@ const Index = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("rendered");
     qBalanceGames({
       variables: {
         offset,
@@ -149,7 +148,6 @@ const Index = () => {
         (item: { mySelection: string | null }) => item.mySelection !== null
       )
     );
-    console.log(list);
   }, [list]);
 
   if (_.isEmpty(list)) return null;
@@ -170,7 +168,7 @@ const Index = () => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
-      <Today />
+      {/* <Today /> */}
       <Container>
         <div className="buttons">
           <div className="buttons__btn" onClick={onClickRandomPlay}>
@@ -189,7 +187,7 @@ const Index = () => {
           >
             {isFiltered ? <Select /> : <Unselect />}
           </Participate>
-          <div className="orders">
+          {/* <div className="orders">
             <OrderButton
               isSelect={isNewest}
               onClick={() => setIsNewest(true)}
@@ -201,7 +199,7 @@ const Index = () => {
               onClick={() => setIsNewest(false)}
               text="인기순"
             />
-          </div>
+          </div> */}
         </div>
         <InfiniteScroll
           dataLength={list.length}
@@ -220,18 +218,18 @@ const Index = () => {
   );
 };
 
-const TodayContainer = styled.div`
-  padding: 1.6rem;
-  margin-top: 5.2rem;
-  margin-bottom: -2.5rem;
-  background: #f8f9fa;
-  .title {
-    font-family: "NanumSquareRound";
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-  }
-`;
+// const TodayContainer = styled.div`
+//   padding: 1.6rem;
+//   margin-top: 5.2rem;
+//   margin-bottom: -2.5rem;
+//   background: #f8f9fa;
+//   .title {
+//     font-family: "NanumSquareRound";
+//     font-size: 1.6rem;
+//     font-weight: 800;
+//     margin-bottom: 1rem;
+//   }
+// `;
 
 const Container = styled.div`
   background: white;
@@ -288,8 +286,8 @@ const Participate = styled.div<{ isFiltered: boolean }>`
   align-items: center;
 `;
 
-const Order = styled.div<{ isSelect: boolean }>`
-  color: ${({ isSelect }) => (isSelect ? "#343A40" : "#ADB5BD")};
-`;
+// const Order = styled.div<{ isSelect: boolean }>`
+//   color: ${({ isSelect }) => (isSelect ? "#343A40" : "#ADB5BD")};
+// `;
 
 export default Index;
