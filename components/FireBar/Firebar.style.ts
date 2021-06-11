@@ -15,7 +15,7 @@ export const FireBarWrapper = styled.div`
       }
       background-color: white;
       top: -0.4rem;
-      left: 0.3rem;
+      left: 0rem;
       position: absolute;
       z-index: 1;
       font-size: 1.4rem;
