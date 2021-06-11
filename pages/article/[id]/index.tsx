@@ -202,22 +202,6 @@ const Post: React.FC<PostProps> = ({ id }) => {
     data?.balanceGameLogined
   );
 
-  const onChangeVote =
-    (balanceGameId = "", balanceGameSelectionId = "") =>
-    async () => {
-      setMySelection(balanceGameSelectionId);
-      try {
-        await mCreateVoteLogined({
-          variables: {
-            balanceGameId,
-            balanceGameSelectionId,
-          },
-        });
-      } catch (e) {
-        alert("이미 투표에 참여 하셨습니다.");
-        setMySelection(mySelection);
-      }
-    };
   const firstVote = (balanceGameId: string, balanceGameSelectionId: string) => {
     mCreateVoteLogined({
       variables: {
