@@ -7,7 +7,7 @@ import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderMore from "../../../components/DetailContent/HederMore";
 import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
@@ -143,9 +143,26 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
+const UPDATE_VOTE_LOGINED_MUTATION = gql`
+  mutation updateVoteLogined(
+    $balanceGameId: String!
+    $newBalanceGameSelectionId: String!
+  ) {
+    updateVoteLogined(
+      updateBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        newBalanceGameSelectionId: $newBalanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const Post: React.FC<PostProps> = ({ id }) => {
   const { data } = useQuery(GET_GAME, { variables: { id } });
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
+  const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
@@ -155,6 +172,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
   // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGameLogined?.mySelection);
+    console.log("선택", data?.balanceGameLogined?.mySelection);
   }, [data?.balanceGameLogined?.mySelection]);
 
   const toggleMore = () => {
@@ -165,22 +183,46 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   const [balanceA, balanceB] = data?.balanceGameLogined?.balanceGameSelections;
 
+  const firstVote = (balanceGameId: string, balanceGameSelectionId: string) => {
+    mCreateVoteLogined({
+      variables: {
+        balanceGameId,
+        balanceGameSelectionId,
+      },
+    });
+  };
+
+  const notFirstVote = (
+    balanceGameId: string,
+    updateGameSelectionId: string
+  ) => {
+    console.log("not first", balanceGameId, updateGameSelectionId);
+    mUpdateVoteLogined({
+      variables: {
+        balanceGameId,
+        updateGameSelectionId,
+      },
+    });
+  };
+
   const onChangeVote =
     (balanceGameId = "", balanceGameSelectionId = "") =>
     () => {
+      // 첫 투표시에만 firstVote
       setMySelection(balanceGameSelectionId);
-      mCreateVoteLogined({
-        variables: {
-          balanceGameId,
-          balanceGameSelectionId,
-        },
-      });
+      if (!data?.balanceGameLogined?.mySelection)
+        firstVote(balanceGameId, balanceGameSelectionId);
+      else {
+        if (data?.balanceGameLogined?.mySelection === balanceGameSelectionId)
+          return;
+        notFirstVote(balanceGameId, balanceGameSelectionId);
+      }
     };
 
   console.log(data?.balanceGameLogined);
 
   const onUseShareAPI = () => {
-    // HTTPS 에서만 동작
+    // HTTPS 에서만 동작, 확인 필요
     if (typeof navigator.share === "undefined") {
       (mobileShareRef.current as HTMLElement).style.visibility = "hidden";
     }
