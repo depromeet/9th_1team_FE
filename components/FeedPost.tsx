@@ -214,7 +214,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
     if (myGames) {
       console.log(myGames);
       myGames?.myGames.balanceGames.forEach((game: any) => {
-        console.log(game.id, data.id);
+        console.log("??????", game.id === data.id);
         if (game.id === data.id) setIsMine(true);
       });
     }
@@ -237,6 +237,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       );
     }
   };
+
+  console.log("????????###", isMine);
+
   return (
     <Container onClick={() => setIsMoreOpened(false)}>
       <OptionBox
@@ -297,15 +300,17 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             <More />
           </div>
         </div>
-        {isMoreOpened && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="content__headermore"
-            style={{ bottom: isMine ? "2.5rem" : "-2rem" }}
-          >
-            <HeaderMore isMine={isMine} isOpen postId={data.id} />
-          </div>
-        )}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="content__headermore"
+          style={{
+            bottom: isMine ? "2.5rem" : "-2rem",
+            visibility: isMoreOpened ? "visible" : "hidden",
+          }}
+        >
+          {JSON.stringify(isMine)}
+          <HeaderMore isMine={isMine} isOpen postId={data.id} />
+        </div>
       </div>
     </Container>
   );
@@ -322,7 +327,6 @@ interface IsMineProps {
   postId?: string;
 }
 const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
-  const router = useRouter();
   const url = "http://localhost:3000/article/" + postId;
 
   const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
@@ -332,7 +336,7 @@ const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
         id: postId,
       },
     });
-    router.push("/");
+    window.location.reload();
   };
 
   if (!isMine) {
