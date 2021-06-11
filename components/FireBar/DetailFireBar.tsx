@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Fire from "public/fire.svg";
-import { FireBarWrapper } from "./Firebar.style";
+import { FireBarWrapper } from "./DetailFireBar.style";
 
 interface FireBarProps {
   voteCountA: number;
@@ -13,7 +13,7 @@ interface FireBarProps {
   isVoted: boolean;
 }
 
-const FireBar: React.FC<FireBarProps> = ({
+const DetailFireBar: React.FC<FireBarProps> = ({
   voteCountA,
   voteCountB,
   fistColor,
@@ -81,4 +81,4 @@ const FireBar: React.FC<FireBarProps> = ({
   );
 };
 
-export default FireBar;
+export default DetailFireBar;

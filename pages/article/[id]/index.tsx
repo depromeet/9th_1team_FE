@@ -122,6 +122,7 @@ const GET_GAME = gql`
       balanceGameSelections {
         id
         order
+        voteCount
         balanceGameId
         backgroundImage
         backgroundColor
@@ -218,8 +219,14 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
   const [isOpen, setIsOpen] = useState(false);
-  const [mySelection, setMySelection] = useState("");
+  const [mySelection, setMySelection] = useState<string | null>();
   const mobileShareRef = useRef<HTMLDivElement>(null);
+
+  const [isVoted, setIsVoted] = useState(false);
+
+  useEffect(() => {
+    setIsVoted(false);
+  }, []);
 
   useEffect(() => {
     refetch();
@@ -230,6 +237,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGame?.mySelection);
+    console.log(data?.balanceGame);
   }, [data?.balanceGame?.mySelection]);
 
   const toggleMore = () => {
@@ -241,9 +249,10 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
 
   const onChangeVote =
-    (balanceGameId = "", balanceGameSelectionId = "") =>
+    (balanceGameId: string | null, balanceGameSelectionId: string | null) =>
     async () => {
       // 첫 투표시에만
+      setIsVoted(true);
       setMySelection(balanceGameSelectionId);
       if (!data?.balanceGame?.mySelection) {
         await mCreateVoteLogined({
@@ -254,8 +263,8 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
         });
       } else {
         // 첫투표가 아닐경우
-        if (data?.balanceGame?.mySelection === balanceGameSelectionId)
-          return;
+        if (data?.balanceGame?.mySelection === balanceGameSelectionId) return;
+
         await mRemoveVoteLogined({
           variables: {
             balanceGameId,
@@ -312,6 +321,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           balanceB={balanceB}
           onChange={onChangeVote}
           value={mySelection}
+          isVoted={isVoted}
         />
         <div className="status">
           <div className="left">
