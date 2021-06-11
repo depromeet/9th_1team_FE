@@ -154,11 +154,28 @@ const NEXT_GAME_BY_RANDOM_QUERY = gql`
   }
 `;
 
+const UPDATE_VOTE_LOGINED_MUTATION = gql`
+  mutation updateVoteLogined(
+    $balanceGameId: String!
+    $newBalanceGameSelectionId: String!
+  ) {
+    updateVoteLogined(
+      updateBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        newBalanceGameSelectionId: $newBalanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const Post: React.FC<PostProps> = ({ id }) => {
   const router = useRouter();
   const { data } = useQuery(GET_GAME, { variables: { id } });
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
+  const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
@@ -172,6 +189,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
   // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGameLogined?.mySelection);
+    console.log("선택", data?.balanceGameLogined?.mySelection);
   }, [data?.balanceGameLogined?.mySelection]);
 
   const toggleMore = () => {
@@ -200,9 +218,46 @@ const Post: React.FC<PostProps> = ({ id }) => {
         setMySelection(mySelection);
       }
     };
+  const firstVote = (balanceGameId: string, balanceGameSelectionId: string) => {
+    mCreateVoteLogined({
+      variables: {
+        balanceGameId,
+        balanceGameSelectionId,
+      },
+    });
+  };
+
+  const notFirstVote = (
+    balanceGameId: string,
+    updateGameSelectionId: string
+  ) => {
+    console.log("not first", balanceGameId, updateGameSelectionId);
+    mUpdateVoteLogined({
+      variables: {
+        balanceGameId,
+        updateGameSelectionId,
+      },
+    });
+  };
+
+  const onChangeVote =
+    (balanceGameId = "", balanceGameSelectionId = "") =>
+    () => {
+      // 첫 투표시에만 firstVote
+      setMySelection(balanceGameSelectionId);
+      if (!data?.balanceGameLogined?.mySelection)
+        firstVote(balanceGameId, balanceGameSelectionId);
+      else {
+        if (data?.balanceGameLogined?.mySelection === balanceGameSelectionId)
+          return;
+        notFirstVote(balanceGameId, balanceGameSelectionId);
+      }
+    };
+
+  console.log(data?.balanceGameLogined);
 
   const onUseShareAPI = () => {
-    // HTTPS 에서만 동작
+    // HTTPS 에서만 동작, 확인 필요
     if (typeof navigator.share === "undefined") {
       (mobileShareRef.current as HTMLElement).style.visibility = "hidden";
     }
