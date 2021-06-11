@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import TextareaAutosize from "react-textarea-autosize";
 import { gql } from "@apollo/client/core";
@@ -11,6 +11,7 @@ import VsIcon from "../../../public/versus.svg";
 import VomitIcon from "../../../public/tomato/vomit-normal-front.svg";
 import UnionIcon from "../../../public/union.svg";
 import ColorPicker from "components/ColorPicker";
+import { parseCookies } from "nookies";
 
 const [
   INIT_BALANCE_FONT_COLOR_A,
@@ -332,6 +333,14 @@ const Write = () => {
   const [keywords, setKeywords] = useState("");
   const [colorPickerState, setColorPickerState] = useState(0);
   const [mCreateBalanceGame] = useMutation(CREATE_BALANCE_GAME_MUTATION);
+
+  useEffect(() => {
+    const { token } = parseCookies();
+    if (!token) {
+      alert("로그인 후 사용 가능합니다.");
+      router.push("/login");
+    }
+  }, []);
 
   const onChangeText =
     (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {

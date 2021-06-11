@@ -19,6 +19,7 @@
     "lodash": "^4.17.21",
     "next": "^10.0.9",
     "next-svgr": "0.0.2",
+    "nookies": "^2.5.2",
     "react": "^17.0.2",
     "react-color": "^2.19.3",
     "react-copy-to-clipboard": "^5.0.3",

@@ -7,6 +7,7 @@ import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import TextareaComment from "./TextareaComment";
 import Loading from "../Loading";
+import { useRouter } from "next/router";
 
 const CommentsWrapper = styled.div<{ opened: boolean }>`
   border-top: 1px solid #e9ecef;
@@ -134,12 +135,16 @@ const CREATE_COMMENT_MUTATION = gql`
 interface CommentProps {
   id: string;
   mySelectionColor: string;
+  commentCount: number;
+  isLoggedin: boolean;
 }
 
 // textarea 영역 구현가능한지 확인하기
 const Comments: React.FC<CommentProps> = ({
   id = "",
   mySelectionColor = "",
+  commentCount = 0,
+  isLoggedin = false,
 }) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
@@ -153,6 +158,7 @@ const Comments: React.FC<CommentProps> = ({
   } = useQuery(COMMENTS_BY_GAME_ID_QUERY, {
     variables: { id },
   });
+  const router = useRouter();
 
   const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -176,6 +182,13 @@ const Comments: React.FC<CommentProps> = ({
     }
   };
 
+  const onClickComment = () => {
+    if (!isLoggedin) {
+      alert("로그인 후 사용 가능합니다.");
+      router.push("/login");
+    }
+  };
+
   if (commentsLoading) return <Loading />;
 
   return (
@@ -184,9 +197,17 @@ const Comments: React.FC<CommentProps> = ({
         <OpinionIcon />
         <button
           className="toggle-btn"
-          onClick={() => setOpened((prev) => !prev)}
+          onClick={() => {
+            if (isLoggedin) {
+              setOpened((prev) => !prev);
+            } else {
+              alert("로그인 후 사용 가능합니다.");
+              router.push("/login");
+            }
+          }}
         >
-          {opened ? "의견 접기" : "의견 보기"} ({data?.comments.length})
+          {opened ? "의견 접기" : "의견 보기"} (
+          {data?.comments.length || commentCount})
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
@@ -197,6 +218,7 @@ const Comments: React.FC<CommentProps> = ({
           mySelectionColor={mySelectionColor}
           onSubmit={onSendComment}
           onChange={onChangeComment}
+          onClick={onClickComment}
           value={content}
         />
       )}

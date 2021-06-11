@@ -12,6 +12,7 @@ import FireBar from "./FireBar/FireBar";
 import { getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation } from "@apollo/client";
+import { parseCookies } from "nookies";
 
 interface OptionBoxProps {
   selection: any;
@@ -70,7 +71,7 @@ const OptionBox = ({
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
   const handleVote = async (selectionId: string) => {
-    const token = localStorage.getItem("token");
+    const { token } = parseCookies();
     if (token) {
       if (checkedId === null) {
         // 새로 create

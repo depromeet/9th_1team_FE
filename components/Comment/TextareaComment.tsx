@@ -21,6 +21,7 @@ const Container = styled.form`
 interface TextareaCommentProps {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLFormElement>) => void;
   value: string;
   mySelectionColor: string;
 }
@@ -28,11 +29,12 @@ interface TextareaCommentProps {
 const TextareaComment: React.FC<TextareaCommentProps> = ({
   onSubmit,
   onChange,
+  onClick,
   value,
   mySelectionColor,
 }) => {
   return (
-    <Container onSubmit={onSubmit}>
+    <Container onSubmit={onSubmit} onClick={onClick}>
       <TextareaAutosize
         placeholder="의견을 입력해주세요"
         onChange={onChange}

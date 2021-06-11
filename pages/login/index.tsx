@@ -7,6 +7,7 @@ import VomitIcon from "../../public/tomato/vomit-normal-front.svg";
 import KakaoIcon from "../../public/kakao.svg";
 import CloseIcon from "../../public/close.svg";
 import Link from "next/link";
+import { setCookie } from "nookies";
 
 const LOGIN_MUTATION = gql`
   mutation login($type: String!, $key: String!) {
@@ -121,7 +122,7 @@ export default function Login() {
   useEffect(() => {
     const jwt = data?.login?.jwt;
     if (jwt) {
-      localStorage.setItem("token", jwt);
+      setCookie(null, "token", jwt);
     }
   }, [data?.login?.jwt]);
 
@@ -269,7 +270,7 @@ export default function Login() {
   return (
     <>
       <LoginHeader>
-        <CloseBtn onClick={() => router.back()}>
+        <CloseBtn onClick={() => router.push("/")}>
           <CloseIcon />
         </CloseBtn>
       </LoginHeader>

@@ -14,9 +14,11 @@ import Share from "components/Share/Share";
 import { modifyDate } from "utils/date";
 import { useRouter } from "next/router";
 import { getBalanceGameSelections } from "../../../utils/common";
+import nookies from "nookies";
 
 interface PostProps {
   id: string;
+  isLoggedin: boolean;
 }
 
 const DetailWrapper = styled.div`
@@ -105,7 +107,34 @@ const DetailWrapper = styled.div`
 
 const GET_GAME = gql`
   query balanceGameLogined($id: String!) {
-    balanceGameLogined(id: $id) {
+    balanceGame: balanceGameLogined(id: $id) {
+      id
+      userId
+      description
+      mySelection
+      commentCount
+      createdAt
+      user {
+        profile {
+          nickname
+        }
+      }
+      balanceGameSelections {
+        id
+        order
+        balanceGameId
+        backgroundImage
+        backgroundColor
+        textColor
+        description
+      }
+    }
+  }
+`;
+
+const GET_GAME_NOT_LOGIN = gql`
+  query balanceGameNotLogined($id: String!) {
+    balanceGame: balanceGameNotLogined(id: $id) {
       id
       userId
       description
@@ -170,9 +199,11 @@ const UPDATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
-const Post: React.FC<PostProps> = ({ id }) => {
+const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();
-  const { data } = useQuery(GET_GAME, { variables: { id } });
+  const { data } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
+    variables: { id },
+  });
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
@@ -188,9 +219,8 @@ const Post: React.FC<PostProps> = ({ id }) => {
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
   // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
-    setMySelection(data?.balanceGameLogined?.mySelection);
-    console.log("선택", data?.balanceGameLogined?.mySelection);
-  }, [data?.balanceGameLogined?.mySelection]);
+    setMySelection(data?.balanceGame?.mySelection);
+  }, [data?.balanceGame?.mySelection]);
 
   const toggleMore = () => {
     setIsOpen((prev) => !prev);
@@ -198,9 +228,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
 
   if (!data) return null;
 
-  const [balanceA, balanceB] = getBalanceGameSelections(
-    data?.balanceGameLogined
-  );
+  const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
 
   const firstVote = (balanceGameId: string, balanceGameSelectionId: string) => {
     mCreateVoteLogined({
@@ -229,11 +257,10 @@ const Post: React.FC<PostProps> = ({ id }) => {
     () => {
       // 첫 투표시에만 firstVote
       setMySelection(balanceGameSelectionId);
-      if (!data?.balanceGameLogined?.mySelection)
+      if (!data?.balanceGame?.mySelection)
         firstVote(balanceGameId, balanceGameSelectionId);
       else {
-        if (data?.balanceGameLogined?.mySelection === balanceGameSelectionId)
-          return;
+        if (data?.balanceGame?.mySelection === balanceGameSelectionId) return;
         notFirstVote(balanceGameId, balanceGameSelectionId);
       }
     };
@@ -258,7 +285,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
     router.push(`/article/${id}`);
   };
 
-  const mySelectionColor = data?.balanceGameLogined?.balanceGameSelections.find(
+  const mySelectionColor = data?.balanceGame?.balanceGameSelections.find(
     (balanceGameSelection: any) => balanceGameSelection.id === mySelection
   )?.backgroundColor;
 
@@ -275,7 +302,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
       <HeaderMore isMine={false} isOpen={isOpen} />
       <div className="contents__wrapper">
         <RadioBox
-          balanceGameId={data?.balanceGameLogined?.id}
+          balanceGameId={data?.balanceGame?.id}
           balanceA={balanceA}
           balanceB={balanceB}
           onChange={onChangeVote}
@@ -287,22 +314,22 @@ const Post: React.FC<PostProps> = ({ id }) => {
             <div className="play__wrapper">
               <p className="play-ment">따끈따끈한 밸런스 게임</p>
               <span className="play-count">
-                {data?.balanceGameLogined.description}
+                {data?.balanceGame.description}
               </span>
             </div>
           </div>
           <span className="comment-count">
-            의견 {data?.balanceGameLogined.commentCount}
+            의견 {data?.balanceGame.commentCount}
           </span>
         </div>
         <div className="contents">
           <p>{data.description}</p>
           <span className="author">
-            made by {data?.balanceGameLogined?.user?.profile?.nickname}
+            made by {data?.balanceGame?.user?.profile?.nickname}
           </span>
           <span> • </span>
           <span className="pub-date">
-            {modifyDate(data?.balanceGameLogined?.createdAt)}
+            {modifyDate(data?.balanceGame?.createdAt)}
           </span>
         </div>{" "}
         <Share
@@ -320,16 +347,25 @@ const Post: React.FC<PostProps> = ({ id }) => {
           </div>
         </nav>
       </div>
-      <Comments mySelectionColor={mySelectionColor} id={id} />
+      <Comments
+        isLoggedin={isLoggedin}
+        mySelectionColor={mySelectionColor}
+        id={id}
+        commentCount={data?.balanceGame?.commentCount}
+      />
     </DetailWrapper>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async function (context) {
   const { id } = context.query;
+  const { token } = nookies.get(context);
+  const isLoggedin = !!token;
+
   return {
     props: {
       id,
+      isLoggedin,
     },
   };
 };

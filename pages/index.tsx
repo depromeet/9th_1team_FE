@@ -11,6 +11,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import Loading from "../components/Loading";
+import { parseCookies } from "nookies";
 
 interface OrderButtonProps {
   isSelect: boolean;
@@ -126,7 +127,7 @@ const Index = () => {
   }, [offset]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const { token } = parseCookies();
     let newList;
     if (token) {
       newList = loginData?.balanceGamesLogined?.balanceGames;

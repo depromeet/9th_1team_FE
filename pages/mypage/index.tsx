@@ -7,10 +7,10 @@ import TomatoIcon from "public/tomato/smile-red.svg";
 import { gql } from "@apollo/client/core";
 import { useLazyQuery } from "@apollo/client";
 import NotLogin from "../../components/MypageContent/NotLogin";
-import CommonHeader from "../../components/Header/CommonHeader";
 import Link from "next/link";
 import NicknameModal from "../../components/modal/NicknameModal";
 import Header from "components/Header";
+import { destroyCookie, parseCookies } from "nookies";
 
 const MYPAGE_QUERY = gql`
   query {
@@ -157,7 +157,7 @@ const Mypage = () => {
   const [isOpenNicknameModify, setIsOpenNicknameModify] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const { token } = parseCookies();
     if (token) {
       qMypqge();
     }
@@ -170,7 +170,7 @@ const Mypage = () => {
 
   const onClickLogout = () => {
     if (window.confirm("로그아웃 하시겠어요?")) {
-      localStorage.removeItem("token");
+      destroyCookie(null, "token");
       window.location.href = "/";
     }
   };
