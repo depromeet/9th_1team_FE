@@ -57,7 +57,7 @@ const HeaderMore: React.FC<IsMineProps> = ({
         id: postId,
       },
     });
-    router.push("/");
+    router.replace("/");
   };
 
   if (!isMine) {

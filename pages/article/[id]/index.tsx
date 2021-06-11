@@ -184,27 +184,29 @@ const NEXT_GAME_BY_RANDOM_QUERY = gql`
   }
 `;
 
-// 추후 사용
-const UPDATE_VOTE_LOGINED_MUTATION = gql`
-  mutation updateVoteLogined(
-    $balanceGameId: String!
-    $newBalanceGameSelectionId: String!
-  ) {
-    updateVoteLogined(
-      updateBalanceGameSelectionVoteInput: {
-        balanceGameId: $balanceGameId
-        newBalanceGameSelectionId: $newBalanceGameSelectionId
-      }
-    ) {
+const REMOVE_VOTE_LOGINED = gql`
+  mutation removeVoteLogined($balanceGameId: String!) {
+    removeVoteLogined(balanceGameId: $balanceGameId) {
       id
     }
   }
 `;
 
-const REMOVE_VOTE_LOGINED = gql`
-  mutation removeVoteLogined($balanceGameId: String!) {
-    removeVoteLogined(balanceGameId: $balanceGameId) {
-      id
+const MY_GAMES = gql`
+  query myGames {
+    myGames {
+      balanceGames: balanceGame {
+        id
+        totalVoteCount
+        commentCount
+        balanceGameSelections {
+          order
+          description
+          backgroundColor
+          backgroundImage
+          textColor
+        }
+      }
     }
   }
 `;
@@ -214,19 +216,26 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const { data } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
     variables: { id },
   });
+  const { data: myGames } = useQuery(MY_GAMES);
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
-  const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
   const [isOpen, setIsOpen] = useState(false);
-  const [mySelection, setMySelection] = useState<string | null>();
+  const [mySelection, setMySelection] = useState<string | null>("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
-
+  const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
 
   useEffect(() => {
     setIsVoted(false);
   }, []);
+  useEffect(() => {
+    if (data && myGames) {
+      myGames?.myGames.balanceGames.forEach((game: any) => {
+        if (game.id === data?.balanceGame.id) setIsMine(true);
+      });
+    }
+  }, [myGames, data]);
 
   useEffect(() => {
     refetch();
@@ -318,7 +327,11 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           <MoreIcon onClick={toggleMore} />
         </div>
       </Header>
-      <HeaderMore isMine={false} isOpen={isOpen} />
+      <HeaderMore
+        postId={data?.balanceGame?.id}
+        isMine={isMine}
+        isOpen={isOpen}
+      />
       <div className="contents__wrapper">
         <RadioBox
           balanceGameId={data?.balanceGame?.id}

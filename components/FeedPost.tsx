@@ -13,7 +13,6 @@ import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { parseCookies } from "nookies";
-import { useRouter } from "next/router";
 
 interface OptionBoxProps {
   selection: any;
@@ -212,9 +211,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   useEffect(() => {
     setIsVoted(false);
     if (myGames) {
-      console.log(myGames);
       myGames?.myGames.balanceGames.forEach((game: any) => {
-        console.log("??????", game.id === data.id);
         if (game.id === data.id) setIsMine(true);
       });
     }
