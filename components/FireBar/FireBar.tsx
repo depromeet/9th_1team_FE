@@ -7,6 +7,9 @@ interface FireBarProps {
   voteCountB: number;
   fistColor?: string;
   secondColor?: string;
+  checkedId: string;
+  idA: string;
+  idB: string;
 }
 
 const FireBar: React.FC<FireBarProps> = ({
@@ -14,18 +17,31 @@ const FireBar: React.FC<FireBarProps> = ({
   voteCountB,
   fistColor,
   secondColor,
+  checkedId,
+  idA,
+  idB,
 }) => {
   let leftBarPos = 50;
   let rightBarPos = 50;
-  if (voteCountA !== 0) {
-    if (voteCountB !== 0) {
-      leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
+  let cntA = voteCountA;
+  let cntB = voteCountB;
+  if (checkedId === idA) {
+    cntA++;
+    if (cntB !== 0) cntB--;
+  } else if (checkedId === idB) {
+    if (cntA !== 0) cntA--;
+    cntB++;
+  }
+
+  if (cntA !== 0) {
+    if (cntB !== 0) {
+      leftBarPos = (cntA / (cntA + cntB)) * 100;
       rightBarPos = 100 - leftBarPos;
     } else {
       leftBarPos = 100;
       rightBarPos = 0;
     }
-  } else if (voteCountB !== 0) {
+  } else if (cntB !== 0) {
     leftBarPos = 0;
     rightBarPos = 100;
   }
@@ -34,7 +50,7 @@ const FireBar: React.FC<FireBarProps> = ({
     <FireBarWrapper>
       <div className="fire" style={{ left: `${leftBarPos}%` }}>
         <div className="fire__rectangle" style={{ color: fistColor }}>
-          {voteCountA}
+          {cntA}
         </div>
         <div
           style={{
@@ -47,7 +63,7 @@ const FireBar: React.FC<FireBarProps> = ({
           <Fire />
         </div>
         <div className="fire__rectangle" style={{ color: secondColor }}>
-          {voteCountB}
+          {cntB}
         </div>
       </div>
       <div

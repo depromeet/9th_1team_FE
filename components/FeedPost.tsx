@@ -35,21 +35,21 @@ const CREATE_VOTE_LOGINED = gql`
     }
   }
 `;
-const CREATE_VOTE_NOT_LOGINED = gql`
-  mutation createVoteNotLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
-    createVoteNotLogined(
-      createBalanceGameSelectionVoteInput: {
-        balanceGameId: $balanceGameId
-        balanceGameSelectionId: $balanceGameSelectionId
-      }
-    ) {
-      id
-    }
-  }
-`;
+// const CREATE_VOTE_NOT_LOGINED = gql`
+//   mutation createVoteNotLogined(
+//     $balanceGameId: String!
+//     $balanceGameSelectionId: String!
+//   ) {
+//     createVoteNotLogined(
+//       createBalanceGameSelectionVoteInput: {
+//         balanceGameId: $balanceGameId
+//         balanceGameSelectionId: $balanceGameSelectionId
+//       }
+//     ) {
+//       id
+//     }
+//   }
+// `;
 const REMOVE_VOTE_LOGINED = gql`
   mutation removeVoteLogined($balanceGameId: String!) {
     removeVoteLogined(balanceGameId: $balanceGameId) {
@@ -89,8 +89,8 @@ const OptionBox = ({
             balanceGameId: postId,
           },
         });
-        if (checkedId === selectionId) {
-          // 다시 create
+        if (checkedId !== selectionId) {
+          // 다른걸로 변경
           setCheckedId(selectionId);
           await mCreateVoteLogined({
             variables: {
@@ -171,6 +171,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           <VS />
         ) : (
           <FireBar
+            checkedId={checkedId}
+            idA={balanceA.id}
+            idB={balanceB.id}
             voteCountA={balanceA.voteCount}
             voteCountB={balanceB.voteCount}
           />
@@ -284,6 +287,7 @@ const OptionBoxContainer = styled.div<{
   }
   .checkbox {
     position: absolute;
+    z-index: 3;
     top: 0.9rem;
     right: 1.2rem;
   }

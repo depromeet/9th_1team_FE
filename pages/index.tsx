@@ -143,7 +143,11 @@ const Index = () => {
   }, [data, loginData]);
 
   useEffect(() => {
-    setFilteredList(list.filter((item) => item.mySelection !== null));
+    setFilteredList(
+      list.filter(
+        (item: { mySelection: string | null }) => item.mySelection !== null
+      )
+    );
     console.log(list);
   }, [list]);
 
