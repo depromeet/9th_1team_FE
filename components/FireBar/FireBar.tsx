@@ -20,7 +20,7 @@ const FireBar: React.FC<FireBarProps> = ({
   if (voteCountA !== 0) {
     if (voteCountB !== 0) {
       leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
-      rightBarPos = 100 - rightBarPos;
+      rightBarPos = 100 - leftBarPos;
     } else {
       leftBarPos = 100;
       rightBarPos = 0;
