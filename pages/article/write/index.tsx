@@ -21,75 +21,16 @@ const [
 
 const CREATE_BALANCE_GAME_MUTATION = gql`
   mutation createBalanceGame(
-    $balanceA: CreateBalanceGameSelectionInput!
-    $balanceB: CreateBalanceGameSelectionInput!
-    $description: String!
-    $keywords: [CreateBalanceGameKeywordInput!]
+    $createBalanceGameInput: CreateBalanceGameInput!
     $file1: Upload
     $file2: Upload
   ) {
     createBalanceGame(
-      createBalanceGameInput: {
-        description: $description
-        balanceGameSelections: [$balanceA, $balanceB]
-        balanceGameKeywords: $keywords
-      }
+      createBalanceGameInput: $createBalanceGameInput
       file1: $file1
       file2: $file2
     ) {
       id
-      userId
-      totalVoteCount
-      balanceGameSelections {
-        id
-        order
-        voteCount
-        description
-        textColor
-        backgroundColor
-        backgroundImage
-        balanceGameId
-      }
-      balanceGameKeywords {
-        id
-        name
-        balanceGameId
-      }
-    }
-  }
-`;
-
-const CREATE_BALANCE_GAME_NOT_KEYWORD_MUTATION = gql`
-  mutation createBalanceGame(
-    $balanceA: CreateBalanceGameSelectionInput!
-    $balanceB: CreateBalanceGameSelectionInput!
-    $description: String!
-    $keywords: [CreateBalanceGameKeywordInput!]
-    $file1: Upload
-    $file2: Upload
-  ) {
-    createBalanceGame(
-      createBalanceGameInput: {
-        description: $description
-        balanceGameSelections: [$balanceA, $balanceB]
-        balanceGameKeywords: $keywords
-      }
-      file1: $file1
-      file2: $file2
-    ) {
-      id
-      userId
-      totalVoteCount
-      balanceGameSelections {
-        id
-        order
-        voteCount
-        description
-        textColor
-        backgroundColor
-        backgroundImage
-        balanceGameId
-      }
     }
   }
 `;
@@ -391,9 +332,6 @@ const Write = () => {
   const [keywords, setKeywords] = useState("");
   const [colorPickerState, setColorPickerState] = useState(0);
   const [mCreateBalanceGame] = useMutation(CREATE_BALANCE_GAME_MUTATION);
-  const [mCreateBalanceNotKeywordGame] = useMutation(
-    CREATE_BALANCE_GAME_NOT_KEYWORD_MUTATION
-  );
 
   const onChangeText =
     (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -484,56 +422,40 @@ const Write = () => {
     setKeywords(e.target.value);
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (keywords) {
-      mCreateBalanceGame({
+    try {
+      const { data } = await mCreateBalanceGame({
         variables: {
-          balanceA: {
-            order: 0,
-            description: balanceTextA,
-            textColor: balanceFontColorA,
-            backgroundColor: balanceBgColorA,
-            backgroundImage: "미구현인데 필수 필드",
+          createBalanceGameInput: {
+            description: textInfo,
+            balanceGameSelections: [
+              {
+                order: 0,
+                description: balanceTextA,
+                textColor: balanceFontColorA,
+                backgroundColor: balanceBgColorA,
+                backgroundImage: "미구현인데 필수 필드",
+              },
+              {
+                order: 1,
+                description: balanceTextB,
+                textColor: balanceFontColorB,
+                backgroundColor: balanceBgColorB,
+                backgroundImage: "미구현인데 필수 필드",
+              },
+            ],
+            balanceGameKeywords: findHashtags(keywords),
           },
-          balanceB: {
-            order: 1,
-            description: balanceTextB,
-            textColor: balanceFontColorB,
-            backgroundColor: balanceBgColorB,
-            backgroundImage: "미구현인데 필수 필드",
-          },
-          description: textInfo,
-          keywords: findHashtags(keywords),
           file1: balanceBgImgFileA,
           file2: balanceBgImgFileB,
         },
       });
-    } else {
-      mCreateBalanceNotKeywordGame({
-        variables: {
-          balanceA: {
-            order: 0,
-            description: balanceTextA,
-            textColor: balanceFontColorA,
-            backgroundColor: balanceBgColorA,
-            backgroundImage: "미구현인데 필수 필드",
-          },
-          balanceB: {
-            order: 1,
-            description: balanceTextB,
-            textColor: balanceFontColorB,
-            backgroundColor: balanceBgColorB,
-            backgroundImage: "미구현인데 필수 필드",
-          },
-          description: textInfo,
-          file1: balanceBgImgFileA,
-          file2: balanceBgImgFileB,
-        },
-      });
-    }
-    router.push("/");
+      const { id } = data?.createBalanceGame;
+
+      router.push(`/article/${id}`);
+    } catch (e) {}
   };
 
   return (
