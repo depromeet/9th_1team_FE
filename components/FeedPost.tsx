@@ -72,7 +72,7 @@ const OptionBox = ({
   const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
-  const token = localStorage.getItem("token");
+  const { token } = parseCookies();
 
   console.log(checkedId);
   useEffect(() => {
@@ -183,7 +183,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const baseURL = "http://localhost:3000";
-  const token = localStorage.getItem("token");
+  const { token } = parseCookies();
+
+  const [isMoreOpened, setIsMoreOpened] = useState(false);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -208,7 +210,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
     }
   };
   return (
-    <Container>
+    <Container onClick={() => setIsMoreOpened(false)}>
       <OptionBox
         key={balanceA.id}
         postId={data.id}
@@ -257,16 +259,25 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             </div>
           </Link>
           {renderShare()}
-          <div className="content__buttons__button">
+          <div
+            className="content__buttons__button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMoreOpened(true);
+            }}
+          >
             <More />
           </div>
         </div>
-        <div
-          className="content__headermore"
-          style={{ bottom: token ? "6.5rem" : "2rem" }}
-        >
-          <HeaderMore isMine={token ? true : false} isOpen={true} />
-        </div>
+        {isMoreOpened && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="content__headermore"
+            style={{ bottom: token ? "6.5rem" : "2rem" }}
+          >
+            <HeaderMore isMine={token ? true : false} isOpen />
+          </div>
+        )}
       </div>
     </Container>
   );
