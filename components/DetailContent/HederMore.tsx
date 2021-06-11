@@ -1,4 +1,7 @@
+import { gql, useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
 import styled from "styled-components";
+import { clipboardCopy } from "utils/common";
 
 const MoreMenu = styled.ul<{ isOpen: boolean }>`
   border: 1px solid #e9ecef;
@@ -30,31 +33,51 @@ const MoreMenu = styled.ul<{ isOpen: boolean }>`
 interface IsMineProps {
   isMine: boolean;
   isOpen: boolean;
+  postId?: string;
 }
 
-const HeaderMore: React.FC<IsMineProps> = ({ isMine, isOpen }) => {
+const REMOVE_BALANCE_GAME = gql`
+  mutation removeBalanceGame($id: String!) {
+    removeBalanceGame(id: $id)
+  }
+`;
+
+const HeaderMore: React.FC<IsMineProps> = ({ isMine, isOpen, postId }) => {
+  const router = useRouter();
+  const url = "http://localhost:3000/article/" + postId;
+
+  const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
+  const handleRemove = async () => {
+    await mRemoveBalanceGame({
+      variables: {
+        id: postId,
+      },
+    });
+    router.push("/");
+  };
+
   if (!isMine) {
     return (
       <MoreMenu isOpen={isOpen}>
         <li>
-          <a>URL복사하기</a>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
         </li>
-        <li>
+        {/* <li>
           <a>신고</a>
-        </li>
+        </li> */}
       </MoreMenu>
     );
   } else {
     return (
       <MoreMenu isOpen={isOpen}>
         <li>
-          <a>URL복사하기</a>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
         </li>
-        <li>
+        {/* <li>
           <a>수정하기</a>
-        </li>
+        </li> */}
         <li>
-          <a>삭제</a>
+          <a onClick={handleRemove}>삭제</a>
         </li>
       </MoreMenu>
     );

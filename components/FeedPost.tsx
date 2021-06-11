@@ -273,9 +273,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           <div
             onClick={(e) => e.stopPropagation()}
             className="content__headermore"
-            style={{ bottom: token ? "6.5rem" : "2rem" }}
+            style={{ bottom: token ? "2.5rem" : "-2rem" }}
           >
-            <HeaderMore isMine={token ? true : false} isOpen />
+            <HeaderMore isMine={token ? true : false} isOpen postId={data.id} />
           </div>
         )}
       </div>
