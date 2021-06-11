@@ -169,7 +169,7 @@ const Index = () => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
-      <Today />
+      {/* <Today /> */}
       <Container>
         <div className="buttons">
           <div className="buttons__btn" onClick={onClickRandomPlay}>

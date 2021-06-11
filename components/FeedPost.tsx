@@ -18,6 +18,7 @@ interface OptionBoxProps {
   postId: string;
   checkedId: string | null;
   setCheckedId: Dispatch<SetStateAction<string | null>>;
+  setIsVoted: Dispatch<SetStateAction<boolean>>;
 }
 
 const CREATE_VOTE_LOGINED = gql`
@@ -63,6 +64,7 @@ const OptionBox = ({
   checkedId,
   postId,
   setCheckedId,
+  setIsVoted,
 }: OptionBoxProps) => {
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
   // const [mCreateVoteNotLogined, ] =
@@ -71,6 +73,7 @@ const OptionBox = ({
 
   const handleVote = async (selectionId: string) => {
     const token = localStorage.getItem("token");
+    setIsVoted(true);
     if (token) {
       if (checkedId === null) {
         // 새로 create
@@ -101,6 +104,7 @@ const OptionBox = ({
         }
       }
     }
+    // setIsVoted(false);
   };
 
   const isChecked =
@@ -134,6 +138,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const baseURL = "http://localhost:3000";
 
+  const [isVoted, setIsVoted] = useState(false);
+
   const renderShare = () => {
     if (typeof window.navigator.share === "undefined") {
       return null;
@@ -158,13 +164,13 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         key={balanceA.id}
         postId={data.id}
         selection={balanceA}
-        {...{ checkedId, setCheckedId }}
+        {...{ checkedId, setCheckedId, setIsVoted }}
       />
       <OptionBox
         key={balanceB.id}
         postId={data.id}
         selection={balanceB}
-        {...{ checkedId, setCheckedId }}
+        {...{ checkedId, setCheckedId, setIsVoted }}
       />
       <Versus>
         {checkedId === null ? (
@@ -176,6 +182,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             idB={balanceB.id}
             voteCountA={balanceA.voteCount}
             voteCountB={balanceB.voteCount}
+            isVoted={isVoted}
           />
         )}
       </Versus>
@@ -317,20 +324,6 @@ const Versus = styled.div`
   left: 0;
   width: 100%;
   height: 25.6rem;
-
-  .line {
-    width: 50%;
-    height: 0.8rem;
-    position: absolute;
-    z-index: 0;
-    left: 0;
-    background: #e56f53;
-    :last-child {
-      left: auto;
-      right: 0;
-      background: #f8d272;
-    }
-  }
 `;
 
 export default FeedPost;
