@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent } from "react";
 import DetailFireBar from "components/FireBar/DetailFireBar";
 import VS from "public/versus.svg";
 
@@ -82,7 +82,7 @@ interface RadioBoxProps {
     balanceGameId: string,
     balanceId: string
   ) => (e: ChangeEvent<HTMLInputElement>) => void;
-  value: string;
+  value: string | null;
   isVoted: boolean;
 }
 
@@ -94,6 +94,8 @@ const RadioBox: React.FC<RadioBoxProps> = ({
   value,
   isVoted,
 }) => {
+  console.log("isVoted: ", isVoted);
+
   return (
     <RadioWrapper>
       <BoxWrapper>
