@@ -9,11 +9,11 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
-import { getBalanceGameSelections } from "../utils/common";
+import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import HeaderMore from "./DetailContent/HederMore";
 import { parseCookies } from "nookies";
+import { useRouter } from "next/router";
 
 interface OptionBoxProps {
   selection: any;
@@ -307,6 +307,58 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   );
 };
 
+const REMOVE_BALANCE_GAME = gql`
+  mutation removeBalanceGame($id: String!) {
+    removeBalanceGame(id: $id)
+  }
+`;
+interface IsMineProps {
+  isMine: boolean;
+  isOpen: boolean;
+  postId?: string;
+}
+const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
+  const router = useRouter();
+  const url = "http://localhost:3000/article/" + postId;
+
+  const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
+  const handleRemove = async () => {
+    await mRemoveBalanceGame({
+      variables: {
+        id: postId,
+      },
+    });
+    router.push("/");
+  };
+
+  if (!isMine) {
+    return (
+      <MoreMenu>
+        <li>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
+        </li>
+        {/* <li>
+          <a>신고</a>
+        </li> */}
+      </MoreMenu>
+    );
+  } else {
+    return (
+      <MoreMenu>
+        <li>
+          <a onClick={() => clipboardCopy(url)}>URL복사하기</a>
+        </li>
+        {/* <li>
+          <a>수정하기</a>
+        </li> */}
+        <li>
+          <a onClick={handleRemove}>삭제</a>
+        </li>
+      </MoreMenu>
+    );
+  }
+};
+
 const Container = styled.div`
   width: 100%;
   height: 36rem;
@@ -372,12 +424,6 @@ const Container = styled.div`
         }
       }
     }
-    &__headermore {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      right: -2rem;
-    }
   }
 `;
 
@@ -424,6 +470,30 @@ const Versus = styled.div`
   left: 0;
   width: 100%;
   height: 25.6rem;
+`;
+
+const MoreMenu = styled.ul`
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  width: 140px;
+  position: absolute;
+  right: -3rem;
+  bottom: 4.5rem;
+  z-index: 2;
+  background-color: #fff;
+  margin-right: 1.6rem;
+
+  li a {
+    display: inline-block;
+    width: 100%;
+    padding: 15px 0 15px 16px;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #e9ecef;
+    box-sizing: border-box;
+  }
+  li:last-child a {
+    border-bottom: none;
+  }
 `;
 
 export default FeedPost;
