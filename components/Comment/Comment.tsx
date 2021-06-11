@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import TextareaComment from "./TextareaComment";
-import { gql } from "@apollo/client/core";
+import { ApolloQueryResult, gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import ReplyComment from "./ReplyComment";
 import MoreIcon from "../../public/more.svg";
@@ -30,11 +30,13 @@ const CommentWrapper = styled.li`
   }
   .comment__user-pick {
     display: inline-block;
-    background-color: #ffd770;
+    background-color: #ffffff;
     border-radius: 50%;
     width: 1.6rem;
     height: 1.6rem;
     margin-right: 0.6rem;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
   }
   .info {
     height: 1.6rem;
@@ -83,10 +85,12 @@ const CommentWrapper = styled.li`
 `;
 
 interface CommentProps {
+  mySelectionColor: string;
   balanceGameId: string;
   comment: {
     id: string;
     userId: string;
+    color: string;
     pubDate: string;
     content: string;
     status: string;
@@ -98,6 +102,7 @@ interface CommentProps {
     replies: {
       id: string;
       userId: string;
+      color: string;
       pubDate: string;
       content: string;
       status: string;
@@ -108,6 +113,7 @@ interface CommentProps {
       };
     }[];
   };
+  refetch: () => Promise<ApolloQueryResult<any>>;
 }
 
 const CREATE_REPLY_MUTATION = gql`
@@ -115,12 +121,14 @@ const CREATE_REPLY_MUTATION = gql`
     $balanceGameId: String!
     $commentId: String!
     $content: String!
+    $color: String
   ) {
     createReply(
       createReplyInput: {
         balanceGameId: $balanceGameId
         commentId: $commentId
         content: $content
+        color: $color
       }
     ) {
       id
@@ -144,7 +152,12 @@ const UPDATE_COMMENT_MUTATION = gql`
   }
 `;
 
-const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
+const Comment: React.FC<CommentProps> = ({
+  mySelectionColor,
+  balanceGameId,
+  comment,
+  refetch,
+}) => {
   const [opened, setOpened] = useState(false);
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [modifyComment, setModifyComment] = useState(comment.content);
@@ -158,18 +171,24 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
     setOpened(!opened);
   };
 
-  const onSubmitReply = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitReply = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!content) return;
 
-    mCreateReply({
-      variables: {
-        balanceGameId,
-        commentId: comment.id,
-        content,
-      },
-    });
+    try {
+      await mCreateReply({
+        variables: {
+          balanceGameId,
+          commentId: comment.id,
+          content,
+          color: mySelectionColor,
+        },
+      });
+      await refetch();
+    } catch (e) {
+      alert("에러가 발생했습니다.");
+    }
   };
 
   const onChangeReply = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -185,23 +204,29 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
     setMoreOpened(false);
   };
 
-  const onDeleteComment = (id: string) => () => {
-    mRemoveComment({
-      variables: { id },
-    });
+  const onDeleteComment = (id: string) => async () => {
+    try {
+      await mRemoveComment({
+        variables: { id },
+      });
+    } catch (e) {
+      alert("에러가 발생했습니다.");
+    }
   };
 
   const onModifyCommentMode = () => {
     setIsModifyMode(true);
   };
-  const onSubmitModifyComment = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitModifyComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mUpdateComment({
-      variables: {
-        id: comment.id,
-        content: modifyComment,
-      },
-    });
+    try {
+      await mUpdateComment({
+        variables: {
+          id: comment.id,
+          content: modifyComment,
+        },
+      });
+    } catch (e) {}
   };
 
   const onChangeModifyComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -216,7 +241,13 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
         ) : (
           <>
             <div className="info">
-              <div className="comment__user-pick" />
+              <div
+                className="comment__user-pick"
+                style={{
+                  backgroundColor: comment.color || "#ffffff",
+                  borderColor: comment.color || "lightgray",
+                }}
+              />
               <span className="author">{comment?.user?.profile?.nickname}</span>
               <span className="pub-date">{comment.pubDate}</span>
             </div>
@@ -224,6 +255,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
               {isModifyMode ? (
                 <div className="comment__textarea-comment">
                   <TextareaComment
+                    mySelectionColor={comment.color}
                     onSubmit={onSubmitModifyComment}
                     onChange={onChangeModifyComment}
                     value={modifyComment}
@@ -240,6 +272,7 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
             {opened && (
               <div className="comment__textarea-comment">
                 <TextareaComment
+                  mySelectionColor={mySelectionColor}
                   onSubmit={onSubmitReply}
                   onChange={onChangeReply}
                   value={content}
@@ -251,9 +284,11 @@ const Comment: React.FC<CommentProps> = ({ balanceGameId, comment }) => {
 
         {comment.replies.map((reply) => (
           <ReplyComment
+            mySelectionColor={mySelectionColor}
             balanceGameId={balanceGameId}
             commentId={comment.id}
             reply={reply}
+            refetch={refetch}
           />
         ))}
       </div>

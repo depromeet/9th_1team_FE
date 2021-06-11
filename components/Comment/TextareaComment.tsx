@@ -22,12 +22,14 @@ interface TextareaCommentProps {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   value: string;
+  mySelectionColor: string;
 }
 
 const TextareaComment: React.FC<TextareaCommentProps> = ({
   onSubmit,
   onChange,
   value,
+  mySelectionColor,
 }) => {
   return (
     <Container onSubmit={onSubmit}>
@@ -36,7 +38,13 @@ const TextareaComment: React.FC<TextareaCommentProps> = ({
         onChange={onChange}
         value={value}
       />
-      <div className="form__user-pick" />
+      <div
+        className="form__user-pick"
+        style={{
+          backgroundColor: mySelectionColor || "#ffffff",
+          borderColor: mySelectionColor || "lightgray",
+        }}
+      />
       <button type="submit" className="submit-btn">
         등록
       </button>
