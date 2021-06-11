@@ -12,6 +12,7 @@ import FireBar from "./FireBar/FireBar";
 import { getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation } from "@apollo/client";
+import HeaderMore from "./DetailContent/HederMore";
 
 interface OptionBoxProps {
   selection: any;
@@ -70,6 +71,8 @@ const OptionBox = ({
   const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
+  const token = localStorage.getItem("token");
+
   console.log(checkedId);
   useEffect(() => {
     const checkedList = localStorage.getItem("checkedList")?.split(",");
@@ -79,7 +82,6 @@ const OptionBox = ({
   }, []);
 
   const handleVote = async (selectionId: string) => {
-    const token = localStorage.getItem("token");
     setIsVoted(true);
     // 로그인이면
     if (token) {
@@ -180,6 +182,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const baseURL = "http://localhost:3000";
+  const token = localStorage.getItem("token");
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -257,6 +260,12 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             <More />
           </div>
         </div>
+        <div
+          className="content__headermore"
+          style={{ bottom: token ? "6.5rem" : "2rem" }}
+        >
+          <HeaderMore isMine={token ? true : false} isOpen={true} />
+        </div>
       </div>
     </Container>
   );
@@ -275,6 +284,7 @@ const Container = styled.div`
   .content {
     padding-bottom: 1rem;
     color: #606060;
+    position: relative;
     &__info {
       padding: 1rem 0;
       cursor: pointer;
@@ -325,6 +335,12 @@ const Container = styled.div`
           margin-left: auto;
         }
       }
+    }
+    &__headermore {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      right: -2rem;
     }
   }
 `;
