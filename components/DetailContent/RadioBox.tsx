@@ -94,6 +94,8 @@ const RadioBox: React.FC<RadioBoxProps> = ({
   value,
   isVoted,
 }) => {
+  console.log("isVoted: ", isVoted);
+
   return (
     <RadioWrapper>
       <BoxWrapper>

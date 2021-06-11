@@ -237,7 +237,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGame?.mySelection);
-    console.log(data?.balanceGame);
+    setIsVoted(data?.balanceGame?.mySelection);
   }, [data?.balanceGame?.mySelection]);
 
   const toggleMore = () => {
@@ -249,12 +249,10 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
 
   const onChangeVote =
-    (balanceGameId: string | null, balanceGameSelectionId: string | null) =>
-    async () => {
-      // 첫 투표시에만
-      setIsVoted(true);
-      setMySelection(balanceGameSelectionId);
-      if (!data?.balanceGame?.mySelection) {
+    (balanceGameId: string, balanceGameSelectionId: string) => async () => {
+      if (!isVoted) {
+        setIsVoted(true);
+        setMySelection(balanceGameSelectionId);
         await mCreateVoteLogined({
           variables: {
             balanceGameId,
@@ -262,20 +260,27 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           },
         });
       } else {
-        // 첫투표가 아닐경우
-        if (data?.balanceGame?.mySelection === balanceGameSelectionId) return;
-
-        await mRemoveVoteLogined({
-          variables: {
-            balanceGameId,
-          },
-        });
-        await mCreateVoteLogined({
-          variables: {
-            balanceGameId,
-            balanceGameSelectionId,
-          },
-        });
+        if (mySelection === balanceGameSelectionId) {
+          setMySelection("");
+          await mRemoveVoteLogined({
+            variables: {
+              balanceGameId,
+            },
+          });
+        } else {
+          setMySelection(balanceGameSelectionId);
+          await mRemoveVoteLogined({
+            variables: {
+              balanceGameId,
+            },
+          });
+          await mCreateVoteLogined({
+            variables: {
+              balanceGameId,
+              balanceGameSelectionId,
+            },
+          });
+        }
       }
     };
 
