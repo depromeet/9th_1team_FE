@@ -16,6 +16,7 @@ type CardProps = {
     balanceGameSelections: {
       description: string;
       backgroundColor: string;
+      backgroundImage: string;
       textColor: string;
     }[];
   };
@@ -115,6 +116,9 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
             className="top"
             style={{
               backgroundColor: balanceA.backgroundColor,
+              backgroundImage: `url(${balanceA.backgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
               color: balanceA.textColor,
             }}
           >
@@ -124,6 +128,9 @@ const MiniCard: React.FC<CardProps> = ({ item, isModifyMode }) => {
             className="bottom"
             style={{
               backgroundColor: balanceB.backgroundColor,
+              backgroundImage: `url(${balanceB.backgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
               color: balanceB.textColor,
             }}
           >

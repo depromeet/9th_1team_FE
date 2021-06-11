@@ -3,7 +3,7 @@ import styled from "styled-components";
 import RadioBox from "components/DetailContent/RadioBox";
 import Comments from "components/Comment/Comments";
 import Header from "components/Header";
-import PrevGameIcon from "../../../public/game-prev.svg";
+// import PrevGameIcon from "../../../public/game-prev.svg";
 import NextGameIcon from "../../../public/game-next.svg";
 import ShareIcon from "../../../public/top-share.svg";
 import MoreIcon from "../../../public/top-more.svg";
@@ -238,8 +238,6 @@ const Post: React.FC<PostProps> = ({ id }) => {
       }
     };
 
-  console.log(data?.balanceGameLogined);
-
   const onUseShareAPI = () => {
     // HTTPS 에서만 동작, 확인 필요
     if (typeof navigator.share === "undefined") {
@@ -259,6 +257,10 @@ const Post: React.FC<PostProps> = ({ id }) => {
     const { id } = nextGameData?.nextGameByRandom;
     router.push(`/article/${id}`);
   };
+
+  const mySelectionColor = data?.balanceGameLogined?.balanceGameSelections.find(
+    (balanceGameSelection: any) => balanceGameSelection.id === mySelection
+  )?.backgroundColor;
 
   return (
     <DetailWrapper>
@@ -318,7 +320,7 @@ const Post: React.FC<PostProps> = ({ id }) => {
           </div>
         </nav>
       </div>
-      <Comments id={id} />
+      <Comments mySelectionColor={mySelectionColor} id={id} />
     </DetailWrapper>
   );
 };

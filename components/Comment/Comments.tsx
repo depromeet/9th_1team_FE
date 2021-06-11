@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import OpinionIcon from "../../public/opinion.svg";
@@ -59,6 +59,8 @@ const CommentsWrapper = styled.div<{ opened: boolean }>`
     left: 11px;
     top: 50%;
     transform: translateY(-50%);
+    border: 1px solid lightgray;
+    box-sizing: border-box;
   }
   .submit-btn {
     border: none;
@@ -93,7 +95,9 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
       id
       userId
       status
+      color
       content
+      createdAt
       user {
         profile {
           nickname
@@ -103,7 +107,9 @@ const COMMENTS_BY_GAME_ID_QUERY = gql`
         id
         userId
         status
+        color
         content
+        createdAt
         user {
           profile {
             nickname
@@ -125,12 +131,21 @@ const CREATE_COMMENT_MUTATION = gql`
   }
 `;
 
+interface CommentProps {
+  id: string;
+  mySelectionColor: string;
+}
+
 // textarea 영역 구현가능한지 확인하기
-const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
+const Comments: React.FC<CommentProps> = ({
+  id = "",
+  mySelectionColor = "",
+}) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
-  const [mCreateComment, { loading: createCommentLoading, error }] =
-    useMutation(CREATE_COMMENT_MUTATION);
+  const [mCreateComment, { loading: createCommentLoading }] = useMutation(
+    CREATE_COMMENT_MUTATION
+  );
   const {
     data,
     loading: commentsLoading,
@@ -139,27 +154,26 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
     variables: { id },
   });
 
-  useEffect(() => {
-    if (error) {
-      alert("게임에 투표 후 댓글을 남길 수 있습니다.");
-    }
-  }, [error]);
-
   const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
   const onSendComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await mCreateComment({
-      variables: {
-        createCommentInput: {
-          balanceGameId: id,
-          content,
+    try {
+      await mCreateComment({
+        variables: {
+          createCommentInput: {
+            balanceGameId: id,
+            content,
+            color: mySelectionColor,
+          },
         },
-      },
-    });
-    refetch();
+      });
+      await refetch();
+    } catch (e) {
+      alert("게임에 투표 후 댓글을 남길 수 있습니다.");
+    }
   };
 
   if (commentsLoading) return <Loading />;
@@ -180,6 +194,7 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
         <Loading height={"36px"} />
       ) : (
         <TextareaComment
+          mySelectionColor={mySelectionColor}
           onSubmit={onSendComment}
           onChange={onChangeComment}
           value={content}
@@ -191,7 +206,13 @@ const Comments: React.FC<{ id: string }> = ({ id = "" }) => {
             <>
               <ul className="comments">
                 {data?.comments.map((comment: any, i: number) => (
-                  <Comment key={i} balanceGameId={id} comment={comment} />
+                  <Comment
+                    key={i}
+                    mySelectionColor={mySelectionColor}
+                    balanceGameId={id}
+                    comment={comment}
+                    refetch={refetch}
+                  />
                 ))}
               </ul>
               {/*<div className="btn__wrapper">*/}

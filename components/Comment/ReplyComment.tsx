@@ -1,10 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useMutation } from "@apollo/client";
-import { gql } from "@apollo/client/core";
+import { ApolloQueryResult, gql } from "@apollo/client/core";
 import TextareaComment from "./TextareaComment";
 import CommentMore from "./CommentMore";
 import MoreIcon from "../../public/more.svg";
+import { modifyDate } from "../../utils/date";
 
 const ReplyCommentWrapper = styled.li`
   position: relative;
@@ -33,6 +34,8 @@ const ReplyCommentWrapper = styled.li`
     width: 16px;
     height: 16px;
     margin-right: 6px;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
   }
   .info {
     height: 16px;
@@ -82,20 +85,23 @@ const ReplyCommentWrapper = styled.li`
 `;
 
 interface ReplyCommentProps {
+  mySelectionColor: string;
   balanceGameId: string;
   commentId: string;
   reply: {
     id: string;
     userId: string;
-    pubDate: string;
+    color: string;
     content: string;
     status: string;
+    createdAt: string;
     user: {
       profile: {
         nickname: string;
       };
     };
   };
+  refetch: () => Promise<ApolloQueryResult<any>>;
 }
 
 const CREATE_REPLY_MUTATION = gql`
@@ -103,12 +109,14 @@ const CREATE_REPLY_MUTATION = gql`
     $balanceGameId: String!
     $commentId: String!
     $content: String!
+    $color: String
   ) {
     createReply(
       createReplyInput: {
         balanceGameId: $balanceGameId
         commentId: $commentId
         content: $content
+        color: $color
       }
     ) {
       id
@@ -133,9 +141,11 @@ const UPDATE_REPLY_MUTATION = gql`
 `;
 
 const ReplyComment: React.FC<ReplyCommentProps> = ({
+  mySelectionColor,
   balanceGameId = "",
   commentId = "",
   reply,
+  refetch,
 }) => {
   const [opened, setOpened] = useState(false);
   const [content, setContent] = useState("");
@@ -159,40 +169,55 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
     setMoreOpened(false);
   };
 
-  const onSubmitReply = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitReply = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!content) return;
 
-    mCreateReply({
-      variables: {
-        balanceGameId,
-        commentId,
-        content,
-      },
-    });
+    try {
+      await mCreateReply({
+        variables: {
+          balanceGameId,
+          commentId,
+          content,
+          color: mySelectionColor,
+        },
+      });
+      await refetch();
+    } catch (e) {
+      alert("에러가 발생했습니다.");
+    }
   };
 
   const onChangeReply = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
-  const onDeleteReply = (id: string) => () => {
-    mRemoveReply({ variables: { id } });
+  const onDeleteReply = (id: string) => async () => {
+    try {
+      await mRemoveReply({ variables: { id } });
+      await refetch();
+    } catch (e) {
+      alert("에러가 발생했습니다.");
+    }
   };
 
   const onModifyReplyMode = () => {
     setIsModifyMode(true);
   };
 
-  const onSubmitModifyReply = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitModifyReply = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mUpdateReply({
-      variables: {
-        id: reply.id,
-        content: modifyReply,
-      },
-    });
+    try {
+      await mUpdateReply({
+        variables: {
+          id: reply.id,
+          content: modifyReply,
+        },
+      });
+    } catch (e) {
+      alert("에러가 발생했습니다.");
+    }
   };
 
   const onChangeModifyReply = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -207,13 +232,20 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
         ) : (
           <>
             <div className="info">
-              <div className="reply__user-pick" />
+              <div
+                className="reply__user-pick"
+                style={{
+                  backgroundColor: reply.color || "#ffffff",
+                  borderColor: reply.color || "lightgray",
+                }}
+              />
               <span className="author">{reply?.user?.profile?.nickname}</span>
-              <span className="pub-date">{reply.pubDate}</span>
+              <span className="pub-date">{modifyDate(reply.createdAt)}</span>
             </div>
             <div className="reply__user-text">
               {isModifyMode ? (
                 <TextareaComment
+                  mySelectionColor={reply.color}
                   onSubmit={onSubmitModifyReply}
                   onChange={onChangeModifyReply}
                   value={modifyReply}
@@ -227,6 +259,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
             </div>
             {opened && (
               <TextareaComment
+                mySelectionColor={mySelectionColor}
                 onSubmit={onSubmitReply}
                 onChange={onChangeReply}
                 value={content}
