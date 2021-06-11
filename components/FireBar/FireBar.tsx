@@ -5,9 +5,16 @@ import { FireBarWrapper } from "./Firebar.style";
 interface FireBarProps {
   voteCountA: number;
   voteCountB: number;
+  fistColor?: string;
+  secondColor?: string;
 }
 
-const FireBar: React.FC<FireBarProps> = ({ voteCountA, voteCountB }) => {
+const FireBar: React.FC<FireBarProps> = ({
+  voteCountA,
+  voteCountB,
+  fistColor,
+  secondColor,
+}) => {
   let leftBarPos = 50;
   let rightBarPos = 50;
   if (voteCountA !== 0) {
@@ -26,7 +33,9 @@ const FireBar: React.FC<FireBarProps> = ({ voteCountA, voteCountB }) => {
   return (
     <FireBarWrapper>
       <div className="fire" style={{ left: `${leftBarPos}%` }}>
-        <div className="fire__rectangle">{voteCountA}</div>
+        <div className="fire__rectangle" style={{ color: fistColor }}>
+          {voteCountA}
+        </div>
         <div
           style={{
             position: "absolute",
@@ -37,10 +46,18 @@ const FireBar: React.FC<FireBarProps> = ({ voteCountA, voteCountB }) => {
         >
           <Fire />
         </div>
-        <div className="fire__rectangle">{voteCountB}</div>
+        <div className="fire__rectangle" style={{ color: secondColor }}>
+          {voteCountB}
+        </div>
       </div>
-      <div className="line" style={{ width: `${leftBarPos}%` }} />
-      <div className="line" style={{ width: `${rightBarPos}%` }} />
+      <div
+        className="line"
+        style={{ width: `${leftBarPos}%`, background: fistColor }}
+      />
+      <div
+        className="line"
+        style={{ width: `${rightBarPos}%`, background: secondColor }}
+      />
     </FireBarWrapper>
   );
 };

@@ -5,37 +5,22 @@ import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
-import { gql, useMutation } from "@apollo/client";
 import { getBalanceGameSelections } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
+import { gql, useMutation } from "@apollo/client";
 
-enum CHECK_TYPE {
-  FIRST = "FIRST",
-  SECOND = "SECOND",
-  NONE = "NONE",
-}
 interface OptionBoxProps {
-  type: CHECK_TYPE;
-  isSelected: boolean;
-  title: string;
-  checkType: CHECK_TYPE;
-  setCheckType: (
-    type: CHECK_TYPE,
-    balanceGameId: string,
-    balanceGameSelectionId: string
-  ) => void;
-  balanceGameId: string;
-  balanceGameSelectionId: string;
-  background: string;
-  color: string;
-  backgroundImage: string;
+  selection: any;
+  postId: string;
+  checkedId: string | null;
+  setCheckedId: Dispatch<SetStateAction<string | null>>;
 }
 
-const CREATE_VOTE_LOGINED_MUTATION = gql`
+const CREATE_VOTE_LOGINED = gql`
   mutation createVoteLogined(
     $balanceGameId: String!
     $balanceGameSelectionId: String!
@@ -50,39 +35,92 @@ const CREATE_VOTE_LOGINED_MUTATION = gql`
     }
   }
 `;
+const CREATE_VOTE_NOT_LOGINED = gql`
+  mutation createVoteNotLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteNotLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
+const REMOVE_VOTE_LOGINED = gql`
+  mutation removeVoteLogined($balanceGameId: String!) {
+    removeVoteLogined(balanceGameId: $balanceGameId) {
+      id
+    }
+  }
+`;
 
 const OptionBox = ({
-  type,
-  isSelected,
-  title,
-  checkType,
-  setCheckType,
-  background,
-  backgroundImage,
-  balanceGameId,
-  balanceGameSelectionId,
-  color,
+  selection,
+  checkedId,
+  postId,
+  setCheckedId,
 }: OptionBoxProps) => {
-  const handleCheckType = (type: CHECK_TYPE) => {
-    if (checkType === type)
-      setCheckType(CHECK_TYPE.NONE, balanceGameId, balanceGameSelectionId);
-    else setCheckType(type, balanceGameId, balanceGameSelectionId);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
+  // const [mCreateVoteNotLogined, ] =
+  //   useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
+
+  const handleVote = async (selectionId: string) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      if (checkedId === null) {
+        // 새로 create
+        setCheckedId(selectionId);
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: selectionId,
+          },
+        });
+      } else {
+        // remove
+        setCheckedId(null);
+        await mRemoveVoteLogined({
+          variables: {
+            balanceGameId: postId,
+          },
+        });
+        if (checkedId === selectionId) {
+          // 다시 create
+          setCheckedId(selectionId);
+          await mCreateVoteLogined({
+            variables: {
+              balanceGameId: postId,
+              balanceGameSelectionId: selectionId,
+            },
+          });
+        }
+      }
+    }
   };
+
+  const isChecked =
+    checkedId === null ? null : checkedId === selection.id ? true : false;
+
   return (
     <OptionBoxContainer
-      {...{ checkType, isSelected }}
+      {...{ isChecked }}
       style={{
-        background,
-        color,
-        backgroundImage: `url("${backgroundImage}")`,
+        background: selection.backgroundColor,
+        color: selection.color,
+        backgroundImage: `url("${selection.backgroundImage}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="checkbox">{isSelected ? <Select /> : <Unselect />}</div>
-      <div className="title" onClick={() => handleCheckType(type)}>
-        {title}
+      <div className="checkbox" onClick={() => handleVote(selection.id)}>
+        {isChecked ? <Select /> : <Unselect />}
       </div>
+      <div className="title">{selection.description}</div>
     </OptionBoxContainer>
   );
 };
@@ -91,26 +129,9 @@ interface FeedPostProps {
   data?: any;
 }
 
-const getInitCheckType = (data: any) => {
-  if (data.mySelection) {
-    const balanceGameSelection = data.balanceGameSelections.find(
-      (balanceGameSelection: any) =>
-        balanceGameSelection.id === data.mySelection
-    );
-    if (balanceGameSelection.order === 0) return CHECK_TYPE.FIRST;
-    else if (balanceGameSelection.order === 1) return CHECK_TYPE.SECOND;
-    else return CHECK_TYPE.NONE;
-  } else {
-    return CHECK_TYPE.NONE;
-  }
-};
-
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
-  const [checkType, setCheckType] = useState(getInitCheckType(data));
-  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
+  const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
-
-  console.log(balanceA);
   const baseURL = "http://localhost:3000";
 
   const renderShare = () => {
@@ -131,57 +152,22 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
     }
   };
 
-  const onClickCheckType = async (
-    type: CHECK_TYPE,
-    balanceGameId: string,
-    balanceGameSelectionId: string
-  ) => {
-    setCheckType(type);
-    if (type !== CHECK_TYPE.NONE) {
-      try {
-        await mCreateVoteLogined({
-          variables: {
-            balanceGameId,
-            balanceGameSelectionId,
-          },
-        });
-      } catch (e) {
-        alert("이미 투표에 참여 하셨습니다.");
-        setCheckType(checkType);
-      }
-    }
-  };
-
-  console.log("????????????", data);
-
   return (
     <Container>
       <OptionBox
-        type={CHECK_TYPE.FIRST}
-        isSelected={checkType === CHECK_TYPE.FIRST}
-        title={balanceA.description}
-        checkType={checkType}
-        setCheckType={onClickCheckType}
-        balanceGameId={data.id}
-        balanceGameSelectionId={balanceA.id}
-        background={balanceA.backgroundColor}
-        backgroundImage={balanceA.backgroundImage}
-        color={balanceA.textColor}
+        key={balanceA.id}
+        postId={data.id}
+        selection={balanceA}
+        {...{ checkedId, setCheckedId }}
       />
       <OptionBox
-        type={CHECK_TYPE.SECOND}
-        isSelected={checkType === CHECK_TYPE.SECOND}
-        title={balanceB.description}
-        checkType={checkType}
-        setCheckType={onClickCheckType}
-        balanceGameId={data.id}
-        balanceGameSelectionId={balanceB.id}
-        background={balanceB.backgroundColor}
-        backgroundImage={balanceB.backgroundImage}
-        color={balanceB.textColor}
+        key={balanceB.id}
+        postId={data.id}
+        selection={balanceB}
+        {...{ checkedId, setCheckedId }}
       />
       <Versus>
-        {checkType === CHECK_TYPE.NONE ? (
+        {checkedId === null ? (
           <VS />
         ) : (
           <FireBar
@@ -286,8 +272,7 @@ const Container = styled.div`
 `;
 
 const OptionBoxContainer = styled.div<{
-  isSelected: boolean;
-  checkType: CHECK_TYPE;
+  isChecked: boolean | null;
 }>`
   position: relative;
   height: 12.8rem;
@@ -309,8 +294,8 @@ const OptionBoxContainer = styled.div<{
     height: 100%;
     width: 100%;
     z-index: 2;
-    opacity: ${({ isSelected, checkType }) =>
-      !isSelected ? (checkType === CHECK_TYPE.NONE ? 1 : 0.4) : 1};
+    opacity: ${({ isChecked }) =>
+      isChecked === null ? 1 : isChecked ? 1 : 0.4};
     display: flex;
     justify-content: center;
     align-items: center;
