@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 export const FireBarWrapper = styled.div`
+  width: 100%;
   .fire {
+    top: 12.5rem;
     position: absolute;
     &__rectangle {
       :first-child {
@@ -29,6 +31,7 @@ export const FireBarWrapper = styled.div`
     height: 0.8rem;
     position: absolute;
     z-index: 0;
+    top: 12rem;
     left: 0;
     :last-child {
       left: auto;

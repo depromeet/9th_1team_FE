@@ -188,7 +188,7 @@ const Index = () => {
           >
             {isFiltered ? <Select /> : <Unselect />}
           </Participate>
-          <div className="orders">
+          {/* <div className="orders">
             <OrderButton
               isSelect={isNewest}
               onClick={() => setIsNewest(true)}
@@ -200,7 +200,7 @@ const Index = () => {
               onClick={() => setIsNewest(false)}
               text="인기순"
             />
-          </div>
+          </div> */}
         </div>
         <InfiniteScroll
           dataLength={list.length}

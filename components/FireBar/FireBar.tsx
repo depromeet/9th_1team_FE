@@ -27,12 +27,11 @@ const FireBar: React.FC<FireBarProps> = ({
   let rightBarPos = 50;
   let cntA = voteCountA;
   let cntB = voteCountB;
+  console.log(cntA, cntB, isVoted);
   if (isVoted) {
     if (checkedId === idA) {
       cntA++;
-      if (cntB !== 0) cntB--;
     } else if (checkedId === idB) {
-      if (cntA !== 0) cntA--;
       cntB++;
     }
   }

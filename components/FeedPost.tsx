@@ -5,7 +5,7 @@ import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
@@ -139,6 +139,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const baseURL = "http://localhost:3000";
 
   const [isVoted, setIsVoted] = useState(false);
+  useEffect(() => {
+    setIsVoted(false);
+  }, []);
 
   const renderShare = () => {
     if (typeof window.navigator.share === "undefined") {
@@ -157,7 +160,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       );
     }
   };
-
+  console.log(balanceA);
   return (
     <Container>
       <OptionBox
@@ -183,6 +186,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             voteCountA={balanceA.voteCount}
             voteCountB={balanceB.voteCount}
             isVoted={isVoted}
+            fistColor={balanceA.backgroundColor}
+            secondColor={balanceB.backgroundColor}
           />
         )}
       </Versus>
@@ -218,6 +223,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
 const Container = styled.div`
   width: 100%;
   height: 36rem;
+  overflow: hidden;
   border: 1px solid #e9ecef;
   border-radius: 0.8rem;
   margin-bottom: 2.5rem;
