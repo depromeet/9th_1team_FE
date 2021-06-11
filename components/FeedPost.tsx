@@ -5,7 +5,7 @@ import More from "public/more.svg";
 import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import VS from "public/versus.svg";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
@@ -18,6 +18,7 @@ interface OptionBoxProps {
   postId: string;
   checkedId: string | null;
   setCheckedId: Dispatch<SetStateAction<string | null>>;
+  setIsVoted: Dispatch<SetStateAction<boolean>>;
 }
 
 const CREATE_VOTE_LOGINED = gql`
@@ -35,21 +36,21 @@ const CREATE_VOTE_LOGINED = gql`
     }
   }
 `;
-// const CREATE_VOTE_NOT_LOGINED = gql`
-//   mutation createVoteNotLogined(
-//     $balanceGameId: String!
-//     $balanceGameSelectionId: String!
-//   ) {
-//     createVoteNotLogined(
-//       createBalanceGameSelectionVoteInput: {
-//         balanceGameId: $balanceGameId
-//         balanceGameSelectionId: $balanceGameSelectionId
-//       }
-//     ) {
-//       id
-//     }
-//   }
-// `;
+const CREATE_VOTE_NOT_LOGINED = gql`
+  mutation createVoteNotLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteNotLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
 const REMOVE_VOTE_LOGINED = gql`
   mutation removeVoteLogined($balanceGameId: String!) {
     removeVoteLogined(balanceGameId: $balanceGameId) {
@@ -63,14 +64,24 @@ const OptionBox = ({
   checkedId,
   postId,
   setCheckedId,
+  setIsVoted,
 }: OptionBoxProps) => {
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
-  // const [mCreateVoteNotLogined, ] =
-  //   useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
+
+  console.log(checkedId);
+  useEffect(() => {
+    const checkedList = localStorage.getItem("checkedList")?.split(",");
+    checkedList?.forEach((item) => {
+      if (item === selection.id) setCheckedId(item);
+    });
+  }, []);
 
   const handleVote = async (selectionId: string) => {
     const token = localStorage.getItem("token");
+    setIsVoted(true);
+    // 로그인이면
     if (token) {
       if (checkedId === null) {
         // 새로 create
@@ -100,6 +111,42 @@ const OptionBox = ({
           });
         }
       }
+    } else {
+      const checkedList =
+        (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
+      if (checkedId === null) {
+        // 새로 create
+        setCheckedId(selectionId);
+        checkedList?.push(selectionId);
+        await mCreateVoteNotLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: selectionId,
+          },
+        });
+      } else {
+        // remove
+        setCheckedId(null);
+        for (let i = 0; i < checkedList.length; i++) {
+          if (checkedList[i] === checkedId) {
+            checkedList.splice(i, 1);
+            i--;
+          }
+        }
+        checkedList?.reduce;
+        if (checkedId !== selectionId) {
+          // 다른걸로 변경
+          setCheckedId(selectionId);
+          checkedList?.push(selectionId);
+          await mCreateVoteNotLogined({
+            variables: {
+              balanceGameId: postId,
+              balanceGameSelectionId: selectionId,
+            },
+          });
+        }
+      }
+      localStorage.setItem("checkedList", checkedList.toString());
     }
   };
 
@@ -134,6 +181,11 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const baseURL = "http://localhost:3000";
 
+  const [isVoted, setIsVoted] = useState(false);
+  useEffect(() => {
+    setIsVoted(false);
+  }, []);
+
   const renderShare = () => {
     if (typeof window.navigator.share === "undefined") {
       return null;
@@ -151,20 +203,19 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       );
     }
   };
-
   return (
     <Container>
       <OptionBox
         key={balanceA.id}
         postId={data.id}
         selection={balanceA}
-        {...{ checkedId, setCheckedId }}
+        {...{ checkedId, setCheckedId, setIsVoted }}
       />
       <OptionBox
         key={balanceB.id}
         postId={data.id}
         selection={balanceB}
-        {...{ checkedId, setCheckedId }}
+        {...{ checkedId, setCheckedId, setIsVoted }}
       />
       <Versus>
         {checkedId === null ? (
@@ -176,6 +227,9 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             idB={balanceB.id}
             voteCountA={balanceA.voteCount}
             voteCountB={balanceB.voteCount}
+            isVoted={isVoted}
+            fistColor={balanceA.backgroundColor}
+            secondColor={balanceB.backgroundColor}
           />
         )}
       </Versus>
@@ -211,6 +265,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
 const Container = styled.div`
   width: 100%;
   height: 36rem;
+  overflow: hidden;
   border: 1px solid #e9ecef;
   border-radius: 0.8rem;
   margin-bottom: 2.5rem;
@@ -317,20 +372,6 @@ const Versus = styled.div`
   left: 0;
   width: 100%;
   height: 25.6rem;
-
-  .line {
-    width: 50%;
-    height: 0.8rem;
-    position: absolute;
-    z-index: 0;
-    left: 0;
-    background: #e56f53;
-    :last-child {
-      left: auto;
-      right: 0;
-      background: #f8d272;
-    }
-  }
 `;
 
 export default FeedPost;
