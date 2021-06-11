@@ -24,8 +24,8 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
     $balanceB: CreateBalanceGameSelectionInput!
     $description: String!
     $keywords: [CreateBalanceGameKeywordInput!]!
-    $file1: Upload!
-    $file2: Upload!
+    $file1: Upload
+    $file2: Upload
   ) {
     createBalanceGame(
       createBalanceGameInput: {
