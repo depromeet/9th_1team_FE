@@ -42,7 +42,11 @@ const REMOVE_BALANCE_GAME = gql`
   }
 `;
 
-const HeaderMore: React.FC<IsMineProps> = ({ isMine, isOpen, postId }) => {
+const HeaderMore: React.FC<IsMineProps> = ({
+  isMine = true,
+  isOpen,
+  postId,
+}) => {
   const router = useRouter();
   const url = "http://localhost:3000/article/" + postId;
 
