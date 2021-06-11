@@ -12,6 +12,7 @@ type ListProps = {
     balanceGameSelections: {
       description: string;
       backgroundColor: string;
+      backgroundImage: string;
       textColor: string;
     }[];
   }[];

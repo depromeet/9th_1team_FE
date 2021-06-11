@@ -470,7 +470,7 @@ const Write = () => {
     return !balanceTextA || !balanceTextB || !textInfo;
   };
 
-  const findHashtags = (searchText = ""): Keyword[] | null => {
+  const findHashtags = (searchText = "") => {
     const regexp = /(\#[a-zA-Zㄱ-ㅎ|ㅏ-ㅣ|가-힣]+)/g;
     const result = searchText.match(regexp);
     if (result) {

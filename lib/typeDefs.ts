@@ -100,6 +100,7 @@ export const typeDefs = gql`
     userForId: String!
     userFromId: String!
     userFromNickname: String!
+    color: String
     commentId: String
     commentContent: String
     replyId: String
@@ -234,8 +235,8 @@ export const typeDefs = gql`
     ): UserProfile!
     createBalanceGame(
       createBalanceGameInput: CreateBalanceGameInput!
-      file2: Upload!
-      file1: Upload!
+      file2: Upload
+      file1: Upload
     ): BalanceGame!
     uploadFile(file1: Upload!): Boolean!
     updateBalanceGame(
@@ -305,7 +306,7 @@ export const typeDefs = gql`
   input CreateBalanceGameInput {
     description: String!
     balanceGameSelections: [CreateBalanceGameSelectionInput!]!
-    balanceGameKeywords: [CreateBalanceGameKeywordInput!]!
+    balanceGameKeywords: [CreateBalanceGameKeywordInput!]
   }
 
   input CreateBalanceGameSelectionInput {
