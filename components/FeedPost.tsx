@@ -36,21 +36,21 @@ const CREATE_VOTE_LOGINED = gql`
     }
   }
 `;
-// const CREATE_VOTE_NOT_LOGINED = gql`
-//   mutation createVoteNotLogined(
-//     $balanceGameId: String!
-//     $balanceGameSelectionId: String!
-//   ) {
-//     createVoteNotLogined(
-//       createBalanceGameSelectionVoteInput: {
-//         balanceGameId: $balanceGameId
-//         balanceGameSelectionId: $balanceGameSelectionId
-//       }
-//     ) {
-//       id
-//     }
-//   }
-// `;
+const CREATE_VOTE_NOT_LOGINED = gql`
+  mutation createVoteNotLogined(
+    $balanceGameId: String!
+    $balanceGameSelectionId: String!
+  ) {
+    createVoteNotLogined(
+      createBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+    }
+  }
+`;
 const REMOVE_VOTE_LOGINED = gql`
   mutation removeVoteLogined($balanceGameId: String!) {
     removeVoteLogined(balanceGameId: $balanceGameId) {
@@ -67,13 +67,21 @@ const OptionBox = ({
   setIsVoted,
 }: OptionBoxProps) => {
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
-  // const [mCreateVoteNotLogined, ] =
-  //   useMutation(CREATE_VOTE_NOT_LOGINED);
+  const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
+
+  console.log(checkedId);
+  useEffect(() => {
+    const checkedList = localStorage.getItem("checkedList")?.split(",");
+    checkedList?.forEach((item) => {
+      if (item === selection.id) setCheckedId(item);
+    });
+  }, []);
 
   const handleVote = async (selectionId: string) => {
     const token = localStorage.getItem("token");
     setIsVoted(true);
+    // 로그인이면
     if (token) {
       if (checkedId === null) {
         // 새로 create
@@ -103,8 +111,43 @@ const OptionBox = ({
           });
         }
       }
+    } else {
+      const checkedList =
+        (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
+      if (checkedId === null) {
+        // 새로 create
+        setCheckedId(selectionId);
+        checkedList?.push(selectionId);
+        await mCreateVoteNotLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: selectionId,
+          },
+        });
+      } else {
+        // remove
+        setCheckedId(null);
+        for (let i = 0; i < checkedList.length; i++) {
+          if (checkedList[i] === checkedId) {
+            checkedList.splice(i, 1);
+            i--;
+          }
+        }
+        checkedList?.reduce;
+        if (checkedId !== selectionId) {
+          // 다른걸로 변경
+          setCheckedId(selectionId);
+          checkedList?.push(selectionId);
+          await mCreateVoteNotLogined({
+            variables: {
+              balanceGameId: postId,
+              balanceGameSelectionId: selectionId,
+            },
+          });
+        }
+      }
+      localStorage.setItem("checkedList", checkedList.toString());
     }
-    // setIsVoted(false);
   };
 
   const isChecked =
@@ -160,7 +203,6 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       );
     }
   };
-  console.log(balanceA);
   return (
     <Container>
       <OptionBox
