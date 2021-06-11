@@ -9,6 +9,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
+import { shareAPI } from "utils/mobileShare";
 
 enum CHECK_TYPE {
   FIRST = "FIRST",
@@ -65,10 +66,27 @@ interface FeedPostProps {
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkType, setCheckType] = useState(CHECK_TYPE.NONE);
-
   const [balanceA, balanceB] = data.balanceGameSelections;
-
   console.log(balanceA);
+  const baseURL = "http://localhost:3000";
+
+  const renderShare = () => {
+    if (typeof window.navigator.share === "undefined") {
+      return null;
+    } else {
+      return (
+        <div
+          className="content__buttons__button"
+          onClick={() =>
+            shareAPI(balanceA.description, balanceB.description, baseURL)
+          }
+        >
+          <Share />
+          <span style={{ marginLeft: "0.4rem" }}>공유하기</span>
+        </div>
+      );
+    }
+  };
 
   return (
     <Container>
@@ -104,22 +122,24 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       </Versus>
 
       <div className="content">
-        <div className="content__title">
-          <Link href={`/article/${data.id}`}>{data.description}</Link>
-        </div>
-        <div className="content__state">
-          <div>
-            참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
-            {modifyDate(data.createdAt)}
+        <Link href={`/article/${data.id}`}>
+          <div className="content__info">
+            <div className="content__title">{data.description}</div>
+            <div className="content__state">
+              <div>
+                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
+                {modifyDate(data.createdAt)}
+              </div>
+            </div>
           </div>
-        </div>
+        </Link>
         <div className="content__buttons">
-          <div className="content__buttons__button">
-            <Opinion />
-          </div>
-          <div className="content__buttons__button">
-            <Share />
-          </div>
+          <Link href={`/article/${data.id}`}>
+            <div className="content__buttons__button">
+              <Opinion />
+            </div>
+          </Link>
+          {renderShare()}
           <div className="content__buttons__button">
             <More />
           </div>
@@ -139,8 +159,12 @@ const Container = styled.div`
   position: relative;
   box-sizing: border-box;
   .content {
-    padding: 1rem 0;
+    padding-bottom: 1rem;
     color: #606060;
+    &__info {
+      padding: 1rem 0;
+      cursor: pointer;
+    }
     &__title {
       display: block;
       padding: 0 0.8rem 0.3rem 0.8rem;
@@ -165,7 +189,6 @@ const Container = styled.div`
     }
     &__buttons {
       padding: 1.3rem 0.8rem;
-      margin-top: 1rem;
       border: 0 solid #e9ecef;
       border-top-width: 0.1rem;
       display: flex;
@@ -183,10 +206,6 @@ const Container = styled.div`
         }
         :nth-child(2) {
           margin-left: 1.4rem;
-          ::after {
-            content: "공유하기";
-            margin-left: 0.4rem;
-          }
         }
         :last-child {
           margin-left: auto;
