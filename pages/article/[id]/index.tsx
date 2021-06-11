@@ -183,6 +183,7 @@ const NEXT_GAME_BY_RANDOM_QUERY = gql`
   }
 `;
 
+// 추후 사용
 const UPDATE_VOTE_LOGINED_MUTATION = gql`
   mutation updateVoteLogined(
     $balanceGameId: String!
@@ -199,6 +200,14 @@ const UPDATE_VOTE_LOGINED_MUTATION = gql`
   }
 `;
 
+const REMOVE_VOTE_LOGINED = gql`
+  mutation removeVoteLogined($balanceGameId: String!) {
+    removeVoteLogined(balanceGameId: $balanceGameId) {
+      id
+    }
+  }
+`;
+
 const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();
   const { data } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
@@ -207,6 +216,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
   const [mUpdateVoteLogined] = useMutation(UPDATE_VOTE_LOGINED_MUTATION);
+  const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
   const [isOpen, setIsOpen] = useState(false);
   const [mySelection, setMySelection] = useState("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
@@ -230,38 +240,33 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
 
   const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
 
-  const firstVote = (balanceGameId: string, balanceGameSelectionId: string) => {
-    mCreateVoteLogined({
-      variables: {
-        balanceGameId,
-        balanceGameSelectionId,
-      },
-    });
-  };
-
-  const notFirstVote = (
-    balanceGameId: string,
-    updateGameSelectionId: string
-  ) => {
-    console.log("not first", balanceGameId, updateGameSelectionId);
-    mUpdateVoteLogined({
-      variables: {
-        balanceGameId,
-        updateGameSelectionId,
-      },
-    });
-  };
-
   const onChangeVote =
     (balanceGameId = "", balanceGameSelectionId = "") =>
-    () => {
-      // 첫 투표시에만 firstVote
+    async () => {
+      // 첫 투표시에만
       setMySelection(balanceGameSelectionId);
-      if (!data?.balanceGame?.mySelection)
-        firstVote(balanceGameId, balanceGameSelectionId);
-      else {
-        if (data?.balanceGame?.mySelection === balanceGameSelectionId) return;
-        notFirstVote(balanceGameId, balanceGameSelectionId);
+      if (!data?.balanceGame?.mySelection) {
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId,
+            balanceGameSelectionId,
+          },
+        });
+      } else {
+        // 첫투표가 아닐경우
+        if (data?.balanceGame?.mySelection === balanceGameSelectionId)
+          return;
+        await mRemoveVoteLogined({
+          variables: {
+            balanceGameId,
+          },
+        });
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId,
+            balanceGameSelectionId,
+          },
+        });
       }
     };
 
