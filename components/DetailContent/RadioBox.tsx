@@ -50,6 +50,7 @@ const RadioWrapper = styled.div`
 
 interface balanceType {
   id: string;
+  backgroundImage: string;
   backgroundColor: string;
   description: string;
   textColor: string;
@@ -78,6 +79,9 @@ const RadioBox: React.FC<RadioBoxProps> = ({
       <div
         className="radio-box first"
         style={{
+          backgroundImage: `url('${balanceA.backgroundImage}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           backgroundColor: balanceA.backgroundColor,
           color: balanceA.textColor,
         }}
@@ -96,6 +100,9 @@ const RadioBox: React.FC<RadioBoxProps> = ({
       <div
         className="radio-box second"
         style={{
+          backgroundImage: `url('${balanceB.backgroundImage}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           backgroundColor: balanceB.backgroundColor,
           color: balanceB.textColor,
         }}
