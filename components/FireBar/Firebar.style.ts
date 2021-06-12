@@ -10,7 +10,7 @@ export const FireBarWrapper = styled.div`
         top: auto;
         bottom: -0.4rem;
         left: auto;
-        right: 0.3rem;
+        right: 0rem;
         border-radius: 12px 12px 0px 12px;
       }
       background-color: white;
@@ -20,8 +20,7 @@ export const FireBarWrapper = styled.div`
       z-index: 1;
       font-size: 1.4rem;
       font-weight: 800;
-      padding: 0.5rem 1rem;
-      /* padding-top: 0.5rem; */
+      padding: 0.5rem 1.1rem;
       box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.1);
       border-radius: 0px 12px 12px 12px;
     }
