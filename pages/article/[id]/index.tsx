@@ -243,8 +243,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
     refetch();
   }, [id]);
 
-  const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
-  // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
+  const shareURL = `${process.env.NEXT_PUBLIC_DOMAIN}/article/` + id;
   useEffect(() => {
     setMySelection(data?.balanceGame?.mySelection);
     setIsVoted(data?.balanceGame?.mySelection);
@@ -302,7 +301,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
     window.navigator.share({
       title: "토맛토",
       text: `${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`,
-      url: baseURL,
+      url: shareURL,
     });
   };
 
