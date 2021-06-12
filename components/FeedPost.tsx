@@ -197,7 +197,7 @@ const MY_GAMES = gql`
 `;
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
-  const [checkedId, setCheckedId] = useState("");
+  const [checkedId, setCheckedId] = useState(null);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [isMine, setIsMine] = useState(false);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
