@@ -366,7 +366,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           </span>
         </div>{" "}
         <Share
-          url={baseURL}
+          url={shareURL}
           text={`${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`}
         />
         <nav>
