@@ -160,7 +160,7 @@ const OptionBox = ({
       {...{ isChecked }}
       style={{
         background: selection.backgroundColor,
-        color: selection.color,
+        color: selection.textColor,
         backgroundImage: `url("${selection.backgroundImage}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -225,7 +225,11 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         <div
           className="content__buttons__button"
           onClick={() =>
-            shareAPI(balanceA.description, balanceB.description, baseURL)
+            shareAPI(
+              balanceA.description,
+              balanceB.description,
+              baseURL as string
+            )
           }
         >
           <Share />
