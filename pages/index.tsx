@@ -11,7 +11,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import Loading from "../components/Loading";
-import { parseCookies } from "nookies";
+import nookies from "nookies";
+import { GetServerSideProps } from "next";
 
 // interface OrderButtonProps {
 //   isSelect: boolean;
@@ -55,7 +56,7 @@ const BALANCE_GAMES_QUERY = gql`
 `;
 const BALANCE_GAMES_LOGINED_QUERY = gql`
   query balanceGamesLogined($offset: Float!) {
-    balanceGamesLogined(
+    balanceGames: balanceGamesLogined(
       balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
     ) {
       num
@@ -99,16 +100,17 @@ const BALANCE_GAMES_LOGINED_QUERY = gql`
 //   <Order {...{ isSelect, onClick }}>{text}</Order>
 // );
 
-const Index = () => {
+interface IndexProps {
+  isLoggedin: boolean;
+}
+
+const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [isFiltered, setIsFiltered] = useState(false);
-  // const [isNewest, setIsNewest] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
-  const [qBalanceGames, { data }] = useLazyQuery(BALANCE_GAMES_QUERY);
-  const [qBalanceGamesLogined, { data: loginData }] = useLazyQuery(
-    BALANCE_GAMES_LOGINED_QUERY
+  const [qBalanceGames, { data }] = useLazyQuery(
+    isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY
   );
   const router = useRouter();
 
@@ -118,38 +120,20 @@ const Index = () => {
         offset,
       },
     });
-    qBalanceGamesLogined({
-      variables: {
-        offset,
-      },
-    });
   }, [offset]);
 
   useEffect(() => {
-    const { token } = parseCookies();
-    let newList;
-    if (token) {
-      newList = loginData?.balanceGamesLogined?.balanceGames;
-    } else {
-      newList = data?.balanceGames?.balanceGames;
-    }
-    if (newList) {
-      if (newList.length === 0) {
-        setHasMore(false);
-      } else {
-        setList(list.concat(newList));
+    if (data) {
+      const newList = data?.balanceGames?.balanceGames;
+      if (newList) {
+        if (newList.length === 0) {
+          setHasMore(false);
+        } else {
+          setList(list.concat(newList));
+        }
       }
     }
-  }, [data, loginData]);
-
-  useEffect(() => {
-    console.log(list);
-    setFilteredList(
-      list.filter(
-        (item: { mySelection: string | null }) => item.mySelection !== null
-      )
-    );
-  }, [list]);
+  }, [data]);
 
   if (_.isEmpty(list)) return null;
 
@@ -165,6 +149,14 @@ const Index = () => {
   const onClickCreateGame = () => {
     router.push("/article/write");
   };
+
+  const _list = isFiltered
+    ? list.filter(
+        (item: { mySelection: string | null }) => item.mySelection !== null
+      )
+    : list;
+
+  console.log(_list);
 
   return (
     <div style={{ width: "100%" }}>
@@ -210,9 +202,9 @@ const Index = () => {
           hasMore={hasMore}
           loader={<Loading />}
         >
-          {isFiltered
-            ? filteredList.map((data, i) => <FeedPost key={i} data={data} />)
-            : list.map((data, i) => <FeedPost key={i} data={data} />)}
+          {_list.map((data, i) => (
+            <FeedPost key={i} data={data} />
+          ))}
         </InfiniteScroll>
       </Container>
     </div>
@@ -290,5 +282,15 @@ const Participate = styled.div<{ isFiltered: boolean }>`
 // const Order = styled.div<{ isSelect: boolean }>`
 //   color: ${({ isSelect }) => (isSelect ? "#343A40" : "#ADB5BD")};
 // `;
+export const getServerSideProps: GetServerSideProps = async function (context) {
+  const { token } = nookies.get(context);
+  const isLoggedin = !!token;
+
+  return {
+    props: {
+      isLoggedin,
+    },
+  };
+};
 
 export default Index;
