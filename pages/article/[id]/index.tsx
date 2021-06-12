@@ -226,6 +226,8 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
 
+  console.log("??????", router);
+
   useEffect(() => {
     setIsVoted(false);
   }, []);
@@ -241,9 +243,8 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
     refetch();
   }, [id]);
 
-  const baseURL = "http://localhost:3000";
+  const baseURL = window.location.origin;
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
-  // facebook 공유는 localhost에서 확인불가.
   useEffect(() => {
     setMySelection(data?.balanceGame?.mySelection);
     setIsVoted(data?.balanceGame?.mySelection);

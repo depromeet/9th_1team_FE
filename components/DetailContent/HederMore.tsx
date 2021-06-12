@@ -48,7 +48,7 @@ const HeaderMore: React.FC<IsMineProps> = ({
   postId,
 }) => {
   const router = useRouter();
-  const url = "http://localhost:3000/article/" + postId;
+  const url = `${window.location.origin}/article/` + postId;
 
   const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
   const handleRemove = async () => {
