@@ -73,7 +73,6 @@ const OptionBox = ({
 
   const { token } = parseCookies();
 
-  console.log(checkedId);
   useEffect(() => {
     const checkedList = localStorage.getItem("checkedList")?.split(",");
     checkedList?.forEach((item) => {
@@ -238,8 +237,6 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       );
     }
   };
-
-  console.log("????????###", isMine);
 
   return (
     <Container onClick={() => setIsMoreOpened(false)}>

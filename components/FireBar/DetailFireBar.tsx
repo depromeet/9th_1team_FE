@@ -27,7 +27,7 @@ const DetailFireBar: React.FC<FireBarProps> = ({
   let rightBarPos = 50;
   let cntA = voteCountA;
   let cntB = voteCountB;
-  console.log(cntA, cntB, isVoted);
+
   if (isVoted) {
     if (checkedId === idA) {
       cntA++;

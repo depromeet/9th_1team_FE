@@ -226,8 +226,6 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
 
-  console.log("??????", router);
-
   useEffect(() => {
     setIsVoted(false);
   }, []);
