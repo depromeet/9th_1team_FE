@@ -243,7 +243,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
     refetch();
   }, [id]);
 
-  const baseURL = window.location.origin;
+  const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
   // `${baseURL}/article/${id}` 로 적용해서 Share url={} <- 여기 넣어주기
   useEffect(() => {
     setMySelection(data?.balanceGame?.mySelection);

@@ -201,7 +201,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(data.mySelection);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [isMine, setIsMine] = useState(false);
-  const baseURL = window.location.origin;
+  const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
 
   const [isMoreOpened, setIsMoreOpened] = useState(false);
 
@@ -324,7 +324,7 @@ interface IsMineProps {
   postId?: string;
 }
 const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
-  const url = `${window.location.origin}/article/` + postId;
+  const url = `${process.env.NEXT_PUBLIC_DOMAIN}/article/` + postId;
 
   const [mRemoveBalanceGame] = useMutation(REMOVE_BALANCE_GAME);
   const handleRemove = async () => {
