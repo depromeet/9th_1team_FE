@@ -34,4 +34,6 @@ npm run dev
 yarn dev
 ```
 
+API 주소: `http://15.164.234.174:3000/graphql`
+
 1조 일해야조 Notion [ㄱㄱ](https://www.notion.so/depromeet/1-b76d0968780e4f77b731a286f252ff36).
