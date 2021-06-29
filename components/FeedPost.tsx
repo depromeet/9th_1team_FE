@@ -1,207 +1,28 @@
-import styled from "styled-components";
-import Opinion from "public/opinion.svg";
-import Share from "public/share.svg";
-import More from "public/more.svg";
-import Unselect from "public/unselect.svg";
-import Select from "public/select.svg";
-import VS from "public/versus.svg";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Link from "next/link";
-import { modifyDate } from "utils/date";
-import FireBar from "./FireBar/FireBar";
-import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
-import { shareAPI } from "utils/mobileShare";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { parseCookies } from "nookies";
-
-interface OptionBoxProps {
-  selection: any;
-  postId: string;
-  checkedId: string | null;
-  setCheckedId: Dispatch<SetStateAction<string | null>>;
-  setIsVoted: Dispatch<SetStateAction<boolean>>;
-}
-
-const CREATE_VOTE_LOGINED = gql`
-  mutation createVoteLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
-    createVoteLogined(
-      createBalanceGameSelectionVoteInput: {
-        balanceGameId: $balanceGameId
-        balanceGameSelectionId: $balanceGameSelectionId
-      }
-    ) {
-      id
-    }
-  }
-`;
-const CREATE_VOTE_NOT_LOGINED = gql`
-  mutation createVoteNotLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
-    createVoteNotLogined(
-      createBalanceGameSelectionVoteInput: {
-        balanceGameId: $balanceGameId
-        balanceGameSelectionId: $balanceGameSelectionId
-      }
-    ) {
-      id
-    }
-  }
-`;
-const REMOVE_VOTE_LOGINED = gql`
-  mutation removeVoteLogined($balanceGameId: String!) {
-    removeVoteLogined(balanceGameId: $balanceGameId) {
-      id
-    }
-  }
-`;
-
-const OptionBox = ({
-  selection,
-  checkedId,
-  postId,
-  setCheckedId,
-  setIsVoted,
-}: OptionBoxProps) => {
-  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
-  const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
-  const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
-
-  const { token } = parseCookies();
-
-  useEffect(() => {
-    const checkedList = localStorage.getItem("checkedList")?.split(",");
-    checkedList?.forEach((item) => {
-      if (item === selection.id) setCheckedId(item);
-    });
-  }, []);
-
-  const handleVote = async (selectionId: string) => {
-    setIsVoted(true);
-    // 로그인이면
-    if (token) {
-      if (checkedId === null) {
-        // 새로 create
-        setCheckedId(selectionId);
-        await mCreateVoteLogined({
-          variables: {
-            balanceGameId: postId,
-            balanceGameSelectionId: selectionId,
-          },
-        });
-      } else {
-        // remove
-        setCheckedId(null);
-        await mRemoveVoteLogined({
-          variables: {
-            balanceGameId: postId,
-          },
-        });
-        if (checkedId !== selectionId) {
-          // 다른걸로 변경
-          setCheckedId(selectionId);
-          await mCreateVoteLogined({
-            variables: {
-              balanceGameId: postId,
-              balanceGameSelectionId: selectionId,
-            },
-          });
-        }
-      }
-    } else {
-      const checkedList =
-        (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
-      if (checkedId === null) {
-        // 새로 create
-        setCheckedId(selectionId);
-        checkedList?.push(selectionId);
-        await mCreateVoteNotLogined({
-          variables: {
-            balanceGameId: postId,
-            balanceGameSelectionId: selectionId,
-          },
-        });
-      } else {
-        // remove
-        setCheckedId(null);
-        for (let i = 0; i < checkedList.length; i++) {
-          if (checkedList[i] === checkedId) {
-            checkedList.splice(i, 1);
-            i--;
-          }
-        }
-        checkedList?.reduce;
-        if (checkedId !== selectionId) {
-          // 다른걸로 변경
-          setCheckedId(selectionId);
-          checkedList?.push(selectionId);
-          await mCreateVoteNotLogined({
-            variables: {
-              balanceGameId: postId,
-              balanceGameSelectionId: selectionId,
-            },
-          });
-        }
-      }
-      localStorage.setItem("checkedList", checkedList.toString());
-    }
-  };
-
-  const isChecked =
-    checkedId === null ? null : checkedId === selection.id ? true : false;
-
-  return (
-    <OptionBoxContainer
-      {...{ isChecked }}
-      style={{
-        background: selection.backgroundColor,
-        color: selection.textColor,
-        backgroundImage: `url("${selection.backgroundImage}")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="checkbox" onClick={() => handleVote(selection.id)}>
-        {isChecked ? <Select /> : <Unselect />}
-      </div>
-      <div className="title">{selection.description}</div>
-    </OptionBoxContainer>
-  );
-};
+import styled from 'styled-components';
+import Opinion from 'public/opinion.svg';
+import Share from 'public/share.svg';
+import More from 'public/more.svg';
+import VS from 'public/versus.svg';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { modifyDate } from 'utils/date';
+import FireBar from './FireBar/FireBar';
+import { clipboardCopy, getBalanceGameSelections } from '../utils/common';
+import { shareAPI } from 'utils/mobileShare';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import OptionBox from './OptionBox/OptionBox';
+import { MY_GAMES } from 'lib/queries';
 
 interface FeedPostProps {
   data?: any;
 }
-
-const MY_GAMES = gql`
-  query myGames {
-    myGames {
-      balanceGames: balanceGame {
-        id
-        totalVoteCount
-        commentCount
-        balanceGameSelections {
-          order
-          description
-          backgroundColor
-          backgroundImage
-          textColor
-        }
-      }
-    }
-  }
-`;
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(null);
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [isMine, setIsMine] = useState(false);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
-  console.log("########", data, checkedId);
+  console.log('########', data, checkedId);
 
   useEffect(() => {
     if (data.mySelection) {
@@ -224,7 +45,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   }, []);
 
   const renderShare = () => {
-    if (typeof window.navigator.share === "undefined") {
+    if (typeof window.navigator.share === 'undefined') {
       return null;
     } else {
       return (
@@ -239,7 +60,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           }
         >
           <Share />
-          <span style={{ marginLeft: "0.4rem" }}>공유하기</span>
+          <span style={{ marginLeft: '0.4rem' }}>공유하기</span>
         </div>
       );
     }
@@ -282,7 +103,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             <div className="content__title">{data.description}</div>
             <div className="content__state">
               <div>
-                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
+                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{' '}
                 {modifyDate(data.createdAt)}
               </div>
             </div>
@@ -309,8 +130,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           onClick={(e) => e.stopPropagation()}
           className="content__headermore"
           style={{
-            bottom: isMine ? "2.5rem" : "-2rem",
-            visibility: isMoreOpened ? "visible" : "hidden",
+            bottom: isMine ? '2.5rem' : '-2rem',
+            visibility: isMoreOpened ? 'visible' : 'hidden',
           }}
         >
           {JSON.stringify(isMine)}
@@ -425,7 +246,7 @@ const Container = styled.div`
         align-items: center;
         :first-child {
           ::after {
-            content: "의견 쓰기";
+            content: '의견 쓰기';
             margin-left: 0.4rem;
           }
         }
@@ -437,40 +258,6 @@ const Container = styled.div`
         }
       }
     }
-  }
-`;
-
-const OptionBoxContainer = styled.div<{
-  isChecked: boolean | null;
-}>`
-  position: relative;
-  height: 12.8rem;
-  font-weight: 800;
-  line-height: 2.6rem;
-  :first-child {
-    border-top-left-radius: 0.8rem;
-    border-top-right-radius: 0.8rem;
-  }
-  .checkbox {
-    position: absolute;
-    z-index: 3;
-    top: 0.9rem;
-    right: 1.2rem;
-  }
-  .title {
-    font-family: "NanumSquareRound";
-    font-size: 2rem;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: 2;
-    opacity: ${({ isChecked }) =>
-      isChecked === null ? 1 : isChecked ? 1 : 0.4};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 2rem;
-    box-sizing: border-box;
   }
 `;
 
