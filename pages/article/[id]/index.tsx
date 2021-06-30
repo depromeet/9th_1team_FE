@@ -1,20 +1,21 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import styled from "styled-components";
-import RadioBox from "components/DetailContent/RadioBox";
-import Comments from "components/Comment/Comments";
-import Header from "components/Header";
-// import PrevGameIcon from "../../../public/game-prev.svg";
-import NextGameIcon from "../../../public/game-next.svg";
-import ShareIcon from "../../../public/top-share.svg";
-import MoreIcon from "../../../public/top-more.svg";
-import React, { useEffect, useRef, useState } from "react";
-import HeaderMore from "../../../components/DetailContent/HederMore";
-import { GetServerSideProps } from "next";
-import Share from "components/Share/Share";
-import { modifyDate } from "utils/date";
-import { useRouter } from "next/router";
-import { getBalanceGameSelections } from "../../../utils/common";
-import nookies from "nookies";
+import { gql, useQuery } from '@apollo/client';
+import styled from 'styled-components';
+import Comments from 'components/Comment/Comments';
+import Header from 'components/Header';
+import NextGameIcon from '../../../public/game-next.svg';
+import ShareIcon from '../../../public/top-share.svg';
+import MoreIcon from '../../../public/top-more.svg';
+import VS from 'public/versus.svg';
+import React, { useEffect, useRef, useState } from 'react';
+import HeaderMore from '../../../components/DetailContent/HederMore';
+import { GetServerSideProps } from 'next';
+import Share from 'components/Share/Share';
+import { modifyDate } from 'utils/date';
+import { useRouter } from 'next/router';
+import { getBalanceGameSelections } from '../../../utils/common';
+import nookies from 'nookies';
+import OptionBox from 'components/OptionBox/OptionBox';
+import FireBar from 'components/FireBar/FireBar';
 
 interface PostProps {
   id: string;
@@ -103,6 +104,19 @@ const DetailWrapper = styled.div`
   }
 `;
 
+const VoteWrapper = styled.div``;
+
+const Versus = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 25.6rem;
+`;
+
 //주소 article/a9e61383-165f-4caf-924e-1994de4a1ff2
 
 const GET_GAME = gql`
@@ -160,33 +174,9 @@ const GET_GAME_NOT_LOGIN = gql`
   }
 `;
 
-const CREATE_VOTE_LOGINED_MUTATION = gql`
-  mutation createVoteLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
-    createVoteLogined(
-      createBalanceGameSelectionVoteInput: {
-        balanceGameId: $balanceGameId
-        balanceGameSelectionId: $balanceGameSelectionId
-      }
-    ) {
-      id
-    }
-  }
-`;
-
 const NEXT_GAME_BY_RANDOM_QUERY = gql`
   query nextGameByRandom {
     nextGameByRandom {
-      id
-    }
-  }
-`;
-
-const REMOVE_VOTE_LOGINED = gql`
-  mutation removeVoteLogined($balanceGameId: String!) {
-    removeVoteLogined(balanceGameId: $balanceGameId) {
       id
     }
   }
@@ -218,17 +208,24 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   });
   const { data: myGames } = useQuery(MY_GAMES);
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
-  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED_MUTATION);
-  const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
+
   const [isOpen, setIsOpen] = useState(false);
-  const [mySelection, setMySelection] = useState<string | null>("");
+  const [mySelection, setMySelection] = useState<string | null>('');
   const mobileShareRef = useRef<HTMLDivElement>(null);
   const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
+  const [checkedId, setCheckedId] = useState(null);
 
   useEffect(() => {
     setIsVoted(false);
   }, []);
+
+  useEffect(() => {
+    if (data?.balanceGame.mySelection) {
+      setCheckedId(data?.balanceGame.mySelection);
+    }
+  }, [data?.balanceGame.mySelection]);
+
   useEffect(() => {
     if (data && myGames) {
       myGames?.myGames.balanceGames.forEach((game: any) => {
@@ -255,49 +252,13 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
 
   const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
 
-  const onChangeVote =
-    (balanceGameId: string, balanceGameSelectionId: string) => async () => {
-      if (!isVoted) {
-        setIsVoted(true);
-        setMySelection(balanceGameSelectionId);
-        await mCreateVoteLogined({
-          variables: {
-            balanceGameId,
-            balanceGameSelectionId,
-          },
-        });
-      } else {
-        if (mySelection === balanceGameSelectionId) {
-          setMySelection("");
-          await mRemoveVoteLogined({
-            variables: {
-              balanceGameId,
-            },
-          });
-        } else {
-          setMySelection(balanceGameSelectionId);
-          await mRemoveVoteLogined({
-            variables: {
-              balanceGameId,
-            },
-          });
-          await mCreateVoteLogined({
-            variables: {
-              balanceGameId,
-              balanceGameSelectionId,
-            },
-          });
-        }
-      }
-    };
-
   const onUseShareAPI = () => {
     // HTTPS 에서만 동작, 확인 필요
-    if (typeof navigator.share === "undefined") {
-      (mobileShareRef.current as HTMLElement).style.visibility = "hidden";
+    if (typeof navigator.share === 'undefined') {
+      (mobileShareRef.current as HTMLElement).style.visibility = 'hidden';
     }
     window.navigator.share({
-      title: "토맛토",
+      title: '토맛토',
       text: `${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`,
       url: shareURL,
     });
@@ -331,14 +292,36 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
         isOpen={isOpen}
       />
       <div className="contents__wrapper">
-        <RadioBox
-          balanceGameId={data?.balanceGame?.id}
-          balanceA={balanceA}
-          balanceB={balanceB}
-          onChange={onChangeVote}
-          value={mySelection}
-          isVoted={isVoted}
-        />
+        <VoteWrapper>
+          <OptionBox
+            key={balanceA.id}
+            postId={id}
+            selection={balanceA}
+            {...{ checkedId, setCheckedId, setIsVoted }}
+          />
+          <OptionBox
+            key={balanceB.id}
+            postId={id}
+            selection={balanceB}
+            {...{ checkedId, setCheckedId, setIsVoted }}
+          />
+          <Versus>
+            {checkedId === null ? (
+              <VS />
+            ) : (
+              <FireBar
+                checkedId={checkedId}
+                idA={balanceA.id}
+                idB={balanceB.id}
+                voteCountA={balanceA.voteCount}
+                voteCountB={balanceB.voteCount}
+                isVoted={isVoted}
+                fistColor={balanceA.backgroundColor}
+                secondColor={balanceB.backgroundColor}
+              />
+            )}
+          </Versus>
+        </VoteWrapper>
         <div className="status">
           <div className="left">
             <div className="fake__image" />
@@ -362,7 +345,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           <span className="pub-date">
             {modifyDate(data?.balanceGame?.createdAt)}
           </span>
-        </div>{" "}
+        </div>{' '}
         <Share
           url={shareURL}
           text={`${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`}
