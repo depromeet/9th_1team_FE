@@ -13,7 +13,11 @@ import _ from "lodash";
 import Loading from "../components/Loading";
 import nookies from "nookies";
 import { GetServerSideProps } from "next";
-import { NEXT_GAME_BY_RANDOM_QUERY } from "lib/queries";
+import {
+  GET_GAME,
+  GET_GAME_NOT_LOGIN,
+  NEXT_GAME_BY_RANDOM_QUERY,
+} from "lib/queries";
 
 const BALANCE_GAMES_TICK = 5;
 
@@ -82,14 +86,24 @@ const BALANCE_GAMES_LOGINED_QUERY = gql`
   }
 `;
 
-// const Today = () => {
-//   return (
-//     <TodayContainer>
-//       <div className="title">오늘의 밸런스게임</div>
-//       {/*<FeedPost />*/}
-//     </TodayContainer>
-//   );
-// };
+// 일단 랜덤으로
+const Today = ({ isLoggedin }: { isLoggedin: boolean }) => {
+  const { data: nextGameData } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
+  const id = nextGameData?.nextGameByRandom?.id;
+
+  const { data } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
+    variables: { id },
+  });
+
+  if (data) console.log("asdf", data);
+
+  return (
+    <TodayContainer>
+      <div className="title">오늘의 밸런스게임</div>
+      <FeedPost data={data?.balanceGame} />
+    </TodayContainer>
+  );
+};
 
 // const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
 //   <Order {...{ isSelect, onClick }}>{text}</Order>
@@ -161,7 +175,7 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
-      {/* <Today /> */}
+      <Today {...{ isLoggedin }} />
       <Container>
         <div className="buttons">
           <div className="buttons__btn" onClick={onClickRandomPlay}>
@@ -211,18 +225,17 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   );
 };
 
-// const TodayContainer = styled.div`
-//   padding: 1.6rem;
-//   margin-top: 5.2rem;
-//   margin-bottom: -2.5rem;
-//   background: #f8f9fa;
-//   .title {
-//     font-family: "NanumSquareRound";
-//     font-size: 1.6rem;
-//     font-weight: 800;
-//     margin-bottom: 1rem;
-//   }
-// `;
+const TodayContainer = styled.div`
+  padding: 1.6rem;
+  margin-bottom: -2.5rem;
+  background: #f8f9fa;
+  .title {
+    font-family: "NanumSquareRound";
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+`;
 
 const Container = styled.div`
   background: white;
