@@ -6,19 +6,14 @@ import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
 import { useEffect, useState } from "react";
-import { useLazyQuery, gql } from "@apollo/client";
+import { useLazyQuery, gql, useQuery } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import Loading from "../components/Loading";
 import nookies from "nookies";
 import { GetServerSideProps } from "next";
-
-// interface OrderButtonProps {
-//   isSelect: boolean;
-//   onClick: MouseEventHandler<HTMLDivElement>;
-//   text: string;
-// }
+import { NEXT_GAME_BY_RANDOM_QUERY } from "lib/queries";
 
 const BALANCE_GAMES_TICK = 5;
 
@@ -112,6 +107,9 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [qBalanceGames, { data }] = useLazyQuery(
     isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY
   );
+
+  const { data: nextGameData } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -143,7 +141,9 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   };
 
   const onClickRandomPlay = () => {
-    alert("아직 준비중인 서비스입니다. 조금만 기다려주세요!");
+    // router.push("/random/")
+    const { id } = nextGameData?.nextGameByRandom;
+    router.push(`/random/${id}`);
   };
 
   const onClickCreateGame = () => {
