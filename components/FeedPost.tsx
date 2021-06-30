@@ -68,34 +68,36 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
 
   return (
     <Container onClick={() => setIsMoreOpened(false)}>
-      <OptionBox
-        key={balanceA.id}
-        postId={data.id}
-        selection={balanceA}
-        {...{ checkedId, setCheckedId, setIsVoted }}
-      />
-      <OptionBox
-        key={balanceB.id}
-        postId={data.id}
-        selection={balanceB}
-        {...{ checkedId, setCheckedId, setIsVoted }}
-      />
-      <Versus>
-        {checkedId === null ? (
-          <VS />
-        ) : (
-          <FireBar
-            checkedId={checkedId}
-            idA={balanceA.id}
-            idB={balanceB.id}
-            voteCountA={balanceA.voteCount}
-            voteCountB={balanceB.voteCount}
-            isVoted={isVoted}
-            fistColor={balanceA.backgroundColor}
-            secondColor={balanceB.backgroundColor}
-          />
-        )}
-      </Versus>
+      <VoteWrapper>
+        <OptionBox
+          key={balanceA.id}
+          postId={data.id}
+          selection={balanceA}
+          {...{ checkedId, setCheckedId, setIsVoted }}
+        />
+        <OptionBox
+          key={balanceB.id}
+          postId={data.id}
+          selection={balanceB}
+          {...{ checkedId, setCheckedId, setIsVoted }}
+        />
+        <Versus>
+          {checkedId === null ? (
+            <VS />
+          ) : (
+            <FireBar
+              checkedId={checkedId}
+              idA={balanceA.id}
+              idB={balanceB.id}
+              voteCountA={balanceA.voteCount}
+              voteCountB={balanceB.voteCount}
+              isVoted={isVoted}
+              fistColor={balanceA.backgroundColor}
+              secondColor={balanceB.backgroundColor}
+            />
+          )}
+        </Versus>
+      </VoteWrapper>
 
       <div className="content">
         <Link href={`/article/${data.id}`}>
@@ -261,6 +263,10 @@ const Container = styled.div`
   }
 `;
 
+const VoteWrapper = styled.div`
+  position: relative;
+`;
+
 const Versus = styled.div`
   position: absolute;
   display: flex;
@@ -269,7 +275,7 @@ const Versus = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 25.6rem;
+  height: 100%;
 `;
 
 const MoreMenu = styled.ul`

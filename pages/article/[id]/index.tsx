@@ -104,7 +104,10 @@ const DetailWrapper = styled.div`
   }
 `;
 
-const VoteWrapper = styled.div``;
+const VoteWrapper = styled.div`
+  position: relative;
+  overflow: hidden;
+`;
 
 const Versus = styled.div`
   position: absolute;
@@ -114,7 +117,7 @@ const Versus = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 25.6rem;
+  height: 100%;
 `;
 
 //주소 article/a9e61383-165f-4caf-924e-1994de4a1ff2

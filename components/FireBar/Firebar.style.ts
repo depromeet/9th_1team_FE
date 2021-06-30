@@ -3,18 +3,20 @@ import styled from "styled-components";
 export const FireBarWrapper = styled.div`
   width: 100%;
   .fire {
-    top: 12.4rem;
     position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
     &__rectangle {
       :first-child {
         top: auto;
-        bottom: -0.4rem;
+        bottom: 0;
         left: auto;
         right: 0rem;
         border-radius: 12px 12px 0px 12px;
       }
       background-color: white;
-      top: -0.4rem;
+      top: -0.8rem;
       left: 0rem;
       position: absolute;
       z-index: 1;
