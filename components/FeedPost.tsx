@@ -1,17 +1,17 @@
-import styled from 'styled-components';
-import Opinion from 'public/opinion.svg';
-import Share from 'public/share.svg';
-import More from 'public/more.svg';
-import VS from 'public/versus.svg';
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { modifyDate } from 'utils/date';
-import FireBar from './FireBar/FireBar';
-import { clipboardCopy, getBalanceGameSelections } from '../utils/common';
-import { shareAPI } from 'utils/mobileShare';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import OptionBox from './OptionBox/OptionBox';
-import { MY_GAMES } from 'lib/queries';
+import styled from "styled-components";
+import Opinion from "public/opinion.svg";
+import Share from "public/share.svg";
+import More from "public/more.svg";
+import VS from "public/versus.svg";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { modifyDate } from "utils/date";
+import FireBar from "./FireBar/FireBar";
+import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
+import { shareAPI } from "utils/mobileShare";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import OptionBox from "./OptionBox/OptionBox";
+import { MY_GAMES } from "lib/queries";
 
 interface FeedPostProps {
   data?: any;
@@ -22,7 +22,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [isMine, setIsMine] = useState(false);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
-  console.log('########', data, checkedId);
+  console.log("########", data, checkedId);
 
   useEffect(() => {
     if (data.mySelection) {
@@ -45,7 +45,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   }, []);
 
   const renderShare = () => {
-    if (typeof window.navigator.share === 'undefined') {
+    if (typeof window.navigator.share === "undefined") {
       return null;
     } else {
       return (
@@ -60,7 +60,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           }
         >
           <Share />
-          <span style={{ marginLeft: '0.4rem' }}>공유하기</span>
+          <span style={{ marginLeft: "0.4rem" }}>공유하기</span>
         </div>
       );
     }
@@ -103,7 +103,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
             <div className="content__title">{data.description}</div>
             <div className="content__state">
               <div>
-                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{' '}
+                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
                 {modifyDate(data.createdAt)}
               </div>
             </div>
@@ -130,8 +130,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
           onClick={(e) => e.stopPropagation()}
           className="content__headermore"
           style={{
-            bottom: isMine ? '2.5rem' : '-2rem',
-            visibility: isMoreOpened ? 'visible' : 'hidden',
+            bottom: isMine ? "2.5rem" : "-2rem",
+            visibility: isMoreOpened ? "visible" : "hidden",
           }}
         >
           {JSON.stringify(isMine)}
@@ -246,7 +246,7 @@ const Container = styled.div`
         align-items: center;
         :first-child {
           ::after {
-            content: '의견 쓰기';
+            content: "의견 쓰기";
             margin-left: 0.4rem;
           }
         }

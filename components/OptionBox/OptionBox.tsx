@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import Unselect from 'public/unselect.svg';
-import Select from 'public/select.svg';
-import { parseCookies } from 'nookies';
-import { OptionBoxContainer } from './OptionBox.style';
-import { useMutation } from '@apollo/client';
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import Unselect from "public/unselect.svg";
+import Select from "public/select.svg";
+import { parseCookies } from "nookies";
+import { OptionBoxContainer } from "./OptionBox.style";
+import { useMutation } from "@apollo/client";
 import {
   CREATE_VOTE_LOGINED,
   CREATE_VOTE_NOT_LOGINED,
   REMOVE_VOTE_LOGINED,
-} from 'lib/mutations';
+} from "lib/mutations";
 
 interface OptionBoxProps {
   selection: any;
@@ -32,7 +32,7 @@ const OptionBox = ({
   const { token } = parseCookies();
 
   useEffect(() => {
-    const checkedList = localStorage.getItem('checkedList')?.split(',');
+    const checkedList = localStorage.getItem("checkedList")?.split(",");
     checkedList?.forEach((item) => {
       if (item === selection.id) setCheckedId(item);
     });
@@ -72,7 +72,7 @@ const OptionBox = ({
       }
     } else {
       const checkedList =
-        (localStorage.getItem('checkedList')?.split(',') as string[]) || [];
+        (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
       if (checkedId === null) {
         // 새로 create
         setCheckedId(selectionId);
@@ -105,7 +105,7 @@ const OptionBox = ({
           });
         }
       }
-      localStorage.setItem('checkedList', checkedList.toString());
+      localStorage.setItem("checkedList", checkedList.toString());
     }
   };
 
@@ -119,8 +119,8 @@ const OptionBox = ({
         background: selection.backgroundColor,
         color: selection.textColor,
         backgroundImage: `url("${selection.backgroundImage}")`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div className="checkbox" onClick={() => handleVote(selection.id)}>

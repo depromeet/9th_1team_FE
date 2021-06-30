@@ -1,21 +1,21 @@
-import { gql, useQuery } from '@apollo/client';
-import styled from 'styled-components';
-import Comments from 'components/Comment/Comments';
-import Header from 'components/Header';
-import NextGameIcon from '../../../public/game-next.svg';
-import ShareIcon from '../../../public/top-share.svg';
-import MoreIcon from '../../../public/top-more.svg';
-import VS from 'public/versus.svg';
-import React, { useEffect, useRef, useState } from 'react';
-import HeaderMore from '../../../components/DetailContent/HederMore';
-import { GetServerSideProps } from 'next';
-import Share from 'components/Share/Share';
-import { modifyDate } from 'utils/date';
-import { useRouter } from 'next/router';
-import { getBalanceGameSelections } from '../../../utils/common';
-import nookies from 'nookies';
-import OptionBox from 'components/OptionBox/OptionBox';
-import FireBar from 'components/FireBar/FireBar';
+import { gql, useQuery } from "@apollo/client";
+import styled from "styled-components";
+import Comments from "components/Comment/Comments";
+import Header from "components/Header";
+import NextGameIcon from "../../../public/game-next.svg";
+import ShareIcon from "../../../public/top-share.svg";
+import MoreIcon from "../../../public/top-more.svg";
+import VS from "public/versus.svg";
+import React, { useEffect, useRef, useState } from "react";
+import HeaderMore from "../../../components/DetailContent/HederMore";
+import { GetServerSideProps } from "next";
+import Share from "components/Share/Share";
+import { modifyDate } from "utils/date";
+import { useRouter } from "next/router";
+import { getBalanceGameSelections } from "../../../utils/common";
+import nookies from "nookies";
+import OptionBox from "components/OptionBox/OptionBox";
+import FireBar from "components/FireBar/FireBar";
 
 interface PostProps {
   id: string;
@@ -210,7 +210,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [mySelection, setMySelection] = useState<string | null>('');
+  const [mySelection, setMySelection] = useState<string | null>("");
   const mobileShareRef = useRef<HTMLDivElement>(null);
   const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
@@ -254,11 +254,11 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
 
   const onUseShareAPI = () => {
     // HTTPS 에서만 동작, 확인 필요
-    if (typeof navigator.share === 'undefined') {
-      (mobileShareRef.current as HTMLElement).style.visibility = 'hidden';
+    if (typeof navigator.share === "undefined") {
+      (mobileShareRef.current as HTMLElement).style.visibility = "hidden";
     }
     window.navigator.share({
-      title: '토맛토',
+      title: "토맛토",
       text: `${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`,
       url: shareURL,
     });
@@ -345,7 +345,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           <span className="pub-date">
             {modifyDate(data?.balanceGame?.createdAt)}
           </span>
-        </div>{' '}
+        </div>{" "}
         <Share
           url={shareURL}
           text={`${balanceA.description} vs ${balanceB.description}, 당신의 선택은?`}
