@@ -26,7 +26,8 @@
     "rootDir": ".",
   },
   "exclude": [
-    "9th_1team_FE/node_modules"
+    "9th_1team_FE/node_modules",
+    "typings"
   ],
   "include": [
     "next-env.d.ts",

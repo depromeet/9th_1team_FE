@@ -11,13 +11,18 @@ import {
 } from "lib/mutations";
 
 interface OptionBoxProps {
-  loadGame: (
+  loadGame?: (
     variables?:
       | Partial<{
           id: string;
         }>
       | undefined
-  ) => Promise<ApolloQueryResult<any>>;
+  ) => Promise<ApolloQueryResult<any>> | undefined;
+  loadGameFeed?:
+    | ((
+        variables?: Partial<Record<string, any>> | undefined
+      ) => Promise<ApolloQueryResult<any>>)
+    | undefined;
   selection: any;
   postId: string;
   checkedId: string | null;
@@ -27,6 +32,7 @@ interface OptionBoxProps {
 
 const OptionBox = ({
   loadGame,
+  loadGameFeed,
   selection,
   checkedId,
   postId,
@@ -38,6 +44,10 @@ const OptionBox = ({
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
   const { token } = parseCookies();
+
+  useEffect(() => {
+    console.log("OptionBox");
+  }, []);
 
   useEffect(() => {
     const checkedList = localStorage.getItem("checkedList")?.split(",");
@@ -115,8 +125,19 @@ const OptionBox = ({
       }
       localStorage.setItem("checkedList", checkedList.toString());
     }
-    await loadGame(); // game 두번 로드하는 것 같은데, 수정 필요
+    await load();
+    // game 두번 로드하는 것 같은데, 수정 필요
     await setIsVoted(false);
+  };
+
+  const load = () => {
+    if (loadGame) {
+      console.log("loadGame있음");
+      loadGame();
+    } else if (loadGameFeed) {
+      console.log("loadGameFeed 있음");
+      loadGameFeed();
+    } else return;
   };
 
   const isChecked =

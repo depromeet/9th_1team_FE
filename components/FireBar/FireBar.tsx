@@ -7,7 +7,7 @@ interface FireBarProps {
   voteCountB: number;
   fistColor?: string;
   secondColor?: string;
-  checkedId?: string;
+  checkedId?: string | null;
   idA: string;
   idB: string;
   isVoted: boolean;
@@ -29,8 +29,10 @@ const FireBar: React.FC<FireBarProps> = ({
   let cntB = voteCountB;
 
   useEffect(() => {
-    console.log("A", cntA);
-    console.log("B", cntB);
+    console.log("-----firebar 시작------");
+    console.log("firebar @@@@@@@@A", cntA);
+    console.log("firebar @@@@@@@@B", cntB);
+    console.log("----firebar 끝-----");
   }, [cntA, cntB]);
 
   // isVoted는 삭제 해야할듯

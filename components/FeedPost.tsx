@@ -9,22 +9,41 @@ import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
 import { clipboardCopy } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import {
+  ApolloQueryResult,
+  gql,
+  QueryLazyOptions,
+  useLazyQuery,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import OptionBox from "./OptionBox/OptionBox";
 import { MY_GAMES } from "lib/queries";
 
 interface FeedPostProps {
   data?: any;
+  loading: boolean;
+  loadGameFeed:
+    | ((
+        variables?: Partial<Record<string, any>> | undefined
+      ) => Promise<ApolloQueryResult<any>>)
+    | undefined;
 }
 
-const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
+// data: 모든 각 게임정보 myGames: 내가 만든 게임
+const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed }) => {
   const [checkedId, setCheckedId] = useState(null);
   //const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [balanceA, balanceB] = data.balanceGameSelections;
   const [isMine, setIsMine] = useState(false);
+  const [votedCountA, setVotedCountA] = useState(0);
+  const [votedCountB, setVotedCountB] = useState(0);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
-  console.log("########", data, checkedId);
+  //console.log("########", data, checkedId);
+  const { data: myGames } = useQuery(MY_GAMES);
 
+  // firebar -> feedPost 동작하고있음.
+  // feedPost에서 내려줘야함
   useEffect(() => {
     if (data.mySelection) {
       setCheckedId(data.mySelection);
@@ -33,7 +52,21 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
 
   const [isMoreOpened, setIsMoreOpened] = useState(false);
 
-  const { data: myGames } = useQuery(MY_GAMES);
+  useEffect(() => {
+    if (!loading) {
+      console.log("feedpost 동작");
+      console.log("feedpost", data);
+      setVotedCountA(data?.balanceGameSelections[0].voteCount);
+      setVotedCountB(data?.balanceGameSelections[1].voteCount);
+      console.log(data.balanceGameSelections[0].description, votedCountA);
+      console.log(data.balanceGameSelections[1].description, votedCountB);
+      // console.log("VotedA", votedCountA, "VotedB", votedCountB);
+    }
+  }, [loading, votedCountA, votedCountB]);
+
+  // useEffect(() => {
+  //   console.log("mmmm", myGames);
+  // }, [myGames]);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -72,12 +105,14 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       <VoteWrapper>
         <OptionBox
           key={balanceA.id}
+          loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceA}
           {...{ checkedId, setCheckedId, setIsVoted }}
         />
         <OptionBox
           key={balanceB.id}
+          loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceB}
           {...{ checkedId, setCheckedId, setIsVoted }}
@@ -90,8 +125,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
               checkedId={checkedId}
               idA={balanceA.id}
               idB={balanceB.id}
-              voteCountA={balanceA.voteCount}
-              voteCountB={balanceB.voteCount}
+              voteCountA={votedCountA}
+              voteCountB={votedCountB}
               isVoted={isVoted}
               fistColor={balanceA.backgroundColor}
               secondColor={balanceB.backgroundColor}
