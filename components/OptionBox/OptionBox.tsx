@@ -3,7 +3,7 @@ import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import { parseCookies } from "nookies";
 import { OptionBoxContainer } from "./OptionBox.style";
-import { QueryLazyOptions, useMutation } from "@apollo/client";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
 import {
   CREATE_VOTE_LOGINED,
   CREATE_VOTE_NOT_LOGINED,
@@ -12,12 +12,12 @@ import {
 
 interface OptionBoxProps {
   loadGame: (
-    options?:
-      | QueryLazyOptions<{
+    variables?:
+      | Partial<{
           id: string;
         }>
       | undefined
-  ) => void;
+  ) => Promise<ApolloQueryResult<any>>;
   selection: any;
   postId: string;
   checkedId: string | null;

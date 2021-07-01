@@ -205,16 +205,13 @@ const MY_GAMES = gql`
 
 const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();
-  const [loadGame, { loading, data }] = useLazyQuery(
-    isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN,
-    {
-      variables: { id },
-      pollInterval: 0.5,
-      onCompleted(data) {
-        console.log("데이터 가져옴", data);
-      },
-    }
-  );
+  const {
+    loading,
+    data,
+    refetch: loadGame,
+  } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
+    variables: { id },
+  });
   const { data: myGames } = useQuery(MY_GAMES);
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
 
