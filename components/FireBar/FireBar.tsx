@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Fire from "public/fire.svg";
 import { FireBarWrapper } from "./Firebar.style";
 
@@ -28,13 +28,21 @@ const FireBar: React.FC<FireBarProps> = ({
   let cntA = voteCountA;
   let cntB = voteCountB;
 
-  if (isVoted) {
-    if (checkedId === idA) {
-      cntA++;
-    } else if (checkedId === idB) {
-      cntB++;
-    }
-  }
+  useEffect(() => {
+    console.log("A", cntA);
+    console.log("B", cntB);
+  }, [cntA, cntB]);
+
+  // isVoted는 삭제 해야할듯
+  // if (isVoted) {
+  //   if (checkedId === idA) {
+  //     cntA++;
+  //     console.log("cntA", cntA);
+  //   } else if (checkedId === idB) {
+  //     cntB++;
+  //     console.log("cntB", cntB);
+  //   }
+  // }
 
   if (cntA !== 0) {
     if (cntB !== 0) {

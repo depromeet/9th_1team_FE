@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import Comments from "components/Comment/Comments";
 import Header from "components/Header";
@@ -12,7 +12,6 @@ import { GetServerSideProps } from "next";
 import Share from "components/Share/Share";
 import { modifyDate } from "utils/date";
 import { useRouter } from "next/router";
-import { getBalanceGameSelections } from "../../../utils/common";
 import nookies from "nookies";
 import OptionBox from "components/OptionBox/OptionBox";
 import FireBar from "components/FireBar/FireBar";
@@ -206,9 +205,16 @@ const MY_GAMES = gql`
 
 const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();
-  const { data } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
-    variables: { id },
-  });
+  const [loadGame, { loading, data }] = useLazyQuery(
+    isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN,
+    {
+      variables: { id },
+      pollInterval: 0.5,
+      onCompleted(data) {
+        console.log("데이터 가져옴", data);
+      },
+    }
+  );
   const { data: myGames } = useQuery(MY_GAMES);
   const { data: nextGameData, refetch } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
 
@@ -218,9 +224,12 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [isMine, setIsMine] = useState(false);
   const [isVoted, setIsVoted] = useState(false);
   const [checkedId, setCheckedId] = useState(null);
+  const [votedCountA, setVotedCountA] = useState(0);
+  const [votedCountB, setVotedCountB] = useState(0);
 
   useEffect(() => {
-    setIsVoted(false);
+    loadGame();
+    console.log("여기는 첫로드");
   }, []);
 
   useEffect(() => {
@@ -228,6 +237,14 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
       setCheckedId(data?.balanceGame.mySelection);
     }
   }, [data?.balanceGame.mySelection]);
+
+  useEffect(() => {
+    if (!loading && data) {
+      console.log(data);
+      setVotedCountA(data?.balanceGame?.balanceGameSelections[0]?.voteCount);
+      setVotedCountB(data?.balanceGame?.balanceGameSelections[1]?.voteCount);
+    }
+  }, [data?.balanceGame]);
 
   useEffect(() => {
     if (data && myGames) {
@@ -253,7 +270,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
 
   if (!data) return null;
 
-  const [balanceA, balanceB] = getBalanceGameSelections(data?.balanceGame);
+  const [balanceA, balanceB] = data?.balanceGame?.balanceGameSelections;
 
   const onUseShareAPI = () => {
     // HTTPS 에서만 동작, 확인 필요
@@ -300,12 +317,14 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
             key={balanceA.id}
             postId={id}
             selection={balanceA}
+            loadGame={loadGame}
             {...{ checkedId, setCheckedId, setIsVoted }}
           />
           <OptionBox
             key={balanceB.id}
             postId={id}
             selection={balanceB}
+            loadGame={loadGame}
             {...{ checkedId, setCheckedId, setIsVoted }}
           />
           <Versus>
@@ -316,8 +335,8 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
                 checkedId={checkedId}
                 idA={balanceA.id}
                 idB={balanceB.id}
-                voteCountA={balanceA.voteCount}
-                voteCountB={balanceB.voteCount}
+                voteCountA={votedCountA}
+                voteCountB={votedCountB}
                 isVoted={isVoted}
                 fistColor={balanceA.backgroundColor}
                 secondColor={balanceB.backgroundColor}

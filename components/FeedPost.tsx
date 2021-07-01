@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
 import FireBar from "./FireBar/FireBar";
-import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
+import { clipboardCopy } from "../utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import OptionBox from "./OptionBox/OptionBox";
@@ -19,7 +19,8 @@ interface FeedPostProps {
 
 const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
   const [checkedId, setCheckedId] = useState(null);
-  const [balanceA, balanceB] = getBalanceGameSelections(data);
+  //const [balanceA, balanceB] = getBalanceGameSelections(data);
+  const [balanceA, balanceB] = data.balanceGameSelections;
   const [isMine, setIsMine] = useState(false);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
   console.log("########", data, checkedId);

@@ -7,6 +7,7 @@ export const FireBarWrapper = styled.div`
     top: 50%;
     transform: translateY(-50%);
     z-index: 5;
+    transition: 0.8s;
     &__rectangle {
       :first-child {
         top: auto;
@@ -15,6 +16,7 @@ export const FireBarWrapper = styled.div`
         right: 0rem;
         border-radius: 12px 12px 0px 12px;
       }
+      transition: 0.8s;
       background-color: white;
       top: -0.8rem;
       left: 0rem;
@@ -34,6 +36,7 @@ export const FireBarWrapper = styled.div`
     z-index: 0;
     top: 12rem;
     left: 0;
+    transition: 0.8s;
     :last-child {
       left: auto;
       right: 0;

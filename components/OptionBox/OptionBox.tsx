@@ -3,7 +3,7 @@ import Unselect from "public/unselect.svg";
 import Select from "public/select.svg";
 import { parseCookies } from "nookies";
 import { OptionBoxContainer } from "./OptionBox.style";
-import { useMutation } from "@apollo/client";
+import { QueryLazyOptions, useMutation } from "@apollo/client";
 import {
   CREATE_VOTE_LOGINED,
   CREATE_VOTE_NOT_LOGINED,
@@ -11,6 +11,13 @@ import {
 } from "lib/mutations";
 
 interface OptionBoxProps {
+  loadGame: (
+    options?:
+      | QueryLazyOptions<{
+          id: string;
+        }>
+      | undefined
+  ) => void;
   selection: any;
   postId: string;
   checkedId: string | null;
@@ -19,6 +26,7 @@ interface OptionBoxProps {
 }
 
 const OptionBox = ({
+  loadGame,
   selection,
   checkedId,
   postId,
@@ -107,6 +115,8 @@ const OptionBox = ({
       }
       localStorage.setItem("checkedList", checkedList.toString());
     }
+    await loadGame(); // game 두번 로드하는 것 같은데, 수정 필요
+    await setIsVoted(false);
   };
 
   const isChecked =
