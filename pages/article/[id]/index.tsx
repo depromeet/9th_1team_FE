@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import nookies from "nookies";
 import OptionBox from "components/OptionBox/OptionBox";
 import FireBar from "components/FireBar/FireBar";
+import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES, NEXT_GAME_BY_RANDOM_QUERY } from "lib/queries";
 
 interface PostProps {
   id: string;
@@ -120,88 +121,6 @@ const Versus = styled.div`
 `;
 
 //주소 article/a9e61383-165f-4caf-924e-1994de4a1ff2
-
-const GET_GAME = gql`
-  query balanceGameLogined($id: String!) {
-    balanceGame: balanceGameLogined(id: $id) {
-      id
-      userId
-      description
-      mySelection
-      commentCount
-      createdAt
-      user {
-        profile {
-          nickname
-        }
-      }
-      balanceGameSelections {
-        id
-        order
-        voteCount
-        balanceGameId
-        backgroundImage
-        backgroundColor
-        textColor
-        description
-      }
-    }
-  }
-`;
-
-const GET_GAME_NOT_LOGIN = gql`
-  query balanceGameNotLogined($id: String!) {
-    balanceGame: balanceGameNotLogined(id: $id) {
-      id
-      userId
-      description
-      mySelection
-      commentCount
-      createdAt
-      user {
-        profile {
-          nickname
-        }
-      }
-      balanceGameSelections {
-        id
-        order
-        balanceGameId
-        backgroundImage
-        backgroundColor
-        textColor
-        description
-      }
-    }
-  }
-`;
-
-const NEXT_GAME_BY_RANDOM_QUERY = gql`
-  query nextGameByRandom {
-    nextGameByRandom {
-      id
-    }
-  }
-`;
-
-const MY_GAMES = gql`
-  query myGames {
-    myGames {
-      balanceGames: balanceGame {
-        id
-        totalVoteCount
-        commentCount
-        balanceGameSelections {
-          order
-          description
-          backgroundColor
-          backgroundImage
-          textColor
-        }
-      }
-    }
-  }
-`;
 
 const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();

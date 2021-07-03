@@ -14,15 +14,15 @@ interface OptionBoxProps {
   loadGame?: (
     variables?:
       | Partial<{
-          id: string;
-        }>
+        id: string;
+      }>
       | undefined
   ) => Promise<ApolloQueryResult<any>> | undefined;
   loadGameFeed?:
-    | ((
-        variables?: Partial<Record<string, any>> | undefined
-      ) => Promise<ApolloQueryResult<any>>)
-    | undefined;
+  | ((
+    variables?: Partial<Record<string, any>> | undefined
+  ) => Promise<ApolloQueryResult<any>>)
+  | undefined;
   selection: any;
   postId: string;
   checkedId: string | null;
@@ -60,8 +60,9 @@ const OptionBox = ({
     setIsVoted(true);
     // 로그인이면
     if (token) {
-      if (checkedId === null) {
-        // 새로 create
+
+      // 기존 선택한 값이 없으면서 새로 선택한 경우 투표
+      if (checkedId === null && selectionId !== null) {
         setCheckedId(selectionId);
         await mCreateVoteLogined({
           variables: {
@@ -69,24 +70,28 @@ const OptionBox = ({
             balanceGameSelectionId: selectionId,
           },
         });
-      } else {
-        // remove
+      } else if (checkedId === selectionId) {
+        // 기존 선택한 것과 새로 선택한게 같을 경우 투표 취소
         setCheckedId(null);
         await mRemoveVoteLogined({
           variables: {
             balanceGameId: postId,
           },
         });
-        if (checkedId !== selectionId) {
-          // 다른걸로 변경
-          setCheckedId(selectionId);
-          await mCreateVoteLogined({
-            variables: {
-              balanceGameId: postId,
-              balanceGameSelectionId: selectionId,
-            },
-          });
-        }
+      } else if (checkedId !== null && selectionId !== null) {
+        // 기존 선택한 값이 있으면서 다시 선택한 경우 삭제 후 투표
+        setCheckedId(selectionId);
+        await mRemoveVoteLogined({
+          variables: {
+            balanceGameId: postId,
+          },
+        });
+        await mCreateVoteLogined({
+          variables: {
+            balanceGameId: postId,
+            balanceGameSelectionId: selectionId,
+          },
+        });
       }
     } else {
       const checkedList =

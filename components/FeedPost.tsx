@@ -18,20 +18,22 @@ import {
   useQuery,
 } from "@apollo/client";
 import OptionBox from "./OptionBox/OptionBox";
-import { MY_GAMES } from "lib/queries";
+import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
 
 interface FeedPostProps {
   data?: any;
   loading: boolean;
   loadGameFeed:
-    | ((
-        variables?: Partial<Record<string, any>> | undefined
-      ) => Promise<ApolloQueryResult<any>>)
-    | undefined;
+  | ((
+    variables?: Partial<Record<string, any>> | undefined
+  ) => Promise<ApolloQueryResult<any>>)
+  | undefined;
+  isLoggedin: boolean;
 }
 
 // data: 모든 각 게임정보 myGames: 내가 만든 게임
-const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed }) => {
+const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed, isLoggedin }) => {
+  const id = data.id;
   const [checkedId, setCheckedId] = useState(null);
   //const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [balanceA, balanceB] = data.balanceGameSelections;
@@ -41,6 +43,13 @@ const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed }) => {
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
   //console.log("########", data, checkedId);
   const { data: myGames } = useQuery(MY_GAMES);
+
+  // 피드 로드
+  const {
+    refetch: loadFeed,
+  } = useQuery(isLoggedin ? GET_GAME : GET_GAME_NOT_LOGIN, {
+    variables: { id },
+  });
 
   // firebar -> feedPost 동작하고있음.
   // feedPost에서 내려줘야함
@@ -63,10 +72,6 @@ const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed }) => {
       // console.log("VotedA", votedCountA, "VotedB", votedCountB);
     }
   }, [loading, votedCountA, votedCountB]);
-
-  // useEffect(() => {
-  //   console.log("mmmm", myGames);
-  // }, [myGames]);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -105,14 +110,14 @@ const FeedPost: React.FC<FeedPostProps> = ({ data, loading, loadGameFeed }) => {
       <VoteWrapper>
         <OptionBox
           key={balanceA.id}
-          loadGameFeed={loadGameFeed}
+          loadGame={loadFeed}
           postId={data.id}
           selection={balanceA}
           {...{ checkedId, setCheckedId, setIsVoted }}
         />
         <OptionBox
           key={balanceB.id}
-          loadGameFeed={loadGameFeed}
+          loadGame={loadFeed}
           postId={data.id}
           selection={balanceB}
           {...{ checkedId, setCheckedId, setIsVoted }}

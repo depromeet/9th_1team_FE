@@ -165,8 +165,8 @@ const FeedPosts: React.FC<IndexProps> = ({ isLoggedin }) => {
 
   const _list = isFiltered
     ? list.filter(
-        (item: { mySelection: string | null }) => item.mySelection !== null
-      )
+      (item: { mySelection: string | null }) => item.mySelection !== null
+    )
     : list;
 
   console.log(_list);
@@ -228,6 +228,7 @@ const FeedPosts: React.FC<IndexProps> = ({ isLoggedin }) => {
               data={data}
               loading={loading}
               loadGameFeed={loadGameFeed}
+              isLoggedin={isLoggedin}
             />
           ))}
         </InfiniteScroll>
