@@ -101,7 +101,7 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
           style={{ fontSize: 0 }} //To put endMessage and loader to the top.
           // inverse={true} //
           hasMore={hasMore}
-          loader={<Loading hasMore={hasMore} />}
+          loader={<Loading />}
         >
           {list.map((data, i) => (
             <FeedPost
