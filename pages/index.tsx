@@ -27,16 +27,12 @@ interface IndexProps {
 const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
   const [list, setList] = useState([]);
   const [qBalanceGames, { loading, data, refetch: loadGameFeed }] =
     useLazyQuery(
-      isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
-      {
-        onCompleted(data) {
-          console.log("-- -- --feedPosts --", data);
-        },
-      }
+      isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY
     );
   const router = useRouter();
 
@@ -48,9 +44,23 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     });
   }, [offset]);
 
+  // 맨 처음만 렌더링
   useEffect(() => {
     if (!data) return;
+    const firstRender = async () => {
+      const newList = await data?.balanceGames?.balanceGames;
+      await setList(newList);
+    };
+    firstRender();
+  }, []);
+
+  useEffect(() => {
+    if (!data || !list) return;
     const newList = data?.balanceGames?.balanceGames;
+    // 새로 들어온 데이터인지 확인(투표한 데이터인 경우 중복렌더링 방지)
+    const isOldData = list.some((item: any) => item.id === newList[0].id);
+    if (isOldData) return;
+
     if (newList.length < 1) setHasMore(false);
     else {
       setList(list.concat(newList));

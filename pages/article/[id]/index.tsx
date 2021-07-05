@@ -15,7 +15,12 @@ import { useRouter } from "next/router";
 import nookies from "nookies";
 import OptionBox from "components/OptionBox/OptionBox";
 import FireBar from "components/FireBar/FireBar";
-import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES, NEXT_GAME_BY_RANDOM_QUERY } from "lib/queries";
+import {
+  GET_GAME,
+  GET_GAME_NOT_LOGIN,
+  MY_GAMES,
+  NEXT_GAME_BY_RANDOM_QUERY,
+} from "lib/queries";
 
 interface PostProps {
   id: string;
