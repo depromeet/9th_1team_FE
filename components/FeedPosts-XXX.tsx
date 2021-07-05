@@ -6,84 +6,22 @@ import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
 import { useEffect, useState } from "react";
-import { useLazyQuery, gql } from "@apollo/client";
+import { useLazyQuery, gql, useQuery } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import Loading from "../components/Loading";
+import {
+  BALANCE_GAMES_LOGINED_QUERY,
+  BALANCE_GAMES_QUERY,
+  BALANCE_GAMES_TICK,
+} from "lib/queries";
 
 // interface OrderButtonProps {
 //   isSelect: boolean;
 //   onClick: MouseEventHandler<HTMLDivElement>;
 //   text: string;
 // }
-
-const BALANCE_GAMES_TICK = 5;
-
-const BALANCE_GAMES_QUERY = gql`
-  query balanceGames($offset: Float!) {
-    balanceGames(
-      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
-    ) {
-      num
-      balanceGames: balanceGame {
-        id
-        userId
-        balanceGameSelectionVotesCount
-        description
-        totalVoteCount
-        commentCount
-        thumbs
-        status
-        mySelection
-        createdAt
-        updatedAt
-        balanceGameSelections {
-          id
-          order
-          status
-          description
-          backgroundColor
-          backgroundImage
-          textColor
-          voteCount
-        }
-      }
-    }
-  }
-`;
-const BALANCE_GAMES_LOGINED_QUERY = gql`
-  query balanceGamesLogined($offset: Float!) {
-    balanceGames: balanceGamesLogined(
-      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
-    ) {
-      num
-      balanceGames: balanceGame {
-        id
-        userId
-        balanceGameSelectionVotesCount
-        description
-        totalVoteCount
-        commentCount
-        thumbs
-        status
-        mySelection
-        createdAt
-        updatedAt
-        balanceGameSelections {
-          id
-          order
-          status
-          description
-          voteCount
-          backgroundColor
-          backgroundImage
-          textColor
-        }
-      }
-    }
-  }
-`;
 
 // const Today = () => {
 //   return (
@@ -102,23 +40,23 @@ interface IndexProps {
   isLoggedin: boolean;
 }
 
+// 이 컴포넌트는 참고용 컴포넌트임
+// 에러로 인해 index에 코드 새로 작성
 const FeedPosts: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [list, setList] = useState([]);
-  const [
-    qBalanceGames,
-    { loading, data, refetch: loadGameFeed, networkStatus },
-  ] = useLazyQuery(
-    isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
-    {
-      notifyOnNetworkStatusChange: true,
-      onCompleted(data) {
-        console.log("-- -- --feedPosts --", data);
-      },
-    }
-  );
+  const [qBalanceGames, { loading, data, refetch: loadGameFeed }] =
+    useLazyQuery(
+      isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
+      {
+        notifyOnNetworkStatusChange: true,
+        onCompleted(data) {
+          console.log("-- -- --feedPosts --", data);
+        },
+      }
+    );
   const router = useRouter();
 
   useEffect(() => {
@@ -138,12 +76,13 @@ const FeedPosts: React.FC<IndexProps> = ({ isLoggedin }) => {
   useEffect(() => {
     if (data) {
       const newList = data?.balanceGames?.balanceGames;
-      if (newList) {
-        if (newList.length === 0) {
-          setHasMore(false);
-        } else {
-          setList(list.concat(newList));
-        }
+      if (newList.length === 0) {
+        console.log("length가 0 임", newList);
+        setHasMore(false);
+      } else {
+        console.log("length가 0 이 아님", newList);
+        setList(list.concat(newList));
+        console.log("의심>>>>>>>>>>>", list);
       }
     }
   }, [data]);
@@ -165,11 +104,11 @@ const FeedPosts: React.FC<IndexProps> = ({ isLoggedin }) => {
 
   const _list = isFiltered
     ? list.filter(
-      (item: { mySelection: string | null }) => item.mySelection !== null
-    )
+        (item: { mySelection: string | null }) => item.mySelection !== null
+      )
     : list;
 
-  console.log(_list);
+  console.log("리스트", _list);
 
   return (
     <div style={{ width: "100%" }}>

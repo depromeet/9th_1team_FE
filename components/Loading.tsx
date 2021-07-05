@@ -66,9 +66,9 @@ const Container = styled.div<SVGProps>`
   }
 `;
 
-const Loading = ({ width = "auto", height = "100px" }) => {
+const Loading: React.FC = () => {
   return (
-    <Container width={width} height={height}>
+    <Container width={"auto"} height={"100px"}>
       <svg viewBox="0 0 50 50">
         <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" />
       </svg>
