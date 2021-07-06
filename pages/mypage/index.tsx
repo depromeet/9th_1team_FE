@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import MiniCards from "components/MypageContent/MiniCards";
 import PencilIcon from "public/pencil.svg";
-import BellIcon from "../../public/bell.svg";
+import BellIcon from "public/bell.svg";
 import TomatoIcon from "public/tomato/smile-red.svg";
 import { gql } from "@apollo/client/core";
 import { useLazyQuery } from "@apollo/client";
-import NotLogin from "../../components/MypageContent/NotLogin";
+import NotLogin from "components/MypageContent/NotLogin";
 import Link from "next/link";
-import NicknameModal from "../../components/modal/NicknameModal";
+import NicknameModal from "components/modal/NicknameModal";
 import Header from "components/Header";
 import { destroyCookie, parseCookies } from "nookies";
 import {

@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Comment from "./Comment";
-import OpinionIcon from "../../public/opinion.svg";
-import TriangleIcon from "../../public/opinion-triangle.svg";
-import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
+import OpinionIcon from "public/opinion.svg";
+import TriangleIcon from "public/opinion-triangle.svg";
+import TriReverseIcon from "public/opinion-triangle-reverse.svg";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import TextareaComment from "./TextareaComment";
-import Loading from "../Loading/Loading";
+import Loading from "components/Loading/Loading";
 import { useRouter } from "next/router";
 import { CommentsWrapper } from './Comment.style'
 

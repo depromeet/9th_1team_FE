@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Modal from "react-modal";
-import CommonHeader from "../Header/CommonHeader";
+import CommonHeader from "components/Header/CommonHeader";
 import {
   Container,
   DeleteCircleIconBtn,

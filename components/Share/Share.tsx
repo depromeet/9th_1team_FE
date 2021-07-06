@@ -1,8 +1,8 @@
 import React from "react";
-import FacebookIcon from "../../public/facebook.svg";
-import TwitterIcon from "../../public/twitter.svg";
-import KakaoIcon from "../../public/kakao-share.svg";
-import UrlIcon from "../../public/url.svg";
+import FacebookIcon from "public/facebook.svg";
+import TwitterIcon from "public/twitter.svg";
+import KakaoIcon from "public/kakao-share.svg";
+import UrlIcon from "public/url.svg";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ShareWrapper } from './Share.style'

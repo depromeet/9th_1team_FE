@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import PrevIcon from "../../public/top-prev.svg";
-import ShareIcon from "../../public/top-share.svg";
-import MoreIcon from "../../public/top-more.svg";
+import PrevIcon from "public/top-prev.svg";
+import ShareIcon from "public/top-share.svg";
+import MoreIcon from "public/top-more.svg";
 import HeaderMore from "./HederMore";
 import { HeaderWrapper } from "./DetailContent.style";
 

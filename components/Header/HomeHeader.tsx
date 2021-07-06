@@ -8,9 +8,9 @@ import {
   Logo,
   MypageLink,
 } from "./HomeHeader.style";
-import TomatoIcon from "../../public/tomato/smile-red.svg";
-import LetterIcon from "../../public/tomato/letter-logo.svg";
-import CheckSquareIcon from "../../public/check-square.svg";
+import TomatoIcon from "public/tomato/smile-red.svg";
+import LetterIcon from "public/tomato/letter-logo.svg";
+import CheckSquareIcon from "public/check-square.svg";
 
 const HomeHeader = () => {
   return (

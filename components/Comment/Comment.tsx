@@ -3,9 +3,9 @@ import TextareaComment from "./TextareaComment";
 import { ApolloQueryResult, gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import ReplyComment from "./ReplyComment";
-import MoreIcon from "../../public/more.svg";
+import MoreIcon from "public/more.svg";
 import CommentMore from "./CommentMore";
-import { modifyDate } from "../../utils/date";
+import { modifyDate } from "utils/date";
 import { CommentWrapper } from './Comment.style'
 
 interface CommentProps {
