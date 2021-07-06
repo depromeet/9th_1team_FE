@@ -9,8 +9,11 @@ import {
   CREATE_VOTE_NOT_LOGINED,
   REMOVE_VOTE_LOGINED,
 } from "lib/mutations";
+import { useAppDispatch } from "redux/hooks";
+import { editList } from "redux/postsSlice";
 
 interface OptionBoxProps {
+  isFeed: boolean;
   loadGame?: (
     variables?:
       | Partial<{
@@ -32,6 +35,7 @@ interface OptionBoxProps {
 }
 
 const OptionBox = ({
+  isFeed,
   loadGame,
   loadGameFeed,
   selection,
@@ -40,10 +44,14 @@ const OptionBox = ({
   setCheckedId,
   setIsVoted,
 }: OptionBoxProps) => {
+  const dispatch = useAppDispatch();
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED, {
     onCompleted: votedCompleted,
   });
   function votedCompleted(data: any) {
+    if (isFeed) {
+      dispatch(editList(data));
+    }
     console.log("votedCompleted data -->>", data);
 
     // 투표한 곳의 id를 index페이지에서 받는 data의 id와 같다면 정보 업데이트

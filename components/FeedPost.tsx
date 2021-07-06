@@ -19,6 +19,7 @@ import {
 } from "@apollo/client";
 import OptionBox from "./OptionBox/OptionBox";
 import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
+import { truncate } from "fs";
 
 interface FeedPostProps {
   feedList: never[];
@@ -42,7 +43,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
   loadGameFeed,
   isLoggedin,
 }) => {
-  const id = data.id;
+  //const id = data.id;
   const [checkedId, setCheckedId] = useState(null);
   //const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [balanceA, balanceB] = data.balanceGameSelections;
@@ -124,6 +125,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
       <VoteWrapper>
         <OptionBox
           key={balanceA.id}
+          isFeed={true}
           loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceA}
@@ -131,6 +133,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
         />
         <OptionBox
           key={balanceB.id}
+          isFeed={true}
           loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceB}

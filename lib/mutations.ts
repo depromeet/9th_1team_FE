@@ -12,10 +12,25 @@ export const CREATE_VOTE_LOGINED = gql`
       }
     ) {
       id
+      userId
+      balanceGameSelectionVotesCount
+      description
+      totalVoteCount
+      commentCount
+      thumbs
+      status
+      mySelection
+      createdAt
+      updatedAt
       balanceGameSelections {
         id
+        order
+        status
         description
         voteCount
+        backgroundColor
+        backgroundImage
+        textColor
       }
     }
   }
@@ -33,10 +48,25 @@ export const CREATE_VOTE_NOT_LOGINED = gql`
       }
     ) {
       id
+      userId
+      balanceGameSelectionVotesCount
+      description
+      totalVoteCount
+      commentCount
+      thumbs
+      status
+      mySelection
+      createdAt
+      updatedAt
       balanceGameSelections {
         id
+        order
+        status
         description
         voteCount
+        backgroundColor
+        backgroundImage
+        textColor
       }
     }
   }

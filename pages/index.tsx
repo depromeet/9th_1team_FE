@@ -19,12 +19,16 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "components/Loading";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { addList } from "redux/postsSlice";
 
 interface IndexProps {
   isLoggedin: boolean;
 }
 
 const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
+  const dispatch = useAppDispatch();
+  const listData = useAppSelector((state) => state.posts.posts);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -36,6 +40,7 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     );
   const router = useRouter();
 
+  console.log("listData--->>>", listData);
   useEffect(() => {
     qBalanceGames({
       variables: {
@@ -45,25 +50,26 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   }, [offset]);
 
   // 맨 처음만 렌더링
-  useEffect(() => {
-    if (!data) return;
-    const firstRender = async () => {
-      const newList = await data?.balanceGames?.balanceGames;
-      await setList(newList);
-    };
-    firstRender();
-  }, []);
-
-  let isOldData: boolean = false;
+  // useEffect(() => {
+  //   if (!data) return;
+  //   const firstRender = async () => {
+  //     const newList = await data?.balanceGames?.balanceGames;
+  //     await console.log("newList -->>>>>", newList);
+  //     await setList(newList);
+  //     await dispatch(loadList(newList));
+  //   };
+  //   firstRender();
+  // }, []);
 
   useEffect(() => {
     if (!data) return;
     const newList = data?.balanceGames?.balanceGames;
     // 새로 들어온 데이터인지 확인(투표한 데이터인 경우 중복렌더링 방지)
-    isOldData = list.some((item: any) => item.id === newList[0].id);
+    let isOldData = listData?.some((item: any) => item.id === newList[0].id);
     // 투표한 데이터일 경우 다시 데이터를 세팅하고 종료
     if (isOldData) {
       console.log("투표데이터 들어옴!!--->>>>", newList);
+
       // 투표한 데이터와 기존 데이터 비교해서 list의 정보 업데이트 하면될듯
       //loadGameFeed();
       console.log("load~!@##&$*(&@$(@&#*@(^#@(");
@@ -73,12 +79,14 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     // 새로 들어온 데이터일 경우
     if (newList.length < 1) setHasMore(false);
     else {
-      setList(list.concat(newList));
+      //setList(list.concat(newList));
+      //console.log("newList -->>>>>", newList);
+      dispatch(addList(newList));
       if (newList.length < BALANCE_GAMES_TICK) setHasMore(false);
     }
   }, [data, data?.balanceGames?.balanceGames]);
 
-  if (_.isEmpty(list)) return null;
+  if (_.isEmpty(listData)) return null;
 
   const fetchMoreData = () => {
     const nextOffset = offset + BALANCE_GAMES_TICK;
@@ -93,10 +101,13 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     router.push("/article/write");
   };
 
+  const plays = () => {};
+
   return (
     <div style={{ width: "100%" }}>
       <Header />
       <Container>
+        <button onClick={plays()}>눌러봐</button>
         <div className="buttons">
           <div className="buttons__btn" onClick={onClickRandomPlay}>
             <RandomIcon />
@@ -123,17 +134,18 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
           hasMore={hasMore}
           loader={<Loading />}
         >
-          {list.map((data, i) => (
-            <FeedPost
-              key={i}
-              feedList={list}
-              setFeedList={setList}
-              data={data}
-              loading={loading}
-              loadGameFeed={loadGameFeed}
-              isLoggedin={isLoggedin}
-            />
-          ))}
+          {listData &&
+            listData.map((data, i) => (
+              <FeedPost
+                key={i}
+                feedList={list}
+                setFeedList={setList}
+                data={data}
+                loading={loading}
+                loadGameFeed={loadGameFeed}
+                isLoggedin={isLoggedin}
+              />
+            ))}
         </InfiniteScroll>
       </Container>
     </div>

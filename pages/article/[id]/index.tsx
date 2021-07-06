@@ -236,6 +236,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
         <VoteWrapper>
           <OptionBox
             key={balanceA.id}
+            isFeed={false}
             postId={id}
             selection={balanceA}
             loadGame={loadGame}
@@ -243,6 +244,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
           />
           <OptionBox
             key={balanceB.id}
+            isFeed={false}
             postId={id}
             selection={balanceB}
             loadGame={loadGame}
