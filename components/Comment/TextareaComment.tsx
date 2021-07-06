@@ -1,22 +1,6 @@
 import React, { ChangeEvent, FormEvent } from "react";
-import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
-
-const Container = styled.form`
-  position: relative;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  margin: 0 1.3rem;
-  padding: 7px 0;
-
-  .submit-btn {
-    font-family: "Noto Sans KR";
-    padding: 0;
-    font-size: 1.3rem;
-  }
-`;
+import { Container } from './Comment.style'
 
 interface TextareaCommentProps {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;

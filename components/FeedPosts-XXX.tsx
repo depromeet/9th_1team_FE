@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Header from "components/Header";
-import FeedPost from "components/FeedPost";
+import FeedPost from "components/FeedPost/FeedPost";
 import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
@@ -10,7 +10,7 @@ import { useLazyQuery, gql, useQuery } from "@apollo/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import _ from "lodash";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 import {
   BALANCE_GAMES_LOGINED_QUERY,
   BALANCE_GAMES_QUERY,

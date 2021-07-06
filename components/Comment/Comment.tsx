@@ -1,5 +1,4 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import styled from "styled-components";
 import TextareaComment from "./TextareaComment";
 import { ApolloQueryResult, gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
@@ -7,83 +6,7 @@ import ReplyComment from "./ReplyComment";
 import MoreIcon from "../../public/more.svg";
 import CommentMore from "./CommentMore";
 import { modifyDate } from "../../utils/date";
-
-const CommentWrapper = styled.li`
-  position: relative;
-
-  &:nth-child(2) {
-    // 내 게시글인 경우 배경색상
-    background-color: #f8f9fa;
-  }
-  padding: 0 1.6rem;
-
-  .comment__content {
-    border-bottom: 1px solid #e9ecef;
-    padding: 1.3rem 0 0.8rem;
-  }
-  .comment__deleted {
-    font-size: 13px;
-    line-height: 140%;
-    color: #343a40;
-    opacity: 0.6;
-    padding-left: 38px;
-    padding-bottom: 0.8rem;
-  }
-  .comment__user-pick {
-    display: inline-block;
-    background-color: #ffffff;
-    border-radius: 50%;
-    width: 1.6rem;
-    height: 1.6rem;
-    margin-right: 0.6rem;
-    border: 1px solid lightgray;
-    box-sizing: border-box;
-  }
-  .info {
-    height: 1.6rem;
-    display: flex;
-    align-items: center;
-  }
-  .author {
-    font-size: 1.1rem;
-    font-weight: 500;
-    line-height: 1.1rem;
-  }
-  .pub-date {
-    display: inline-block;
-    font-size: 9px;
-    line-height: 9px;
-    margin-left: 4px;
-    color: #868e96;
-  }
-  .comment__user-text {
-    margin-left: 2.2rem;
-  }
-  .comment__textarea-comment {
-    margin-top: 6px;
-  }
-  .text {
-    font-size: 1.3rem;
-    line-height: 1.8rem;
-    margin: 0.4rem 0;
-  }
-
-  .reply-btn {
-    border: none;
-    background: none;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 500;
-    color: #868e96;
-    padding: 0;
-  }
-  .comment__more {
-    position: absolute;
-    top: 1.3rem;
-    right: 1.6rem;
-  }
-`;
+import { CommentWrapper } from './Comment.style'
 
 interface CommentProps {
   mySelectionColor: string;
