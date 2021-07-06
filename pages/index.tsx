@@ -54,19 +54,29 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     firstRender();
   }, []);
 
+  let isOldData: boolean = false;
+
   useEffect(() => {
-    if (!data || !list) return;
+    if (!data) return;
     const newList = data?.balanceGames?.balanceGames;
     // 새로 들어온 데이터인지 확인(투표한 데이터인 경우 중복렌더링 방지)
-    const isOldData = list.some((item: any) => item.id === newList[0].id);
-    if (isOldData) return;
+    isOldData = list.some((item: any) => item.id === newList[0].id);
+    // 투표한 데이터일 경우 다시 데이터를 세팅하고 종료
+    if (isOldData) {
+      console.log("투표데이터 들어옴!!--->>>>", newList);
+      // 투표한 데이터와 기존 데이터 비교해서 list의 정보 업데이트 하면될듯
+      //loadGameFeed();
+      console.log("load~!@##&$*(&@$(@&#*@(^#@(");
+      return;
+    }
 
+    // 새로 들어온 데이터일 경우
     if (newList.length < 1) setHasMore(false);
     else {
       setList(list.concat(newList));
       if (newList.length < BALANCE_GAMES_TICK) setHasMore(false);
     }
-  }, [data]);
+  }, [data, data?.balanceGames?.balanceGames]);
 
   if (_.isEmpty(list)) return null;
 
@@ -116,6 +126,8 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
           {list.map((data, i) => (
             <FeedPost
               key={i}
+              feedList={list}
+              setFeedList={setList}
               data={data}
               loading={loading}
               loadGameFeed={loadGameFeed}

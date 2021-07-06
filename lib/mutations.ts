@@ -12,6 +12,11 @@ export const CREATE_VOTE_LOGINED = gql`
       }
     ) {
       id
+      balanceGameSelections {
+        id
+        description
+        voteCount
+      }
     }
   }
 `;
@@ -28,6 +33,11 @@ export const CREATE_VOTE_NOT_LOGINED = gql`
       }
     ) {
       id
+      balanceGameSelections {
+        id
+        description
+        voteCount
+      }
     }
   }
 `;

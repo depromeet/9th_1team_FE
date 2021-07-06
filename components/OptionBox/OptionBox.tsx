@@ -14,15 +14,16 @@ interface OptionBoxProps {
   loadGame?: (
     variables?:
       | Partial<{
-        id: string;
-      }>
+          id: string;
+        }>
       | undefined
   ) => Promise<ApolloQueryResult<any>> | undefined;
+
   loadGameFeed?:
-  | ((
-    variables?: Partial<Record<string, any>> | undefined
-  ) => Promise<ApolloQueryResult<any>>)
-  | undefined;
+    | ((
+        variables?: Partial<Record<string, any>> | undefined
+      ) => Promise<ApolloQueryResult<any>>)
+    | undefined;
   selection: any;
   postId: string;
   checkedId: string | null;
@@ -39,7 +40,15 @@ const OptionBox = ({
   setCheckedId,
   setIsVoted,
 }: OptionBoxProps) => {
-  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED);
+  const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED, {
+    onCompleted: votedCompleted,
+  });
+  function votedCompleted(data: any) {
+    console.log("votedCompleted data -->>", data);
+
+    // 투표한 곳의 id를 index페이지에서 받는 data의 id와 같다면 정보 업데이트
+    load();
+  }
   const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
@@ -60,7 +69,6 @@ const OptionBox = ({
     setIsVoted(true);
     // 로그인이면
     if (token) {
-
       // 기존 선택한 값이 없으면서 새로 선택한 경우 투표
       if (checkedId === null && selectionId !== null) {
         setCheckedId(selectionId);
@@ -130,7 +138,7 @@ const OptionBox = ({
       }
       localStorage.setItem("checkedList", checkedList.toString());
     }
-    await load();
+    // await load();
     // game 두번 로드하는 것 같은데, 수정 필요
     await setIsVoted(false);
   };
