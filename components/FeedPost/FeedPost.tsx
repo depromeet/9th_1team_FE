@@ -5,8 +5,8 @@ import VS from "public/versus.svg";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
-import FireBar from "../FireBar/FireBar";
-import { clipboardCopy } from "../../utils/common";
+import FireBar from "components/FireBar/FireBar";
+import { clipboardCopy } from "utils/common";
 import { shareAPI } from "utils/mobileShare";
 import {
   ApolloQueryResult,
@@ -16,7 +16,7 @@ import {
   useMutation,
   useQuery,
 } from "@apollo/client";
-import OptionBox from "../OptionBox/OptionBox";
+import OptionBox from "components/OptionBox/OptionBox";
 import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
 import { truncate } from "fs";
 import {

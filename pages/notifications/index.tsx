@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "components/Header";
-import ChatIcon from "../../public/opinion.svg";
+import ChatIcon from "public/opinion.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client/core";
 import Link from "next/link";

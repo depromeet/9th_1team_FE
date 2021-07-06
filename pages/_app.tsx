@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import Head from "next/head";
-import { useApollo } from "../lib/apolloClient";
+import { useApollo } from "lib/apolloClient";
 import { wrapper } from "redux/store";
 
 function App({ Component, pageProps }: AppProps) {

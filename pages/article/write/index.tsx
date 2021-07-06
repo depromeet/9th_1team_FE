@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 import TextareaAutosize from "react-textarea-autosize";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
-import { BALANCE_COLOR_SAMPLE_LIST } from "../../../lib/constants";
+import { BALANCE_COLOR_SAMPLE_LIST } from "lib/constants";
 import Header from "components/Header";
-import ImgIcon from "../../../public/image-frame.svg";
-import VsIcon from "../../../public/versus.svg";
-import VomitIcon from "../../../public/tomato/vomit-normal-front.svg";
-import UnionIcon from "../../../public/union.svg";
+import ImgIcon from "public/image-frame.svg";
+import VsIcon from "public/versus.svg";
+import VomitIcon from "public/tomato/vomit-normal-front.svg";
+import UnionIcon from "public/union.svg";
 import ColorPicker from "components/ColorPicker/ColorPicker";
 import { parseCookies } from "nookies";
 import {

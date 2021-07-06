@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
-import VomitIcon from "../../public/tomato/vomit-normal-front.svg";
-import KakaoIcon from "../../public/kakao.svg";
-import CloseIcon from "../../public/close.svg";
+import VomitIcon from "public/tomato/vomit-normal-front.svg";
+import KakaoIcon from "public/kakao.svg";
+import CloseIcon from "public/close.svg";
 import Link from "next/link";
 import { setCookie } from "nookies";
 import {

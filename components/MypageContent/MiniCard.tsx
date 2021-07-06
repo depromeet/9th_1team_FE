@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
-import MiniUserIcon from "../../public/mini-user.svg";
-import MiniChatIcon from "../../public/mini-chat.svg";
-import CloseCard from "../../public/close-card.svg";
+import MiniUserIcon from "public/mini-user.svg";
+import MiniChatIcon from "public/mini-chat.svg";
+import CloseCard from "public/close-card.svg";
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
-import { getBalanceGameSelections } from "../../utils/common";
+import { getBalanceGameSelections } from "utils/common";
 
 type CardProps = {
   item: {
