@@ -22,10 +22,11 @@ import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
 import { truncate } from "fs";
 
 interface FeedPostProps {
+  updateLoading: boolean;
+  setUpdateLoading: React.Dispatch<React.SetStateAction<boolean>>;
   feedList: never[];
   setFeedList: React.Dispatch<React.SetStateAction<never[]>>;
   data?: any;
-  loading: boolean;
   loadGameFeed:
     | ((
         variables?: Partial<Record<string, any>> | undefined
@@ -37,15 +38,15 @@ interface FeedPostProps {
 // data: 모든 각 게임정보 myGames: 내가 만든 게임
 const FeedPost: React.FC<FeedPostProps> = ({
   feedList,
+  updateLoading,
+  setUpdateLoading,
   setFeedList,
   data,
-  loading,
   loadGameFeed,
   isLoggedin,
 }) => {
   //const id = data.id;
   const [checkedId, setCheckedId] = useState(null);
-  //const [balanceA, balanceB] = getBalanceGameSelections(data);
   const [balanceA, balanceB] = data.balanceGameSelections;
   const [isMine, setIsMine] = useState(false);
   const [votedCountA, setVotedCountA] = useState(0);
@@ -54,8 +55,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
   //console.log("########", data, checkedId);
   const { data: myGames } = useQuery(MY_GAMES);
 
-  // firebar -> feedPost 동작하고있음.
-  // feedPost에서 내려줘야함
   useEffect(() => {
     if (data.mySelection) {
       setCheckedId(data.mySelection);
@@ -65,16 +64,17 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const [isMoreOpened, setIsMoreOpened] = useState(false);
 
   useEffect(() => {
-    if (!loading) {
-      console.log("feedpost 동작");
-      console.log("feedpost", data);
+    if (!updateLoading) {
       setVotedCountA(data?.balanceGameSelections[0].voteCount);
       setVotedCountB(data?.balanceGameSelections[1].voteCount);
       console.log(data.balanceGameSelections[0].description, votedCountA);
       console.log(data.balanceGameSelections[1].description, votedCountB);
-      // console.log("VotedA", votedCountA, "VotedB", votedCountB);
     }
-  }, [loading, votedCountA, votedCountB]);
+  }, [
+    updateLoading,
+    data?.balanceGameSelections[0].voteCount,
+    data?.balanceGameSelections[1].voteCount,
+  ]);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -108,23 +108,12 @@ const FeedPost: React.FC<FeedPostProps> = ({
     }
   };
 
-  // const extractVotedGameId = (data: Data): string => {
-  //   return '111';
-  // }
-  // 리스트 찾으면 업데이트, 새로받은 데이터(arr)에서 추출하기
-  // const updateVotedData = (data: any) => {
-  //   const targetId = data.id;
-  //   const targetData = feedList?.filter((list: any) => list.id === targetId); // 현재 list에서 타겟 추출
-  //   const newData = [...feedList, ...targetData];
-  //   console.log("newData------>>>", feedList, targetData, newData);
-  //   // setFeedList([...feedList, newData])
-  // };
-
   return (
     <Container onClick={() => setIsMoreOpened(false)}>
       <VoteWrapper>
         <OptionBox
           key={balanceA.id}
+          setUpdateLoading={setUpdateLoading}
           isFeed={true}
           loadGameFeed={loadGameFeed}
           postId={data.id}
@@ -133,6 +122,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
         />
         <OptionBox
           key={balanceB.id}
+          setUpdateLoading={setUpdateLoading}
           isFeed={true}
           loadGameFeed={loadGameFeed}
           postId={data.id}

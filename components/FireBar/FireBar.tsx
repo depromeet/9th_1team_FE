@@ -25,15 +25,8 @@ const FireBar: React.FC<FireBarProps> = ({
 }) => {
   let leftBarPos = 50;
   let rightBarPos = 50;
-  let cntA = voteCountA;
-  let cntB = voteCountB;
-
-  useEffect(() => {
-    console.log("-----firebar 시작------");
-    console.log("firebar @@@@@@@@A", cntA);
-    console.log("firebar @@@@@@@@B", cntB);
-    console.log("----firebar 끝-----");
-  }, [cntA, cntB]);
+  //let cntA = voteCountA;
+  //let cntB = voteCountB;
 
   // isVoted는 삭제 해야할듯
   // if (isVoted) {
@@ -46,18 +39,44 @@ const FireBar: React.FC<FireBarProps> = ({
   //   }
   // }
 
-  if (cntA !== 0) {
-    if (cntB !== 0) {
-      leftBarPos = (cntA / (cntA + cntB)) * 100;
+  if (voteCountA !== 0) {
+    if (voteCountB !== 0) {
+      leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
       rightBarPos = 100 - leftBarPos;
     } else {
       leftBarPos = 100;
       rightBarPos = 0;
     }
-  } else if (cntB !== 0) {
+  } else if (voteCountB !== 0) {
     leftBarPos = 0;
     rightBarPos = 100;
   }
+
+  // if (voteCountA !== 0) {
+  //   if (voteCountB !== 0) {
+  //     leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
+  //     rightBarPos = 100 - leftBarPos;
+  //   } else {
+  //     leftBarPos = 100;
+  //     rightBarPos = 0;
+  //   }
+  // } else if (voteCountB !== 0) {
+  //   leftBarPos = 0;
+  //   rightBarPos = 100;
+  // }
+
+  // if (cntA !== 0) {
+  //   if (cntB !== 0) {
+  //     leftBarPos = (cntA / (cntA + cntB)) * 100;
+  //     rightBarPos = 100 - leftBarPos;
+  //   } else {
+  //     leftBarPos = 100;
+  //     rightBarPos = 0;
+  //   }
+  // } else if (cntB !== 0) {
+  //   leftBarPos = 0;
+  //   rightBarPos = 100;
+  // }
 
   return (
     <FireBarWrapper>
@@ -73,7 +92,7 @@ const FireBar: React.FC<FireBarProps> = ({
             zIndex: 3,
           }}
         >
-          {cntA !== 0 && cntB !== 0 && <Fire />}
+          {voteCountA !== 0 && voteCountB !== 0 && <Fire />}
         </div>
         <div className="fire__rectangle" style={{ color: secondColor }}>
           {100 - Math.round(leftBarPos)}

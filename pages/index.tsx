@@ -6,7 +6,6 @@ import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
 import _ from "lodash";
-import FeedPosts from "components/FeedPosts";
 import { useLazyQuery } from "@apollo/client";
 import {
   BALANCE_GAMES_LOGINED_QUERY,
@@ -29,6 +28,7 @@ interface IndexProps {
 const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const dispatch = useAppDispatch();
   const listData = useAppSelector((state) => state.posts.posts);
+  const [updateLoding, setUpdateLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -40,7 +40,6 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     );
   const router = useRouter();
 
-  console.log("listData--->>>", listData);
   useEffect(() => {
     qBalanceGames({
       variables: {
@@ -48,18 +47,6 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
       },
     });
   }, [offset]);
-
-  // 맨 처음만 렌더링
-  // useEffect(() => {
-  //   if (!data) return;
-  //   const firstRender = async () => {
-  //     const newList = await data?.balanceGames?.balanceGames;
-  //     await console.log("newList -->>>>>", newList);
-  //     await setList(newList);
-  //     await dispatch(loadList(newList));
-  //   };
-  //   firstRender();
-  // }, []);
 
   useEffect(() => {
     if (!data) return;
@@ -71,7 +58,6 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
       console.log("투표데이터 들어옴!!--->>>>", newList);
 
       // 투표한 데이터와 기존 데이터 비교해서 list의 정보 업데이트 하면될듯
-      //loadGameFeed();
       console.log("load~!@##&$*(&@$(@&#*@(^#@(");
       return;
     }
@@ -79,8 +65,6 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     // 새로 들어온 데이터일 경우
     if (newList.length < 1) setHasMore(false);
     else {
-      //setList(list.concat(newList));
-      //console.log("newList -->>>>>", newList);
       dispatch(addList(newList));
       if (newList.length < BALANCE_GAMES_TICK) setHasMore(false);
     }
@@ -101,13 +85,10 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     router.push("/article/write");
   };
 
-  const plays = () => {};
-
   return (
     <div style={{ width: "100%" }}>
       <Header />
       <Container>
-        <button onClick={plays()}>눌러봐</button>
         <div className="buttons">
           <div className="buttons__btn" onClick={onClickRandomPlay}>
             <RandomIcon />
@@ -138,10 +119,11 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
             listData.map((data, i) => (
               <FeedPost
                 key={i}
+                updateLoading={updateLoding}
+                setUpdateLoading={setUpdateLoading}
                 feedList={list}
                 setFeedList={setList}
                 data={data}
-                loading={loading}
                 loadGameFeed={loadGameFeed}
                 isLoggedin={isLoggedin}
               />

@@ -23,7 +23,6 @@ export interface VotePost {
 
 export interface PostsState {
   posts: Post[] | null;
-  //value: number
 }
 
 const initialState: PostsState = {
@@ -48,16 +47,6 @@ export const postsSlice = createSlice({
       });
       state.posts = updatedList;
     },
-    // addPost: (state) => {
-    //   state.posts?.push({ id: 1, title: "ㅛy", content: "aaa" });
-    // },
-    // decrement: (state) => {
-    //   state.value -= 1
-    // },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload
-    // },
   },
 });
 

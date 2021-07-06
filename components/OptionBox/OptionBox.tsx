@@ -14,6 +14,7 @@ import { editList } from "redux/postsSlice";
 
 interface OptionBoxProps {
   isFeed: boolean;
+  setUpdateLoading: React.Dispatch<React.SetStateAction<boolean>>;
   loadGame?: (
     variables?:
       | Partial<{
@@ -21,12 +22,6 @@ interface OptionBoxProps {
         }>
       | undefined
   ) => Promise<ApolloQueryResult<any>> | undefined;
-
-  loadGameFeed?:
-    | ((
-        variables?: Partial<Record<string, any>> | undefined
-      ) => Promise<ApolloQueryResult<any>>)
-    | undefined;
   selection: any;
   postId: string;
   checkedId: string | null;
@@ -36,8 +31,8 @@ interface OptionBoxProps {
 
 const OptionBox = ({
   isFeed,
+  setUpdateLoading,
   loadGame,
-  loadGameFeed,
   selection,
   checkedId,
   postId,
@@ -50,21 +45,21 @@ const OptionBox = ({
   });
   function votedCompleted(data: any) {
     if (isFeed) {
+      // 피드페이지에서만
       dispatch(editList(data));
-    }
-    console.log("votedCompleted data -->>", data);
-
-    // 투표한 곳의 id를 index페이지에서 받는 data의 id와 같다면 정보 업데이트
-    load();
+      setUpdateLoading(false);
+    } else reFetchDetailPage();
   }
+
+  const reFetchDetailPage = () => {
+    if (!loadGame) return;
+    loadGame();
+  };
+
   const [mCreateVoteNotLogined] = useMutation(CREATE_VOTE_NOT_LOGINED);
   const [mRemoveVoteLogined] = useMutation(REMOVE_VOTE_LOGINED);
 
   const { token } = parseCookies();
-
-  useEffect(() => {
-    console.log("OptionBox");
-  }, []);
 
   useEffect(() => {
     const checkedList = localStorage.getItem("checkedList")?.split(",");
@@ -75,6 +70,7 @@ const OptionBox = ({
 
   const handleVote = async (selectionId: string) => {
     setIsVoted(true);
+    setUpdateLoading && setUpdateLoading(true);
     // 로그인이면
     if (token) {
       // 기존 선택한 값이 없으면서 새로 선택한 경우 투표
@@ -149,16 +145,6 @@ const OptionBox = ({
     // await load();
     // game 두번 로드하는 것 같은데, 수정 필요
     await setIsVoted(false);
-  };
-
-  const load = () => {
-    if (loadGame) {
-      console.log("loadGame있음");
-      loadGame();
-    } else if (loadGameFeed) {
-      console.log("loadGameFeed 있음");
-      loadGameFeed();
-    } else return;
   };
 
   const isChecked =
