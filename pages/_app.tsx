@@ -2,8 +2,9 @@ import { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import Head from "next/head";
 import { useApollo } from "../lib/apolloClient";
+import { wrapper } from "redux/store";
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
 
   return (
@@ -30,3 +31,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </ApolloProvider>
   );
 }
+
+export default wrapper.withRedux(App);
