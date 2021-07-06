@@ -1,88 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import styled from "styled-components";
 import { useMutation } from "@apollo/client";
 import { ApolloQueryResult, gql } from "@apollo/client/core";
 import TextareaComment from "./TextareaComment";
 import CommentMore from "./CommentMore";
 import MoreIcon from "../../public/more.svg";
 import { modifyDate } from "../../utils/date";
-
-const ReplyCommentWrapper = styled.li`
-  position: relative;
-  &:nth-child(2) {
-    // 내 게시글인 경우 배경색상
-    background-color: #f8f9fa;
-  }
-  padding: 0 16px;
-
-  .reply__content {
-    border-bottom: 1px solid #e9ecef;
-    padding: 13px 0 8px;
-  }
-  .reply__deleted {
-    font-size: 13px;
-    line-height: 140%;
-    color: #343a40;
-    opacity: 0.6;
-    padding-left: 22px;
-    padding-bottom: 0.8rem;
-  }
-  .reply__user-pick {
-    display: inline-block;
-    background-color: #ffd770;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    margin-right: 6px;
-    border: 1px solid lightgray;
-    box-sizing: border-box;
-  }
-  .info {
-    height: 16px;
-    display: flex;
-    align-items: center;
-  }
-  .author {
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 11px;
-  }
-  .pub-date {
-    display: inline-block;
-    font-size: 9px;
-    line-height: 9px;
-    margin-left: 4px;
-    color: #868e96;
-  }
-  .reply__user-text {
-    margin-left: 22px;
-  }
-  .text {
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  .reply-btn {
-    border: none;
-    background: none;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 500;
-    color: #868e96;
-    padding: 0;
-  }
-  .reply__more {
-    position: absolute;
-    top: 1.3rem;
-    right: 1.6rem;
-  }
-  .setting__more-btn {
-    display: inline-block;
-    flex: 1;
-    text-align: right;
-  }
-`;
+import { ReplyCommentWrapper } from './Comment.style';
 
 interface ReplyCommentProps {
   mySelectionColor: string;

@@ -12,14 +12,14 @@ import {
   BALANCE_GAMES_QUERY,
   BALANCE_GAMES_TICK,
 } from "lib/queries";
-import FeedPost from "components/FeedPost";
+import FeedPost from "components/FeedPost/FeedPost";
 import Header from "components/Header";
-import styled from "styled-components";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Loading from "components/Loading";
+import Loading from "components/Loading/Loading";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { addList } from "redux/postsSlice";
+import { Container, Participate } from "./index.style"
 
 interface IndexProps {
   isLoggedin: boolean;
@@ -134,9 +134,6 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   );
 };
 
-// const Order = styled.div<{ isSelect: boolean }>`
-//   color: ${({ isSelect }) => (isSelect ? "#343A40" : "#ADB5BD")};
-// `;
 export const getServerSideProps: GetServerSideProps = async function (context) {
   const { token } = nookies.get(context);
   const isLoggedin = !!token;
@@ -149,58 +146,3 @@ export const getServerSideProps: GetServerSideProps = async function (context) {
 };
 
 export default Index;
-
-const Container = styled.div`
-  background: white;
-  padding: 1.55rem 1.6rem;
-  display: flex;
-  flex-direction: column;
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-    &__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 4.8rem;
-      font-weight: bold;
-      font-size: 1.4rem;
-      flex: 0.49;
-      border: 1px solid #e9ecef;
-      box-sizing: border-box;
-      border-radius: 8px;
-      letter-spacing: -0.05em;
-      cursor: pointer;
-      span {
-        margin-left: 0.4rem;
-      }
-    }
-  }
-  .selects {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 4rem;
-    margin-bottom: 1.6rem;
-  }
-  .orders {
-    display: flex;
-    align-items: center;
-    color: #adb5bd;
-    font-size: 1.3rem;
-  }
-  .dot {
-    margin: 0 0.78rem;
-  }
-`;
-
-const Participate = styled.div<{ isFiltered: boolean }>`
-  ::after {
-    content: "참여한 밸런스 게임만 보기";
-    color: ${({ isFiltered }) => (isFiltered ? "#343A40" : "#ADB5BD")};
-    margin-left: 0.5rem;
-    font-size: 1.3rem;
-  }
-  display: flex;
-  align-items: center;
-`;

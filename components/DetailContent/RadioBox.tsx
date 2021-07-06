@@ -1,69 +1,7 @@
-import styled from "styled-components";
 import React, { ChangeEvent } from "react";
 import DetailFireBar from "components/FireBar/DetailFireBar";
 import VS from "public/versus.svg";
-
-const RadioWrapper = styled.div`
-  width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-
-  .radio-box {
-    position: relative;
-    height: 143px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    .radio-btn {
-      position: absolute;
-      display: inline-block;
-      right: 0.7rem;
-      top: 0.7rem;
-      width: 2.4rem;
-      height: 2.4rem;
-      background-image: url("/circle.svg");
-    }
-    input[type="radio"] {
-      display: none;
-    }
-    input[type="radio"]:checked + .radio-btn:before {
-      content: "";
-      position: absolute;
-      right: 0.7px;
-      top: 0.7px;
-      width: 2.4rem;
-      height: 2.4rem;
-      background-image: url("/check-circle.svg");
-    }
-  }
-  .first {
-    background-color: #e56f53;
-  }
-  .second {
-    background-color: #ffd569;
-  }
-  h2 {
-    font-family: "NanumSquareRound";
-    font-size: 2rem;
-    font-weight: 800;
-  }
-`;
-
-const BoxWrapper = styled.div`
-  position: relative;
-`;
-
-const Versus = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
+import { RadioWrapper, BoxWrapper, Versus } from './DetailContent.style'
 
 interface balanceType {
   id: string;

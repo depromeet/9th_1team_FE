@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Fire from "public/fire.svg";
-import { FireBarWrapper } from "./Firebar.style";
+import { FireBarWrapper } from "./FireBar.style";
 
 interface FireBarProps {
   voteCountA: number;
