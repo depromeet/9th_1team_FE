@@ -7,11 +7,7 @@ import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
 import _ from "lodash";
 import { useLazyQuery } from "@apollo/client";
-import {
-  BALANCE_GAMES_LOGINED_QUERY,
-  BALANCE_GAMES_QUERY,
-  BALANCE_GAMES_TICK,
-} from "lib/queries";
+import { BALANCE_GAMES_LOGINED_QUERY, BALANCE_GAMES_QUERY, BALANCE_GAMES_TICK } from "lib/queries";
 import FeedPost from "components/FeedPost";
 import Header from "components/Header";
 import styled from "styled-components";
@@ -34,10 +30,9 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
   const [list, setList] = useState([]);
-  const [qBalanceGames, { loading, data, refetch: loadGameFeed }] =
-    useLazyQuery(
-      isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY
-    );
+  const [qBalanceGames, { loading, data, refetch: loadGameFeed }] = useLazyQuery(
+    isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -89,21 +84,18 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
     <div style={{ width: "100%" }}>
       <Header />
       <Container>
-        <div className="buttons">
-          <div className="buttons__btn" onClick={onClickRandomPlay}>
+        <div className='buttons'>
+          <div className='buttons__btn' onClick={onClickRandomPlay}>
             <RandomIcon />
             <span>랜덤 플레이</span>
           </div>
-          <div className="buttons__btn" onClick={onClickCreateGame}>
+          <div className='buttons__btn' onClick={onClickCreateGame}>
             <PlusIcon />
             <span>게임 만들기</span>
           </div>
         </div>
-        <div className="selects">
-          <Participate
-            {...{ isFiltered }}
-            onClick={() => setIsFiltered(!isFiltered)}
-          >
+        <div className='selects'>
+          <Participate {...{ isFiltered }} onClick={() => setIsFiltered(!isFiltered)}>
             {isFiltered ? <Select /> : <Unselect />}
           </Participate>
         </div>
