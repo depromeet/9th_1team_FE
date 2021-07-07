@@ -144,15 +144,21 @@ const Comments: React.FC<CommentProps> = ({
           {data && (
             <>
               <ul className='comments'>
-                {data?.comments.map((comment: any, i: number) => (
-                  <Comment
-                    key={i}
-                    mySelectionColor={mySelectionColor}
-                    balanceGameId={id}
-                    comment={comment}
-                    refetch={refetch}
-                  />
-                ))}
+                {console.log("jeongjin", data?.comments)}
+                {data?.comments
+                  .slice(0, data.comments.length) // 얕은 복사
+                  .sort((a: { createdAt: string }, b: { createdAt: string }) => {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                  }) // 시간 정렬
+                  .map((comment: any, i: number) => (
+                    <Comment
+                      key={i}
+                      mySelectionColor={mySelectionColor}
+                      balanceGameId={id}
+                      comment={comment}
+                      refetch={refetch}
+                    />
+                  ))}
               </ul>
               {/*<div className="btn__wrapper">*/}
               {/*  <button className="comment__more-btn">의견 더보기</button>*/}
