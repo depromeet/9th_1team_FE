@@ -199,15 +199,20 @@ const Comment: React.FC<CommentProps> = ({ mySelectionColor, balanceGameId, comm
           </>
         )}
 
-        {comment.replies.map((reply) => (
-          <ReplyComment
-            mySelectionColor={mySelectionColor}
-            balanceGameId={balanceGameId}
-            commentId={comment.id}
-            reply={reply}
-            refetch={refetch}
-          />
-        ))}
+        {comment.replies
+          .slice(0, comment.replies.length) // 얕은 복사
+          .sort((a: { createdAt: string }, b: { createdAt: string }) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          }) // 시간 정렬
+          .map((reply) => (
+            <ReplyComment
+              mySelectionColor={mySelectionColor}
+              balanceGameId={balanceGameId}
+              commentId={comment.id}
+              reply={reply}
+              refetch={refetch}
+            />
+          ))}
       </div>
       {comment.status !== "delete" && (
         <div className='comment__more'>

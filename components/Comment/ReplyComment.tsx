@@ -102,6 +102,8 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
         },
       });
       await refetch();
+      setContent("");
+      setOpened(false);
     } catch (e) {
       alert("에러가 발생했습니다.");
     }
@@ -133,6 +135,8 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
           content: modifyReply,
         },
       });
+      setModifyReply("");
+      setIsModifyMode(false);
     } catch (e) {
       alert("에러가 발생했습니다.");
     }
