@@ -5,7 +5,7 @@ import TextareaComment from "./TextareaComment";
 import CommentMore from "./CommentMore";
 import MoreIcon from "public/more.svg";
 import { modifyDate } from "utils/date";
-import { ReplyCommentWrapper } from './Comment.style';
+import { ReplyCommentWrapper } from "./Comment.style";
 
 interface ReplyCommentProps {
   mySelectionColor: string;
@@ -28,12 +28,7 @@ interface ReplyCommentProps {
 }
 
 const CREATE_REPLY_MUTATION = gql`
-  mutation createReply(
-    $balanceGameId: String!
-    $commentId: String!
-    $content: String!
-    $color: String
-  ) {
+  mutation createReply($balanceGameId: String!, $commentId: String!, $content: String!, $color: String) {
     createReply(
       createReplyInput: {
         balanceGameId: $balanceGameId
@@ -149,23 +144,23 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
 
   return (
     <ReplyCommentWrapper>
-      <div className="reply__content" onClick={onCloseMore}>
+      <div className='reply__content' onClick={onCloseMore}>
         {reply.status === "delete" ? (
-          <div className="reply__deleted">삭제된 댓글입니다.</div>
+          <div className='reply__deleted'>삭제된 댓글입니다.</div>
         ) : (
           <>
-            <div className="info">
+            <div className='info'>
               <div
-                className="reply__user-pick"
+                className='reply__user-pick'
                 style={{
                   backgroundColor: reply.color || "#ffffff",
                   borderColor: reply.color || "lightgray",
                 }}
               />
-              <span className="author">{reply?.user?.profile?.nickname}</span>
-              <span className="pub-date">{modifyDate(reply.createdAt)}</span>
+              <span className='author'>{reply?.user?.profile?.nickname}</span>
+              <span className='pub-date'>{modifyDate(reply.createdAt)}</span>
             </div>
-            <div className="reply__user-text">
+            <div className='reply__user-text'>
               {isModifyMode ? (
                 <TextareaComment
                   mySelectionColor={reply.color}
@@ -174,9 +169,9 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
                   value={modifyReply}
                 />
               ) : (
-                <p className="text">{reply.content}</p>
+                <p className='text'>{reply.content}</p>
               )}
-              <button className="reply-btn" onClick={onToggle}>
+              <button className='reply-btn' onClick={onToggle}>
                 답글 쓰기
               </button>
             </div>
@@ -193,7 +188,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
       </div>
       {/** isMine: 내 코멘트인지 확인 필요 */}
       {reply.status !== "delete" && (
-        <div className="reply__more">
+        <div className='reply__more'>
           <MoreIcon onClick={onToggleMore} />
           {/** isMine: 내 코멘트인지 확인 필요 */}
           <CommentMore

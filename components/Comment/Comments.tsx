@@ -7,7 +7,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import TextareaComment from "./TextareaComment";
 import Loading from "components/Loading/Loading";
 import { useRouter } from "next/router";
-import { CommentsWrapper } from './Comment.style'
+import { CommentsWrapper } from "./Comment.style";
 
 const COMMENTS_BY_GAME_ID_QUERY = gql`
   query commentsByGameId($id: String!) {
@@ -67,9 +67,7 @@ const Comments: React.FC<CommentProps> = ({
 }) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
-  const [mCreateComment, { loading: createCommentLoading }] = useMutation(
-    CREATE_COMMENT_MUTATION
-  );
+  const [mCreateComment, { loading: createCommentLoading }] = useMutation(CREATE_COMMENT_MUTATION);
   const {
     data,
     loading: commentsLoading,
@@ -95,6 +93,7 @@ const Comments: React.FC<CommentProps> = ({
           },
         },
       });
+      setContent("");
       await refetch();
     } catch (e) {
       alert("게임에 투표 후 댓글을 남길 수 있습니다.");
@@ -112,10 +111,10 @@ const Comments: React.FC<CommentProps> = ({
 
   return (
     <CommentsWrapper opened={opened}>
-      <div className="toggle__wrapper">
+      <div className='toggle__wrapper'>
         <OpinionIcon />
         <button
-          className="toggle-btn"
+          className='toggle-btn'
           onClick={() => {
             if (isLoggedin) {
               setOpened((prev) => !prev);
@@ -125,8 +124,7 @@ const Comments: React.FC<CommentProps> = ({
             }
           }}
         >
-          {opened ? "의견 접기" : "의견 보기"} (
-          {data?.comments.length || commentCount})
+          {opened ? "의견 접기" : "의견 보기"} ({data?.comments.length || commentCount})
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
@@ -145,7 +143,7 @@ const Comments: React.FC<CommentProps> = ({
         <>
           {data && (
             <>
-              <ul className="comments">
+              <ul className='comments'>
                 {data?.comments.map((comment: any, i: number) => (
                   <Comment
                     key={i}

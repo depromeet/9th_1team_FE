@@ -6,7 +6,7 @@ import ReplyComment from "./ReplyComment";
 import MoreIcon from "public/more.svg";
 import CommentMore from "./CommentMore";
 import { modifyDate } from "utils/date";
-import { CommentWrapper } from './Comment.style'
+import { CommentWrapper } from "./Comment.style";
 
 interface CommentProps {
   mySelectionColor: string;
@@ -41,12 +41,7 @@ interface CommentProps {
 }
 
 const CREATE_REPLY_MUTATION = gql`
-  mutation createReply(
-    $balanceGameId: String!
-    $commentId: String!
-    $content: String!
-    $color: String
-  ) {
+  mutation createReply($balanceGameId: String!, $commentId: String!, $content: String!, $color: String) {
     createReply(
       createReplyInput: {
         balanceGameId: $balanceGameId
@@ -76,12 +71,7 @@ const UPDATE_COMMENT_MUTATION = gql`
   }
 `;
 
-const Comment: React.FC<CommentProps> = ({
-  mySelectionColor,
-  balanceGameId,
-  comment,
-  refetch,
-}) => {
+const Comment: React.FC<CommentProps> = ({ mySelectionColor, balanceGameId, comment, refetch }) => {
   const [opened, setOpened] = useState(false);
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [modifyComment, setModifyComment] = useState(comment.content);
@@ -109,6 +99,8 @@ const Comment: React.FC<CommentProps> = ({
           color: mySelectionColor,
         },
       });
+      setContent("");
+      setOpened(false);
       await refetch();
     } catch (e) {
       alert("에러가 발생했습니다.");
@@ -150,6 +142,7 @@ const Comment: React.FC<CommentProps> = ({
           content: modifyComment,
         },
       });
+      setIsModifyMode(false);
     } catch (e) {}
   };
 
@@ -159,25 +152,25 @@ const Comment: React.FC<CommentProps> = ({
 
   return (
     <CommentWrapper key={comment.id}>
-      <div className="comment__content" onClick={onCloseMore}>
+      <div className='comment__content' onClick={onCloseMore}>
         {comment.status === "delete" ? (
-          <div className="comment__deleted">삭제된 댓글입니다.</div>
+          <div className='comment__deleted'>삭제된 댓글입니다.</div>
         ) : (
           <>
-            <div className="info">
+            <div className='info'>
               <div
-                className="comment__user-pick"
+                className='comment__user-pick'
                 style={{
                   backgroundColor: comment.color || "#ffffff",
                   borderColor: comment.color || "lightgray",
                 }}
               />
-              <span className="author">{comment?.user?.profile?.nickname}</span>
-              <span className="pub-date">{modifyDate(comment.createdAt)}</span>
+              <span className='author'>{comment?.user?.profile?.nickname}</span>
+              <span className='pub-date'>{modifyDate(comment.createdAt)}</span>
             </div>
-            <div className="comment__user-text">
+            <div className='comment__user-text'>
               {isModifyMode ? (
-                <div className="comment__textarea-comment">
+                <div className='comment__textarea-comment'>
                   <TextareaComment
                     mySelectionColor={comment.color}
                     onSubmit={onSubmitModifyComment}
@@ -186,15 +179,15 @@ const Comment: React.FC<CommentProps> = ({
                   />
                 </div>
               ) : (
-                <p className="text">{comment.content}</p>
+                <p className='text'>{comment.content}</p>
               )}
 
-              <button className="reply-btn" onClick={onToggle}>
+              <button className='reply-btn' onClick={onToggle}>
                 답글 쓰기
               </button>
             </div>
             {opened && (
-              <div className="comment__textarea-comment">
+              <div className='comment__textarea-comment'>
                 <TextareaComment
                   mySelectionColor={mySelectionColor}
                   onSubmit={onSubmitReply}
@@ -217,7 +210,7 @@ const Comment: React.FC<CommentProps> = ({
         ))}
       </div>
       {comment.status !== "delete" && (
-        <div className="comment__more">
+        <div className='comment__more'>
           <MoreIcon onClick={onToggleMore} />
           {/** isMine: 내 코멘트인지 확인 필요 */}
           <CommentMore
