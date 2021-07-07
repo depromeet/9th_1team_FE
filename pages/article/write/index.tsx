@@ -27,8 +27,10 @@ import {
   TextInfoContainer,
   KeywordsContainer,
   SubmitBtnContainer,
-  SubmitBtn
-} from './index.style'
+  SubmitBtn,
+} from "./index.style";
+import { useAppDispatch } from "redux/hooks";
+import { changePrevPageWrite } from "redux/postsSlice";
 
 const [
   INIT_BALANCE_FONT_COLOR_A,
@@ -43,11 +45,7 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
     $file1: Upload
     $file2: Upload
   ) {
-    createBalanceGame(
-      createBalanceGameInput: $createBalanceGameInput
-      file1: $file1
-      file2: $file2
-    ) {
+    createBalanceGame(createBalanceGameInput: $createBalanceGameInput, file1: $file1, file2: $file2) {
       id
     }
   }
@@ -65,22 +63,15 @@ const CREATE_BALANCE_GAME_MUTATION = gql`
 // }
 
 const Write = () => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [textInfo, setTextInfo] = useState("");
-  const [balanceFontColorA, setBalanceFontColorA] = useState(
-    INIT_BALANCE_FONT_COLOR_A
-  );
-  const [balanceBgColorA, setBalanceBgColorA] = useState(
-    INIT_BALANCE_BG_COLOR_A
-  );
+  const [balanceFontColorA, setBalanceFontColorA] = useState(INIT_BALANCE_FONT_COLOR_A);
+  const [balanceBgColorA, setBalanceBgColorA] = useState(INIT_BALANCE_BG_COLOR_A);
   const [balanceBgImgFileA, setBalanceBgImgFileA] = useState(null);
   const [balanceBgImgSrcA, setBalanceBgImgSrcA] = useState("");
-  const [balanceFontColorB, setBalanceFontColorB] = useState(
-    INIT_BALANCE_FONT_COLOR_B
-  );
-  const [balanceBgColorB, setBalanceBgColorB] = useState(
-    INIT_BALANCE_BG_COLOR_B
-  );
+  const [balanceFontColorB, setBalanceFontColorB] = useState(INIT_BALANCE_FONT_COLOR_B);
+  const [balanceBgColorB, setBalanceBgColorB] = useState(INIT_BALANCE_BG_COLOR_B);
   const [balanceBgImgFileB, setBalanceBgImgFileB] = useState(null);
   const [balanceBgImgSrcB, setBalanceBgImgSrcB] = useState("");
   const [balanceTextA, setBalanceTextA] = useState("");
@@ -97,16 +88,15 @@ const Write = () => {
     }
   }, []);
 
-  const onChangeText =
-    (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
-      const str = e.target.value.replace(/\n/g, "");
+  const onChangeText = (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const str = e.target.value.replace(/\n/g, "");
 
-      if (type === "A") {
-        setBalanceTextA(str);
-      } else if (type === "B") {
-        setBalanceTextB(str);
-      }
-    };
+    if (type === "A") {
+      setBalanceTextA(str);
+    } else if (type === "B") {
+      setBalanceTextB(str);
+    }
+  };
 
   const onChangeTextInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 250) {
@@ -133,22 +123,21 @@ const Write = () => {
       }
     };
 
-  const onChangeBgImg =
-    (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files) return;
+  const onChangeBgImg = (type: string) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
 
-      const [file]: any = e.target.files;
-      if (file) {
-        const src = URL.createObjectURL(file);
-        if (type === "A") {
-          setBalanceBgImgFileA(file);
-          setBalanceBgImgSrcA(src);
-        } else if (type === "B") {
-          setBalanceBgImgFileB(file);
-          setBalanceBgImgSrcB(src);
-        }
+    const [file]: any = e.target.files;
+    if (file) {
+      const src = URL.createObjectURL(file);
+      if (type === "A") {
+        setBalanceBgImgFileA(file);
+        setBalanceBgImgSrcA(src);
+      } else if (type === "B") {
+        setBalanceBgImgFileB(file);
+        setBalanceBgImgSrcB(src);
       }
-    };
+    }
+  };
 
   const onClickBgImgRemove = (type: string) => () => {
     if (type === "A") {
@@ -217,7 +206,7 @@ const Write = () => {
         },
       });
       const { id } = data?.createBalanceGame;
-
+      dispatch(changePrevPageWrite(true));
       router.push(`/article/${id}`);
     } catch (e) {}
   };
@@ -235,9 +224,7 @@ const Write = () => {
                 <UnionIcon />
               </ChatArea>
             </TomatoMent>
-            <div className={"title"}>
-              밸런스 선택지를 만들고 내용 작성을 통해 추가 설명이 가능합니다.
-            </div>
+            <div className={"title"}>밸런스 선택지를 만들고 내용 작성을 통해 추가 설명이 가능합니다.</div>
           </BalanceTitle>
           <BalanceContainer>
             <BalanceCardTitle>선택지</BalanceCardTitle>
@@ -261,13 +248,13 @@ const Write = () => {
                 />
                 {isExistBgImg("A") ? (
                   <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("A")}>
-                    사진삭제 <img src="img.png" alt="" />
+                    사진삭제 <img src='img.png' alt='' />
                   </BalanceCardBgImgRemoveBtn>
                 ) : (
                   <BalanceCardBtn htmlFor={"balanceBgColorA"}>
                     <input
-                      type="file"
-                      accept="image/*"
+                      type='file'
+                      accept='image/*'
                       id={"balanceBgColorA"}
                       onChange={onChangeBgImg("A")}
                     />
@@ -297,13 +284,13 @@ const Write = () => {
                 />
                 {isExistBgImg("B") ? (
                   <BalanceCardBgImgRemoveBtn onClick={onClickBgImgRemove("B")}>
-                    사진삭제 <img src="img.png" alt="" />
+                    사진삭제 <img src='img.png' alt='' />
                   </BalanceCardBgImgRemoveBtn>
                 ) : (
                   <BalanceCardBtn htmlFor={"balanceBgColorB"}>
                     <input
-                      type="file"
-                      accept="image/*"
+                      type='file'
+                      accept='image/*'
                       id={"balanceBgColorB"}
                       onChange={onChangeBgImg("B")}
                     />
@@ -325,9 +312,7 @@ const Write = () => {
                 />
               ))}
             </ColorSamples>
-            <ColorSampleInfo>
-              *한번 더 선택하면 위아래 색상이 전환됩니다.
-            </ColorSampleInfo>
+            <ColorSampleInfo>*한번 더 선택하면 위아래 색상이 전환됩니다.</ColorSampleInfo>
           </BalanceContainer>
           <TextInfoContainer>
             <div className={"title"}>내용</div>
@@ -343,11 +328,7 @@ const Write = () => {
           <KeywordsContainer>
             <div className={"title"}>키워드</div>
             <div className={"input"}>
-              <input
-                placeholder={"#음식 #희망 #로또"}
-                onChange={onChangeKeywords}
-                value={keywords}
-              />
+              <input placeholder={"#음식 #희망 #로또"} onChange={onChangeKeywords} value={keywords} />
             </div>
           </KeywordsContainer>
           <SubmitBtnContainer>

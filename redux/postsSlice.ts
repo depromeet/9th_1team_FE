@@ -24,10 +24,12 @@ export interface VotePost {
 
 export interface PostsState {
   posts: Post[] | null;
+  isPrevPageWrite: boolean;
 }
 
 const initialState: PostsState = {
   posts: [],
+  isPrevPageWrite: false,
 };
 
 export const postsSlice = createSlice({
@@ -51,10 +53,13 @@ export const postsSlice = createSlice({
       });
       state.posts = updatedList;
     },
+    changePrevPageWrite: (state, action: PayloadAction<boolean>) => {
+      state.isPrevPageWrite = action.payload;
+    },
   },
 });
 
-export const { addList, editList } = postsSlice.actions;
+export const { addList, editList, changePrevPageWrite } = postsSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.posts;
