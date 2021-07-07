@@ -64,11 +64,12 @@ export const DetailWrapper = styled.div`
       margin-right: 1.4rem;
     }
   }
-
   nav {
     display: flex;
     justify-content: space-between;
     margin-bottom: 2.3rem;
+    background-color: #f8f9fa;
+    padding: 1.4rem 1.5rem;
   }
   .prev,
   .next {

@@ -6,8 +6,13 @@ import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
 import _ from "lodash";
-import { useLazyQuery } from "@apollo/client";
-import { BALANCE_GAMES_LOGINED_QUERY, BALANCE_GAMES_QUERY, BALANCE_GAMES_TICK } from "lib/queries";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import {
+  BALANCE_GAMES_LOGINED_QUERY,
+  BALANCE_GAMES_QUERY,
+  BALANCE_GAMES_TICK,
+  NEXT_GAME_BY_RANDOM_QUERY,
+} from "lib/queries";
 import Header from "components/Header";
 import FeedPost from "components/FeedPost/FeedPost";
 import { useRouter } from "next/router";
@@ -33,6 +38,8 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const [qBalanceGames, { loading, data, refetch: loadGameFeed }] = useLazyQuery(
     isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
   );
+  const { data: nextGameData } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -73,7 +80,9 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   };
 
   const onClickRandomPlay = () => {
-    alert("아직 준비중인 서비스입니다. 조금만 기다려주세요!");
+    // router.push("/random/")
+    const { id } = nextGameData?.nextGameByRandom;
+    router.push(`/random/${id}`);
   };
 
   const onClickCreateGame = () => {
