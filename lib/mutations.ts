@@ -1,10 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_VOTE_LOGINED = gql`
-  mutation createVoteLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
+  mutation createVoteLogined($balanceGameId: String!, $balanceGameSelectionId: String!) {
     createVoteLogined(
       createBalanceGameSelectionVoteInput: {
         balanceGameId: $balanceGameId
@@ -36,11 +33,41 @@ export const CREATE_VOTE_LOGINED = gql`
   }
 `;
 
+export const UPDATE_VOTE_LOGINED = gql`
+  mutation updateVoteLogined($balanceGameId: String!, $balanceGameSelectionId: String!) {
+    updateVoteLogined(
+      updateBalanceGameSelectionVoteInput: {
+        balanceGameId: $balanceGameId
+        balanceGameSelectionId: $balanceGameSelectionId
+      }
+    ) {
+      id
+      userId
+      balanceGameSelectionVotesCount
+      description
+      totalVoteCount
+      commentCount
+      thumbs
+      status
+      mySelection
+      createdAt
+      updatedAt
+      balanceGameSelections {
+        id
+        order
+        status
+        description
+        voteCount
+        backgroundColor
+        backgroundImage
+        textColor
+      }
+    }
+  }
+`;
+
 export const CREATE_VOTE_NOT_LOGINED = gql`
-  mutation createVoteNotLogined(
-    $balanceGameId: String!
-    $balanceGameSelectionId: String!
-  ) {
+  mutation createVoteNotLogined($balanceGameId: String!, $balanceGameSelectionId: String!) {
     createVoteNotLogined(
       createBalanceGameSelectionVoteInput: {
         balanceGameId: $balanceGameId

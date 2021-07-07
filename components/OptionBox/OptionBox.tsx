@@ -4,11 +4,7 @@ import Select from "public/select.svg";
 import { parseCookies } from "nookies";
 import { OptionBoxContainer } from "./OptionBox.style";
 import { ApolloQueryResult, useMutation } from "@apollo/client";
-import {
-  CREATE_VOTE_LOGINED,
-  CREATE_VOTE_NOT_LOGINED,
-  REMOVE_VOTE_LOGINED,
-} from "lib/mutations";
+import { CREATE_VOTE_LOGINED, CREATE_VOTE_NOT_LOGINED, REMOVE_VOTE_LOGINED } from "lib/mutations";
 import { useAppDispatch } from "redux/hooks";
 import { editList } from "redux/postsSlice";
 
@@ -20,7 +16,7 @@ interface OptionBoxProps {
       | Partial<{
           id: string;
         }>
-      | undefined
+      | undefined,
   ) => Promise<ApolloQueryResult<any>> | undefined;
   selection: any;
   postId: string;
@@ -39,6 +35,7 @@ const OptionBox = ({
   setCheckedId,
   setIsVoted,
 }: OptionBoxProps) => {
+  const seletedId = selection.id;
   const dispatch = useAppDispatch();
   const [mCreateVoteLogined] = useMutation(CREATE_VOTE_LOGINED, {
     onCompleted: votedCompleted,
@@ -46,7 +43,7 @@ const OptionBox = ({
   function votedCompleted(data: any) {
     if (isFeed) {
       // 피드페이지에서만
-      dispatch(editList(data));
+      dispatch(editList({ createVoteLogined: data.createVoteLogined, mySelection: seletedId }));
       setUpdateLoading(false);
     } else reFetchDetailPage();
   }
@@ -69,6 +66,7 @@ const OptionBox = ({
   }, []);
 
   const handleVote = async (selectionId: string) => {
+    console.log("동작 ---->>", selectionId); //dispatch
     setIsVoted(true);
     setUpdateLoading && setUpdateLoading(true);
     // 로그인이면
@@ -106,8 +104,7 @@ const OptionBox = ({
         });
       }
     } else {
-      const checkedList =
-        (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
+      const checkedList = (localStorage.getItem("checkedList")?.split(",") as string[]) || [];
       if (checkedId === null) {
         // 새로 create
         setCheckedId(selectionId);
@@ -147,8 +144,7 @@ const OptionBox = ({
     await setIsVoted(false);
   };
 
-  const isChecked =
-    checkedId === null ? null : checkedId === selection.id ? true : false;
+  const isChecked = checkedId === null ? null : checkedId === selection.id ? true : false;
 
   return (
     <OptionBoxContainer
@@ -161,10 +157,10 @@ const OptionBox = ({
         backgroundPosition: "center",
       }}
     >
-      <div className="checkbox" onClick={() => handleVote(selection.id)}>
+      <div className='checkbox' onClick={() => handleVote(selection.id)}>
         {isChecked ? <Select /> : <Unselect />}
       </div>
-      <div className="title">{selection.description}</div>
+      <div className='title'>{selection.description}</div>
     </OptionBoxContainer>
   );
 };

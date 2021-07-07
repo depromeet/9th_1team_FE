@@ -19,12 +19,7 @@ import {
 import OptionBox from "components/OptionBox/OptionBox";
 import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
 import { truncate } from "fs";
-import {
-  MoreMenu,
-  Container,
-  VoteWrapper,
-  Versus
-} from './FeedPost.style'
+import { MoreMenu, Container, VoteWrapper, Versus } from "./FeedPost.style";
 
 interface FeedPostProps {
   updateLoading: boolean;
@@ -33,9 +28,7 @@ interface FeedPostProps {
   setFeedList: React.Dispatch<React.SetStateAction<never[]>>;
   data?: any;
   loadGameFeed:
-    | ((
-        variables?: Partial<Record<string, any>> | undefined
-      ) => Promise<ApolloQueryResult<any>>)
+    | ((variables?: Partial<Record<string, any>> | undefined) => Promise<ApolloQueryResult<any>>)
     | undefined;
   isLoggedin: boolean;
 }
@@ -75,11 +68,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
       console.log(data.balanceGameSelections[0].description, votedCountA);
       console.log(data.balanceGameSelections[1].description, votedCountB);
     }
-  }, [
-    updateLoading,
-    data?.balanceGameSelections[0].voteCount,
-    data?.balanceGameSelections[1].voteCount,
-  ]);
+  }, [updateLoading, data?.balanceGameSelections[0].voteCount, data?.balanceGameSelections[1].voteCount]);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -97,14 +86,8 @@ const FeedPost: React.FC<FeedPostProps> = ({
     } else {
       return (
         <div
-          className="content__buttons__button"
-          onClick={() =>
-            shareAPI(
-              balanceA.description,
-              balanceB.description,
-              baseURL as string
-            )
-          }
+          className='content__buttons__button'
+          onClick={() => shareAPI(balanceA.description, balanceB.description, baseURL as string)}
         >
           <Share />
           <span style={{ marginLeft: "0.4rem" }}>공유하기</span>
@@ -152,27 +135,26 @@ const FeedPost: React.FC<FeedPostProps> = ({
         </Versus>
       </VoteWrapper>
 
-      <div className="content">
+      <div className='content'>
         <Link href={`/article/${data.id}`}>
-          <div className="content__info">
-            <div className="content__title">{data.description}</div>
-            <div className="content__state">
+          <div className='content__info'>
+            <div className='content__title'>{data.description}</div>
+            <div className='content__state'>
               <div>
-                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
-                {modifyDate(data.createdAt)}
+                참여 {data.totalVoteCount} • 의견 {data.commentCount} • {modifyDate(data.createdAt)}
               </div>
             </div>
           </div>
         </Link>
-        <div className="content__buttons">
+        <div className='content__buttons'>
           <Link href={`/article/${data.id}`}>
-            <div className="content__buttons__button">
+            <div className='content__buttons__button'>
               <Opinion />
             </div>
           </Link>
           {renderShare()}
           <div
-            className="content__buttons__button"
+            className='content__buttons__button'
             onClick={(e) => {
               e.stopPropagation();
               setIsMoreOpened(true);
@@ -183,7 +165,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
         </div>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="content__headermore"
+          className='content__headermore'
           style={{
             bottom: isMine ? "2.5rem" : "-2rem",
             visibility: isMoreOpened ? "visible" : "hidden",

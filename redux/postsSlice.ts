@@ -19,6 +19,7 @@ export interface Post {
 
 export interface VotePost {
   createVoteLogined: Post;
+  mySelection: string;
 }
 
 export interface PostsState {
@@ -38,10 +39,13 @@ export const postsSlice = createSlice({
       //state.posts?.push(payload.data);
     },
     editList: (state, action: PayloadAction<VotePost>) => {
-      //const targetPost = state.posts?.filter(post => post.id === action.payload.id);
       const updatedList = state.posts?.map((post) => {
         if (post.id === action.payload.createVoteLogined.id) {
-          return action.payload.createVoteLogined;
+          const newPost = action.payload.createVoteLogined;
+
+          // createVote시 mySelection: null로 응답돼서, 따로 상태관리 필요
+          newPost["mySelection"] = action.payload.mySelection;
+          return newPost;
         }
         return post;
       });
