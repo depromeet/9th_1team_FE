@@ -38,7 +38,7 @@ const Today: React.FC<TodayProps> = ({ isLoggedin, updateLoading, setUpdateLoadi
           />
         </>
       ) : (
-        <Loading />
+        <Loading height={41} />
       )}
     </TodayContainer>
   );
@@ -47,6 +47,7 @@ const Today: React.FC<TodayProps> = ({ isLoggedin, updateLoading, setUpdateLoadi
 export default Today;
 
 export const TodayContainer = styled.div`
+  min-height: 41rem;
   padding: 1.6rem;
   margin-bottom: -2.5rem;
   background: #f8f9fa;
