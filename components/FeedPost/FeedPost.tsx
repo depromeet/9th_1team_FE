@@ -8,14 +8,7 @@ import { modifyDate } from "utils/date";
 import FireBar from "components/FireBar/FireBar";
 import { clipboardCopy } from "utils/common";
 import { shareAPI } from "utils/mobileShare";
-import {
-  ApolloQueryResult,
-  gql,
-  QueryLazyOptions,
-  useLazyQuery,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import OptionBox from "components/OptionBox/OptionBox";
 import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
 import { truncate } from "fs";
@@ -24,28 +17,14 @@ import { MoreMenu, Container, VoteWrapper, Versus } from "./FeedPost.style";
 interface FeedPostProps {
   updateLoading: boolean;
   setUpdateLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  feedList: never[];
-  setFeedList: React.Dispatch<React.SetStateAction<never[]>>;
   data?: any;
-  loadGameFeed:
-    | ((variables?: Partial<Record<string, any>> | undefined) => Promise<ApolloQueryResult<any>>)
-    | undefined;
-  isLoggedin: boolean;
 }
 
 // data: 모든 각 게임정보 myGames: 내가 만든 게임
-const FeedPost: React.FC<FeedPostProps> = ({
-  feedList,
-  updateLoading,
-  setUpdateLoading,
-  setFeedList,
-  data,
-  loadGameFeed,
-  isLoggedin,
-}) => {
+const FeedPost: React.FC<FeedPostProps> = ({ updateLoading, setUpdateLoading, data }) => {
   //const id = data.id;
   const [checkedId, setCheckedId] = useState(null);
-  const [balanceA, balanceB] = data.balanceGameSelections;
+  const [balanceA, balanceB] = data?.balanceGameSelections;
   const [isMine, setIsMine] = useState(false);
   const [votedCountA, setVotedCountA] = useState(0);
   const [votedCountB, setVotedCountB] = useState(0);
@@ -103,7 +82,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
           key={balanceA.id}
           setUpdateLoading={setUpdateLoading}
           isFeed={true}
-          loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceA}
           {...{ checkedId, setCheckedId, setIsVoted }}
@@ -112,7 +90,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
           key={balanceB.id}
           setUpdateLoading={setUpdateLoading}
           isFeed={true}
-          loadGameFeed={loadGameFeed}
           postId={data.id}
           selection={balanceB}
           {...{ checkedId, setCheckedId, setIsVoted }}

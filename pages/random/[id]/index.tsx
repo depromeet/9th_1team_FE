@@ -23,8 +23,6 @@ interface PostProps {
   isLoggedin: boolean;
 }
 
-//주소 article/a9e61383-165f-4caf-924e-1994de4a1ff2
-
 const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const router = useRouter();
   const {
@@ -45,6 +43,10 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   const [checkedId, setCheckedId] = useState(null);
   const [votedCountA, setVotedCountA] = useState(0);
   const [votedCountB, setVotedCountB] = useState(0);
+  //const [isFirstRandom, setIsFirstRandom] = useState(false);
+  // 상태로 prevGameId을 dispatch 하기
+  //  prevGameId: null 이면 비활성화
+  // 뒤로가기버튼X 홈버튼으로 변경하기
 
   useEffect(() => {
     loadGame();
@@ -104,7 +106,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
   };
 
   const onClickPrevGame = () => {
-    // router.back();
+    router.back();
     console.log(document.referrer);
   };
   const onClickNextGame = () => {

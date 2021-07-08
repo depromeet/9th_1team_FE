@@ -11,6 +11,8 @@ import {
   BALANCE_GAMES_LOGINED_QUERY,
   BALANCE_GAMES_QUERY,
   BALANCE_GAMES_TICK,
+  GET_GAME,
+  GET_GAME_NOT_LOGIN,
   NEXT_GAME_BY_RANDOM_QUERY,
 } from "lib/queries";
 import Header from "components/Header";
@@ -21,6 +23,7 @@ import Loading from "components/Loading/Loading";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { addList } from "redux/postsSlice";
 import { Container, Participate } from "./index.style";
+import Today from "components/Today";
 
 interface IndexProps {
   isLoggedin: boolean;
@@ -29,7 +32,7 @@ interface IndexProps {
 const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   const dispatch = useAppDispatch();
   const listData = useAppSelector((state) => state.posts.posts);
-  const [updateLoding, setUpdateLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -92,6 +95,7 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   return (
     <div style={{ width: "100%" }}>
       <Header />
+      <Today isLoggedin={isLoggedin} updateLoading={updateLoading} setUpdateLoading={setUpdateLoading} />
       <Container>
         <div className='buttons'>
           <div className='buttons__btn' onClick={onClickRandomPlay}>
@@ -120,13 +124,9 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
             listData.map((data, i) => (
               <FeedPost
                 key={i}
-                updateLoading={updateLoding}
+                updateLoading={updateLoading}
                 setUpdateLoading={setUpdateLoading}
-                feedList={list}
-                setFeedList={setList}
                 data={data}
-                loadGameFeed={loadGameFeed}
-                isLoggedin={isLoggedin}
               />
             ))}
         </InfiniteScroll>

@@ -47,7 +47,7 @@ export const Container = styled.div<ContainerProps>`
 `;
 
 interface ParticipateProps {
-  isFiltered: boolean
+  isFiltered: boolean;
 }
 
 export const Participate = styled.div<ParticipateProps>`
