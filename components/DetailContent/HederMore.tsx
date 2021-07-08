@@ -1,34 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import styled from "styled-components";
 import { clipboardCopy } from "utils/common";
-
-const MoreMenu = styled.ul<{ isOpen: boolean }>`
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  width: 140px;
-  position: absolute;
-  right: 0;
-  z-index: 2;
-  background-color: #fff;
-  opacity: ${({ isOpen }) => (isOpen ? "1" : "0")};
-  visibility: ${({ isOpen }) => (isOpen ? "visible" : "hidden")};
-  margin-right: 1.6rem;
-
-  li {
-  }
-  li a {
-    display: inline-block;
-    width: 100%;
-    padding: 15px 0 15px 16px;
-    font-size: 1.3rem;
-    border-bottom: 1px solid #e9ecef;
-    box-sizing: border-box;
-  }
-  li:last-child a {
-    border-bottom: none;
-  }
-`;
+import { MoreMenu } from './DetailContent.style'
 
 interface IsMineProps {
   isMine: boolean;

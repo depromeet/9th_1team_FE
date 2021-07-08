@@ -1,13 +1,22 @@
-import styled from "styled-components";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client/core";
-import VomitIcon from "../../public/tomato/vomit-normal-front.svg";
-import KakaoIcon from "../../public/kakao.svg";
-import CloseIcon from "../../public/close.svg";
+import VomitIcon from "public/tomato/vomit-normal-front.svg";
+import KakaoIcon from "public/kakao.svg";
+import CloseIcon from "public/close.svg";
 import Link from "next/link";
 import { setCookie } from "nookies";
+import {
+  LoginHeader,
+  CloseBtn,
+  Container,
+  Logo,
+  Text,
+  BtnContainer,
+  KakaoButton,
+  WithoutLoginButton
+} from './index.style'
 
 const LOGIN_MUTATION = gql`
   mutation login($type: String!, $key: String!) {
@@ -22,85 +31,6 @@ const LOGIN_MUTATION = gql`
 interface KakaoResponse {
   access_token: string;
 }
-
-const LoginHeader = styled.header`
-  width: 100%;
-  padding: 1.6rem;
-  height: 5.2rem;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: calc(100% - 5.2rem);
-  padding: 1.6rem;
-  box-sizing: border-box;
-`;
-
-const Logo = styled.div`
-  width: 9rem;
-`;
-
-const Text = styled.p`
-  font-family: "NanumSquareRound";
-  font-size: 2rem;
-  line-height: 2.8rem;
-  font-weight: 800;
-  width: 20rem;
-  text-align: center;
-  margin: 2rem 0 3.6rem;
-`;
-
-const BtnContainer = styled.div`
-  width: 100%;
-  max-width: 60rem;
-
-  button {
-    width: 100%;
-    height: 5.5rem;
-    padding: 2rem;
-    border-radius: 12px;
-    font-weight: 500;
-    font-size: 1.6rem;
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    border: none;
-    cursor: pointer;
-
-    span {
-      flex: 1;
-      height: 2rem;
-      line-height: 2rem;
-    }
-  }
-`;
-
-const KakaoButton = styled.button`
-  background-color: #fee500;
-  font-weight: 500;
-`;
-
-const WithoutLoginButton = styled.button`
-  font-size: 1.4rem;
-  line-height: 25px;
-  color: #868e96;
-  margin-top: 30px;
-  background-color: transparent;
-  border: none;
-  text-decoration: underline;
-`;
-
-const CloseBtn = styled.button`
-  background-color: transparent;
-  border: none;
-  text-decoration: underline;
-`;
 
 export default function Login() {
   const router = useRouter();

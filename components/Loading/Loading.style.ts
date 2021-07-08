@@ -5,7 +5,7 @@ interface SVGProps {
   height: string;
 }
 
-const Container = styled.div<SVGProps>`
+export const Container = styled.div<SVGProps>`
   position: relative;
   width: ${({ width }) => width};
   height: ${({ height }) => height};
@@ -65,15 +65,3 @@ const Container = styled.div<SVGProps>`
     }
   }
 `;
-
-const Loading = ({ width = "auto", height = "100px" }) => {
-  return (
-    <Container width={width} height={height}>
-      <svg viewBox="0 0 50 50">
-        <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" />
-      </svg>
-    </Container>
-  );
-};
-
-export default Loading;

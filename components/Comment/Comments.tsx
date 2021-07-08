@@ -1,94 +1,13 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import styled from "styled-components";
 import Comment from "./Comment";
-import OpinionIcon from "../../public/opinion.svg";
-import TriangleIcon from "../../public/opinion-triangle.svg";
-import TriReverseIcon from "../../public/opinion-triangle-reverse.svg";
+import OpinionIcon from "public/opinion.svg";
+import TriangleIcon from "public/opinion-triangle.svg";
+import TriReverseIcon from "public/opinion-triangle-reverse.svg";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import TextareaComment from "./TextareaComment";
-import Loading from "../Loading";
+import Loading from "components/Loading/Loading";
 import { useRouter } from "next/router";
-
-const CommentsWrapper = styled.div<{ opened: boolean }>`
-  border-top: 1px solid #e9ecef;
-  padding-bottom: 0.1rem;
-
-  .toggle__wrapper {
-    margin: 2.2rem 0 1.2rem 1.6rem;
-    display: flex;
-  }
-  .toggle-btn {
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-weight: 500;
-    svg {
-      margin-left: 0.5rem;
-    }
-  }
-  form {
-    position: relative;
-    border: 1px solid #e9ecef;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    margin: ${({ opened }) => (opened ? "0 16px" : "0 16px 45px 16px")};
-  }
-  textarea {
-    margin-left: 3.4rem;
-    border: none;
-    flex: 1;
-    outline: none;
-    resize: none;
-    font-family: sans-serif;
-    &::-webkit-scrollbar {
-      background-color: #fff;
-      width: 2px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: red;
-    }
-  }
-  .form__user-pick {
-    display: inline-block;
-    background-color: #ffd770;
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 1px solid lightgray;
-    box-sizing: border-box;
-  }
-  .submit-btn {
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
-    margin: 0 1.6rem;
-  }
-  .comments {
-    margin: 0;
-    padding: 0;
-  }
-  .btn__wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 3rem 0 4.5rem;
-  }
-  .comment__more-btn {
-    color: #868e96;
-    font-size: 1.2rem;
-    background: none;
-    padding: 0.8rem 1.2rem;
-    border: 1px solid #868e96;
-    border-radius: 15px;
-  }
-`;
+import { CommentsWrapper } from "./Comment.style";
 
 const COMMENTS_BY_GAME_ID_QUERY = gql`
   query commentsByGameId($id: String!) {
@@ -148,9 +67,7 @@ const Comments: React.FC<CommentProps> = ({
 }) => {
   const [opened, setOpened] = useState(true);
   const [content, setContent] = useState("");
-  const [mCreateComment, { loading: createCommentLoading }] = useMutation(
-    CREATE_COMMENT_MUTATION
-  );
+  const [mCreateComment, { loading: createCommentLoading }] = useMutation(CREATE_COMMENT_MUTATION);
   const {
     data,
     loading: commentsLoading,
@@ -176,6 +93,7 @@ const Comments: React.FC<CommentProps> = ({
           },
         },
       });
+      setContent("");
       await refetch();
     } catch (e) {
       alert("게임에 투표 후 댓글을 남길 수 있습니다.");
@@ -193,10 +111,10 @@ const Comments: React.FC<CommentProps> = ({
 
   return (
     <CommentsWrapper opened={opened}>
-      <div className="toggle__wrapper">
+      <div className='toggle__wrapper'>
         <OpinionIcon />
         <button
-          className="toggle-btn"
+          className='toggle-btn'
           onClick={() => {
             if (isLoggedin) {
               setOpened((prev) => !prev);
@@ -206,8 +124,7 @@ const Comments: React.FC<CommentProps> = ({
             }
           }}
         >
-          {opened ? "의견 접기" : "의견 보기"} (
-          {data?.comments.length || commentCount})
+          {opened ? "의견 접기" : "의견 보기"} ({data?.comments.length || commentCount})
           {opened ? <TriangleIcon /> : <TriReverseIcon />}
         </button>
       </div>
@@ -226,16 +143,22 @@ const Comments: React.FC<CommentProps> = ({
         <>
           {data && (
             <>
-              <ul className="comments">
-                {data?.comments.map((comment: any, i: number) => (
-                  <Comment
-                    key={i}
-                    mySelectionColor={mySelectionColor}
-                    balanceGameId={id}
-                    comment={comment}
-                    refetch={refetch}
-                  />
-                ))}
+              <ul className='comments'>
+                {console.log("jeongjin", data?.comments)}
+                {data?.comments
+                  .slice(0, data.comments.length) // 얕은 복사
+                  .sort((a: { createdAt: string }, b: { createdAt: string }) => {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                  }) // 시간 정렬
+                  .map((comment: any, i: number) => (
+                    <Comment
+                      key={i}
+                      mySelectionColor={mySelectionColor}
+                      balanceGameId={id}
+                      comment={comment}
+                      refetch={refetch}
+                    />
+                  ))}
               </ul>
               {/*<div className="btn__wrapper">*/}
               {/*  <button className="comment__more-btn">의견 더보기</button>*/}

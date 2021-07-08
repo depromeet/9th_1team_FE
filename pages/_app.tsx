@@ -1,21 +1,22 @@
 import { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import Head from "next/head";
-import { useApollo } from "../lib/apolloClient";
+import { useApollo } from "lib/apolloClient";
+import { wrapper } from "redux/store";
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
 
   return (
     <ApolloProvider client={apolloClient}>
       <Head>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-        <script
+        {/* <script
           crossOrigin="true"
           type="text/javascript"
           src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
           charSet="utf-8"
-        />
+        /> */}
 
         <script
           dangerouslySetInnerHTML={{
@@ -30,3 +31,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </ApolloProvider>
   );
 }
+
+export default wrapper.withRedux(App);

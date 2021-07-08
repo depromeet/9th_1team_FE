@@ -2,7 +2,7 @@ import _ from "lodash";
 import React from "react";
 import styled from "styled-components";
 import MiniCard from "./MiniCard";
-import VomitIcon from "../../public/tomato/vomit-light-side.svg";
+import VomitIcon from "public/tomato/vomit-light-side.svg";
 
 type ListProps = {
   list: {

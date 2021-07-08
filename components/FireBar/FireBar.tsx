@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Fire from "public/fire.svg";
-import { FireBarWrapper } from "./Firebar.style";
+import { FireBarWrapper } from "./FireBar.style";
 
 interface FireBarProps {
   voteCountA: number;
   voteCountB: number;
   fistColor?: string;
   secondColor?: string;
-  checkedId?: string;
+  checkedId?: string | null;
   idA: string;
   idB: string;
   isVoted: boolean;
@@ -25,29 +25,58 @@ const FireBar: React.FC<FireBarProps> = ({
 }) => {
   let leftBarPos = 50;
   let rightBarPos = 50;
-  let cntA = voteCountA;
-  let cntB = voteCountB;
+  //let cntA = voteCountA;
+  //let cntB = voteCountB;
 
-  if (isVoted) {
-    if (checkedId === idA) {
-      cntA++;
-    } else if (checkedId === idB) {
-      cntB++;
-    }
-  }
+  // isVoted는 삭제 해야할듯
+  // if (isVoted) {
+  //   if (checkedId === idA) {
+  //     cntA++;
+  //     console.log("cntA", cntA);
+  //   } else if (checkedId === idB) {
+  //     cntB++;
+  //     console.log("cntB", cntB);
+  //   }
+  // }
 
-  if (cntA !== 0) {
-    if (cntB !== 0) {
-      leftBarPos = (cntA / (cntA + cntB)) * 100;
+  if (voteCountA !== 0) {
+    if (voteCountB !== 0) {
+      leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
       rightBarPos = 100 - leftBarPos;
     } else {
       leftBarPos = 100;
       rightBarPos = 0;
     }
-  } else if (cntB !== 0) {
+  } else if (voteCountB !== 0) {
     leftBarPos = 0;
     rightBarPos = 100;
   }
+
+  // if (voteCountA !== 0) {
+  //   if (voteCountB !== 0) {
+  //     leftBarPos = (voteCountA / (voteCountA + voteCountB)) * 100;
+  //     rightBarPos = 100 - leftBarPos;
+  //   } else {
+  //     leftBarPos = 100;
+  //     rightBarPos = 0;
+  //   }
+  // } else if (voteCountB !== 0) {
+  //   leftBarPos = 0;
+  //   rightBarPos = 100;
+  // }
+
+  // if (cntA !== 0) {
+  //   if (cntB !== 0) {
+  //     leftBarPos = (cntA / (cntA + cntB)) * 100;
+  //     rightBarPos = 100 - leftBarPos;
+  //   } else {
+  //     leftBarPos = 100;
+  //     rightBarPos = 0;
+  //   }
+  // } else if (cntB !== 0) {
+  //   leftBarPos = 0;
+  //   rightBarPos = 100;
+  // }
 
   return (
     <FireBarWrapper>
@@ -63,7 +92,7 @@ const FireBar: React.FC<FireBarProps> = ({
             zIndex: 3,
           }}
         >
-          {cntA !== 0 && cntB !== 0 && <Fire />}
+          {voteCountA !== 0 && voteCountB !== 0 && <Fire />}
         </div>
         <div className="fire__rectangle" style={{ color: secondColor }}>
           {100 - Math.round(leftBarPos)}

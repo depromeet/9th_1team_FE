@@ -1,117 +1,44 @@
-import styled from "styled-components";
-import Header from "components/Header";
-import FeedPost from "components/FeedPost";
+import React, { useEffect, useState } from "react";
+import nookies from "nookies";
+import { GetServerSideProps } from "next";
 import Select from "public/check-circle-participate.svg";
 import Unselect from "public/circle-participate.svg";
 import RandomIcon from "public/home-random.svg";
 import PlusIcon from "public/home-plus.svg";
-import { useEffect, useState } from "react";
-import { useLazyQuery, gql } from "@apollo/client";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useRouter } from "next/router";
 import _ from "lodash";
-import Loading from "../components/Loading";
-import nookies from "nookies";
-import { GetServerSideProps } from "next";
-
-// interface OrderButtonProps {
-//   isSelect: boolean;
-//   onClick: MouseEventHandler<HTMLDivElement>;
-//   text: string;
-// }
-
-const BALANCE_GAMES_TICK = 5;
-
-const BALANCE_GAMES_QUERY = gql`
-  query balanceGames($offset: Float!) {
-    balanceGames(
-      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
-    ) {
-      num
-      balanceGames: balanceGame {
-        id
-        userId
-        balanceGameSelectionVotesCount
-        description
-        totalVoteCount
-        commentCount
-        thumbs
-        status
-        mySelection
-        createdAt
-        updatedAt
-        balanceGameSelections {
-          id
-          order
-          status
-          description
-          backgroundColor
-          backgroundImage
-          textColor
-          voteCount
-        }
-      }
-    }
-  }
-`;
-const BALANCE_GAMES_LOGINED_QUERY = gql`
-  query balanceGamesLogined($offset: Float!) {
-    balanceGames: balanceGamesLogined(
-      balanceGamesState: { limit: ${BALANCE_GAMES_TICK}, offset: $offset }
-    ) {
-      num
-      balanceGames: balanceGame {
-        id
-        userId
-        balanceGameSelectionVotesCount
-        description
-        totalVoteCount
-        commentCount
-        thumbs
-        status
-        mySelection
-        createdAt
-        updatedAt
-        balanceGameSelections {
-          id
-          order
-          status
-          description
-          voteCount
-          backgroundColor
-          backgroundImage
-          textColor
-        }
-      }
-    }
-  }
-`;
-
-// const Today = () => {
-//   return (
-//     <TodayContainer>
-//       <div className="title">오늘의 밸런스게임</div>
-//       {/*<FeedPost />*/}
-//     </TodayContainer>
-//   );
-// };
-
-// const OrderButton = ({ isSelect, onClick, text }: OrderButtonProps) => (
-//   <Order {...{ isSelect, onClick }}>{text}</Order>
-// );
+import { useLazyQuery, useQuery } from "@apollo/client";
+import {
+  BALANCE_GAMES_LOGINED_QUERY,
+  BALANCE_GAMES_QUERY,
+  BALANCE_GAMES_TICK,
+  NEXT_GAME_BY_RANDOM_QUERY,
+} from "lib/queries";
+import Header from "components/Header";
+import FeedPost from "components/FeedPost/FeedPost";
+import { useRouter } from "next/router";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Loading from "components/Loading/Loading";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { addList } from "redux/postsSlice";
+import { Container, Participate } from "./index.style";
+import Today from "components/Today";
 
 interface IndexProps {
   isLoggedin: boolean;
 }
 
 const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
-  const [isFiltered, setIsFiltered] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const dispatch = useAppDispatch();
+  const listData = useAppSelector((state) => state.posts.posts);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [list, setList] = useState([]);
-  const [qBalanceGames, { data }] = useLazyQuery(
-    isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY
+  const [hasMore, setHasMore] = useState(true);
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [qBalanceGames, { loading, data, refetch: loadGameFeed }] = useLazyQuery(
+    isLoggedin ? BALANCE_GAMES_LOGINED_QUERY : BALANCE_GAMES_QUERY,
   );
+  const { data: nextGameData } = useQuery(NEXT_GAME_BY_RANDOM_QUERY);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -123,19 +50,24 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   }, [offset]);
 
   useEffect(() => {
-    if (data) {
-      const newList = data?.balanceGames?.balanceGames;
-      if (newList) {
-        if (newList.length === 0) {
-          setHasMore(false);
-        } else {
-          setList(list.concat(newList));
-        }
-      }
-    }
-  }, [data]);
+    if (!data) return;
+    const newList = data?.balanceGames?.balanceGames;
+    // 새로 들어온 데이터인지 확인(투표한 데이터인 경우 중복렌더링 방지)
+    let isOldData = listData?.some((item: any) => item.id === newList[0].id);
 
-  if (_.isEmpty(list)) return null;
+    // 투표한 데이터일 경우 종료
+    if (isOldData) return;
+
+    // 새로 들어온 데이터일 경우
+    if (newList.length < 1) {
+      setHasMore(false);
+    } else {
+      dispatch(addList(newList));
+      if (newList.length < BALANCE_GAMES_TICK) setHasMore(false);
+    }
+  }, [data, data?.balanceGames?.balanceGames, hasMore]);
+
+  if (_.isEmpty(listData)) return null;
 
   const fetchMoreData = () => {
     const nextOffset = offset + BALANCE_GAMES_TICK;
@@ -143,145 +75,59 @@ const Index: React.FC<IndexProps> = ({ isLoggedin }) => {
   };
 
   const onClickRandomPlay = () => {
-    alert("아직 준비중인 서비스입니다. 조금만 기다려주세요!");
+    // router.push("/random/")
+    const { id } = nextGameData?.nextGameByRandom;
+    router.push(`/random/${id}`);
   };
 
   const onClickCreateGame = () => {
     router.push("/article/write");
   };
 
-  const _list = isFiltered
-    ? list.filter(
-        (item: { mySelection: string | null }) => item.mySelection !== null
-      )
-    : list;
-
-  console.log(_list);
-
   return (
     <div style={{ width: "100%" }}>
       <Header />
-      {/* <Today /> */}
+      <Today isLoggedin={isLoggedin} updateLoading={updateLoading} setUpdateLoading={setUpdateLoading} />
       <Container>
-        <div className="buttons">
-          <div className="buttons__btn" onClick={onClickRandomPlay}>
+        <div className='buttons'>
+          <div className='buttons__btn' onClick={onClickRandomPlay}>
             <RandomIcon />
             <span>랜덤 플레이</span>
           </div>
-          <div className="buttons__btn" onClick={onClickCreateGame}>
+          <div className='buttons__btn' onClick={onClickCreateGame}>
             <PlusIcon />
             <span>게임 만들기</span>
           </div>
         </div>
-        <div className="selects">
-          <Participate
-            {...{ isFiltered }}
-            onClick={() => setIsFiltered(!isFiltered)}
-          >
+        <div className='selects'>
+          <Participate {...{ isFiltered }} onClick={() => setIsFiltered(!isFiltered)}>
             {isFiltered ? <Select /> : <Unselect />}
           </Participate>
-          {/* <div className="orders">
-            <OrderButton
-              isSelect={isNewest}
-              onClick={() => setIsNewest(true)}
-              text="최신순"
-            />
-            <span className="dot">•</span>
-            <OrderButton
-              isSelect={!isNewest}
-              onClick={() => setIsNewest(false)}
-              text="인기순"
-            />
-          </div> */}
         </div>
-        <InfiniteScroll
-          dataLength={list.length}
-          next={fetchMoreData}
-          style={{ fontSize: 0 }} //To put endMessage and loader to the top.
-          // inverse={true} //
-          hasMore={hasMore}
-          loader={<Loading />}
-        >
-          {_list.map((data, i) => (
-            <FeedPost key={i} data={data} />
-          ))}
-        </InfiniteScroll>
+        {listData && (
+          <InfiniteScroll
+            dataLength={listData.length}
+            next={fetchMoreData}
+            style={{ fontSize: 0 }}
+            // inverse={true} //
+            hasMore={hasMore}
+            loader={<Loading />}
+          >
+            {listData.map((data, i) => (
+              <FeedPost
+                key={i}
+                updateLoading={updateLoading}
+                setUpdateLoading={setUpdateLoading}
+                data={data}
+              />
+            ))}
+          </InfiniteScroll>
+        )}
       </Container>
     </div>
   );
 };
 
-// const TodayContainer = styled.div`
-//   padding: 1.6rem;
-//   margin-top: 5.2rem;
-//   margin-bottom: -2.5rem;
-//   background: #f8f9fa;
-//   .title {
-//     font-family: "NanumSquareRound";
-//     font-size: 1.6rem;
-//     font-weight: 800;
-//     margin-bottom: 1rem;
-//   }
-// `;
-
-const Container = styled.div`
-  background: white;
-  padding: 1.55rem 1.6rem;
-  display: flex;
-  flex-direction: column;
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-    &__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 4.8rem;
-      font-weight: bold;
-      font-size: 1.4rem;
-      flex: 0.49;
-      border: 1px solid #e9ecef;
-      box-sizing: border-box;
-      border-radius: 8px;
-      letter-spacing: -0.05em;
-      cursor: pointer;
-      span {
-        margin-left: 0.4rem;
-      }
-    }
-  }
-  .selects {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 4rem;
-    margin-bottom: 1.6rem;
-  }
-  .orders {
-    display: flex;
-    align-items: center;
-    color: #adb5bd;
-    font-size: 1.3rem;
-  }
-  .dot {
-    margin: 0 0.78rem;
-  }
-`;
-
-const Participate = styled.div<{ isFiltered: boolean }>`
-  ::after {
-    content: "참여한 밸런스 게임만 보기";
-    color: ${({ isFiltered }) => (isFiltered ? "#343A40" : "#ADB5BD")};
-    margin-left: 0.5rem;
-    font-size: 1.3rem;
-  }
-  display: flex;
-  align-items: center;
-`;
-
-// const Order = styled.div<{ isSelect: boolean }>`
-//   color: ${({ isSelect }) => (isSelect ? "#343A40" : "#ADB5BD")};
-// `;
 export const getServerSideProps: GetServerSideProps = async function (context) {
   const { token } = nookies.get(context);
   const isLoggedin = !!token;

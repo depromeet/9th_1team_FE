@@ -1,28 +1,36 @@
-import styled from "styled-components";
 import Opinion from "public/opinion.svg";
 import Share from "public/share.svg";
 import More from "public/more.svg";
 import VS from "public/versus.svg";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 import { modifyDate } from "utils/date";
-import FireBar from "./FireBar/FireBar";
-import { clipboardCopy, getBalanceGameSelections } from "../utils/common";
+import FireBar from "components/FireBar/FireBar";
+import { clipboardCopy } from "utils/common";
 import { shareAPI } from "utils/mobileShare";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import OptionBox from "./OptionBox/OptionBox";
-import { MY_GAMES } from "lib/queries";
+import OptionBox from "components/OptionBox/OptionBox";
+import { GET_GAME, GET_GAME_NOT_LOGIN, MY_GAMES } from "lib/queries";
+import { truncate } from "fs";
+import { MoreMenu, Container, VoteWrapper, Versus } from "./FeedPost.style";
 
 interface FeedPostProps {
+  updateLoading: boolean;
+  setUpdateLoading: React.Dispatch<React.SetStateAction<boolean>>;
   data?: any;
 }
 
-const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
+// data: 모든 각 게임정보 myGames: 내가 만든 게임
+const FeedPost: React.FC<FeedPostProps> = ({ updateLoading, setUpdateLoading, data }) => {
+  //const id = data.id;
   const [checkedId, setCheckedId] = useState(null);
-  const [balanceA, balanceB] = getBalanceGameSelections(data);
+  const [balanceA, balanceB] = data?.balanceGameSelections;
   const [isMine, setIsMine] = useState(false);
+  const [votedCountA, setVotedCountA] = useState(0);
+  const [votedCountB, setVotedCountB] = useState(0);
   const baseURL = process.env.NEXT_PUBLIC_DOMAIN;
-  console.log("########", data, checkedId);
+  //console.log("########", data, checkedId);
+  const { data: myGames } = useQuery(MY_GAMES);
 
   useEffect(() => {
     if (data.mySelection) {
@@ -32,7 +40,14 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
 
   const [isMoreOpened, setIsMoreOpened] = useState(false);
 
-  const { data: myGames } = useQuery(MY_GAMES);
+  useEffect(() => {
+    if (!updateLoading) {
+      setVotedCountA(data?.balanceGameSelections[0].voteCount);
+      setVotedCountB(data?.balanceGameSelections[1].voteCount);
+      console.log(data.balanceGameSelections[0].description, votedCountA);
+      console.log(data.balanceGameSelections[1].description, votedCountB);
+    }
+  }, [updateLoading, data?.balanceGameSelections[0].voteCount, data?.balanceGameSelections[1].voteCount]);
 
   const [isVoted, setIsVoted] = useState(false);
   useEffect(() => {
@@ -50,14 +65,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
     } else {
       return (
         <div
-          className="content__buttons__button"
-          onClick={() =>
-            shareAPI(
-              balanceA.description,
-              balanceB.description,
-              baseURL as string
-            )
-          }
+          className='content__buttons__button'
+          onClick={() => shareAPI(balanceA.description, balanceB.description, baseURL as string)}
         >
           <Share />
           <span style={{ marginLeft: "0.4rem" }}>공유하기</span>
@@ -71,12 +80,16 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
       <VoteWrapper>
         <OptionBox
           key={balanceA.id}
+          setUpdateLoading={setUpdateLoading}
+          isFeed={true}
           postId={data.id}
           selection={balanceA}
           {...{ checkedId, setCheckedId, setIsVoted }}
         />
         <OptionBox
           key={balanceB.id}
+          setUpdateLoading={setUpdateLoading}
+          isFeed={true}
           postId={data.id}
           selection={balanceB}
           {...{ checkedId, setCheckedId, setIsVoted }}
@@ -89,8 +102,8 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
               checkedId={checkedId}
               idA={balanceA.id}
               idB={balanceB.id}
-              voteCountA={balanceA.voteCount}
-              voteCountB={balanceB.voteCount}
+              voteCountA={votedCountA}
+              voteCountB={votedCountB}
               isVoted={isVoted}
               fistColor={balanceA.backgroundColor}
               secondColor={balanceB.backgroundColor}
@@ -99,27 +112,26 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         </Versus>
       </VoteWrapper>
 
-      <div className="content">
+      <div className='content'>
         <Link href={`/article/${data.id}`}>
-          <div className="content__info">
-            <div className="content__title">{data.description}</div>
-            <div className="content__state">
+          <div className='content__info'>
+            <div className='content__title'>{data.description}</div>
+            <div className='content__state'>
               <div>
-                참여 {data.totalVoteCount} • 의견 {data.commentCount} •{" "}
-                {modifyDate(data.createdAt)}
+                참여 {data.totalVoteCount} • 의견 {data.commentCount} • {modifyDate(data.createdAt)}
               </div>
             </div>
           </div>
         </Link>
-        <div className="content__buttons">
+        <div className='content__buttons'>
           <Link href={`/article/${data.id}`}>
-            <div className="content__buttons__button">
+            <div className='content__buttons__button'>
               <Opinion />
             </div>
           </Link>
           {renderShare()}
           <div
-            className="content__buttons__button"
+            className='content__buttons__button'
             onClick={(e) => {
               e.stopPropagation();
               setIsMoreOpened(true);
@@ -130,7 +142,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ data }) => {
         </div>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="content__headermore"
+          className='content__headermore'
           style={{
             bottom: isMine ? "2.5rem" : "-2rem",
             visibility: isMoreOpened ? "visible" : "hidden",
@@ -194,112 +206,5 @@ const HeaderMore: React.FC<IsMineProps> = ({ isMine, postId }) => {
     );
   }
 };
-
-const Container = styled.div`
-  width: 100%;
-  height: 36rem;
-  overflow: hidden;
-  border: 1px solid #e9ecef;
-  border-radius: 0.8rem;
-  margin-bottom: 2.5rem;
-  background: white;
-  position: relative;
-  box-sizing: border-box;
-  .content {
-    padding-bottom: 1rem;
-    color: #606060;
-    position: relative;
-    &__info {
-      padding: 1rem 0;
-      cursor: pointer;
-    }
-    &__title {
-      display: block;
-      padding: 0 0.8rem 0.3rem 0.8rem;
-      color: #222222;
-      font-size: 1.3rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      > a {
-        text-decoration: none;
-        color: inherit;
-      }
-    }
-    &__state {
-      padding: 0 0.8rem;
-      display: flex;
-      margin-top: 0.4rem;
-      font-size: 1.1rem;
-      line-height: 1.6rem;
-      color: #868e96;
-    }
-    &__buttons {
-      padding: 1.3rem 0.8rem;
-      border: 0 solid #e9ecef;
-      border-top-width: 0.1rem;
-      display: flex;
-      font-size: 1.3rem;
-      color: #343a40;
-      font-weight: 500;
-      &__button {
-        display: flex;
-        align-items: center;
-        :first-child {
-          ::after {
-            content: "의견 쓰기";
-            margin-left: 0.4rem;
-          }
-        }
-        :nth-child(2) {
-          margin-left: 1.4rem;
-        }
-        :last-child {
-          margin-left: auto;
-        }
-      }
-    }
-  }
-`;
-
-const VoteWrapper = styled.div`
-  position: relative;
-`;
-
-const Versus = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
-
-const MoreMenu = styled.ul`
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  width: 140px;
-  position: absolute;
-  right: -3rem;
-  bottom: 4.5rem;
-  z-index: 2;
-  background-color: #fff;
-  margin-right: 1.6rem;
-
-  li a {
-    display: inline-block;
-    width: 100%;
-    padding: 15px 0 15px 16px;
-    font-size: 1.3rem;
-    border-bottom: 1px solid #e9ecef;
-    box-sizing: border-box;
-  }
-  li:last-child a {
-    border-bottom: none;
-  }
-`;
 
 export default FeedPost;
