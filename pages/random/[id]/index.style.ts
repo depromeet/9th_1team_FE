@@ -85,6 +85,7 @@ export const DetailWrapper = styled.div`
 
 export const VoteWrapper = styled.div`
   position: relative;
+  border-radius: 0.8rem;
   overflow: hidden;
 `;
 

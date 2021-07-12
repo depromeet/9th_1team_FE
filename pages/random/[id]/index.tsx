@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Comments from "components/Comment/Comments";
 import Header from "components/Header";
 import NextGameIcon from "public/game-next.svg";
+import PrevGameIcon from "public/game-prev.svg";
 import ShareIcon from "public/top-share.svg";
 import MoreIcon from "public/top-more.svg";
 import VS from "public/versus.svg";
@@ -121,7 +122,7 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
 
   return (
     <DetailWrapper>
-      <Header>
+      <Header title='랜덤 플레이 모드'>
         <div className='icon' ref={mobileShareRef}>
           <ShareIcon onClick={onUseShareAPI} />
         </div>
@@ -132,8 +133,8 @@ const Post: React.FC<PostProps> = ({ id, isLoggedin }) => {
       <HeaderMore postId={data?.balanceGame?.id} isMine={isMine} isOpen={isOpen} />
       <nav>
         <div className='prev' onClick={onClickPrevGame}>
-          {/* <PrevGameIcon />
-          <span>이전 게임</span> */}
+          <PrevGameIcon />
+          <span>이전 게임</span>
         </div>
         <div className='next' onClick={onClickNextGame}>
           <span>다음 게임</span>
